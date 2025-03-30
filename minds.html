@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MINDS</title>
+    <link rel="icon" type="image/png" href="https://cdn.minds.com/icon/1697553833263108104/large/1731987254">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Favicon styling */
+        link[rel="shortcut icon"] {
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #ffffff;
+            padding: 20px;
+            position: relative;
+        }
+
+        .title {
+            font-size: 4.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            position: relative;
+            background: linear-gradient(
+                45deg,
+                #000,
+                #0ff,
+                #00f,
+                #0ff,
+                #000
+            );
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shine 3s linear infinite;
+            letter-spacing: 2px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin: 0;
+            flex: 1;
+            text-align: center;
+        }
+
+        .title::before {
+            content: 'MINDS';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.2) 45%,
+                rgba(255, 255, 255, 0.5) 50%,
+                rgba(255, 255, 255, 0.2) 55%,
+                transparent 100%
+            );
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shine 3s linear infinite;
+            filter: blur(1px);
+        }
+
+        .title:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes shine {
+            0% {
+                background-position: 200% center;
+            }
+            100% {
+                background-position: -200% center;
+            }
+        }
+
+        .divider {
+            width: 80%;
+            max-width: 800px;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                #0ff 20%, 
+                #00f 50%, 
+                #0ff 80%, 
+                transparent 100%
+            );
+            margin-bottom: 40px;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #0ff;
+            border-radius: 50%;
+            top: -4px;
+            box-shadow: 0 0 10px #0ff;
+        }
+
+        .divider::before {
+            left: 20%;
+        }
+
+        .divider::after {
+            right: 20%;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 25px;
+            padding: 30px;
+            max-width: 1400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .item:hover {
+            transform: translateY(-5px);
+        }
+
+        .item a {
+            display: block;
+            width: 120px;
+            height: 120px;
+            overflow: hidden;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .item a:hover {
+            border-color: #0ff;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+        }
+
+        .item a img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .item a:hover img {
+            transform: scale(1.1);
+        }
+
+        .item p {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #0ff;
+            text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .item:hover p {
+            color: #fff;
+            text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            position: relative;
+        }
+
+        .footer::before {
+            content: '©';
+            margin-right: 5px;
+            color: #0ff;
+            text-shadow: 0 0 5px #0ff;
+        }
+
+        .footer span {
+            color: #0ff;
+            text-shadow: 0 0 5px #0ff;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .footer:hover span {
+            color: #fff;
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 3rem;
+                margin-bottom: 15px;
+            }
+            
+            .divider {
+                width: 90%;
+                margin-bottom: 30px;
+            }
+            
+            .container {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 15px;
+        text-shadow: 0 0 10px #0ff;
+                padding: 15px;
+            }
+
+            .item a {
+                width: 100px;
+                height: 100px;
+            }
+
+            .footer {
+                margin-top: 30px;
+                font-size: 0.8rem;
+            }
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .sort-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .sort-btn {
+            padding: 8px 20px;
+            border: 2px solid #0ff;
+            border-radius: 25px;
+            background: transparent;
+            color: #0ff;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .sort-btn:hover {
+            background: #0ff;
+            color: #000;
+            transform: scale(1.05);
+        }
+
+        .sort-btn.active {
+            background: #0ff;
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+        }
+
+        .alphabet-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .alphabet-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #0ff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+        }
+
+        .alphabet-btn:hover {
+            background: #0ff;
+            color: #000;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+        }
+
+        .alphabet-btn.active {
+            background: #0ff;
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+        }
+
+        .item.hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .alphabet-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+            }
+            
+            .sort-btn {
+                padding: 6px 15px;
+                min-width: 80px;
+                font-size: 0.9rem;
+            }
+            
+            .sort-buttons {
+                gap: 8px;
+            }
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            padding: 0 20px;
+        }
+
+        .total-accounts {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(0, 0, 255, 0.1) 100%);
+            padding: 8px 20px;
+            border-radius: 50px;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .total-accounts i {
+            color: #0ff;
+            font-size: 1rem;
+            text-shadow: 0 0 10px #0ff;
+        }
+
+        .total-accounts span {
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+                position: relative;
+                padding: 0 10px;
+            }
+
+            .title {
+                font-size: 3rem;
+                margin-bottom: 15px;
+            }
+
+            .total-accounts {
+                position: relative;
+                right: auto;
+                top: auto;
+                transform: none;
+                margin-top: 10px;
+                padding: 6px 15px;
+            }
+
+            .total-accounts span {
+                font-size: 0.8rem;
+            }
+        }
+
+        .item-number {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            background: linear-gradient(135deg, #0ff, #00f);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 1;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .item-number {
+                font-size: 0.7rem;
+                padding: 2px 6px;
+                top: -8px;
+                left: -8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <a href="https://www.minds.com" target="_blank" class="title">MINDS</a>
+        <div class="total-accounts">
+            <i>👥</i>
+            <span>Total Akun: <span class="total-number" id="totalAccounts">0</span></span>
+        </div>
+    </div>
+    <div class="divider"></div>
+    
+    <div class="search-container">
+        <div class="sort-buttons">
+            <button class="sort-btn active" data-sort="alphabetical">A-Z</button>
+            <button class="sort-btn" data-sort="alphabetical-reverse">Z-A</button>
+            <button class="sort-btn" data-sort="latest">Latest</button>
+        </div>
+        <div class="alphabet-buttons" id="alphabetButtons"></div>
+    </div>
+
+    <div class="container" id="itemsContainer">
+
+        <div class="item">
+            <a href="https://www.minds.com/DeepMatingPress/" target="_blank">
+                <img src="https://www.minds.com/icon/1749844807682887680/large/1742571512/" alt="DeepMatingPress">
+            </a> 
+            <p>DeepMatingPress</p>
+        </div>
+
+        <div class="item">
+            <a href="https://www.minds.com/QuinnOfPussy" target="_blank">
+                <img src="https://www.minds.com/icon/1749841398804254720/large/1742570699/" alt="QuinnOfPussy">
+            </a> 
+            <p>QuinnOfPussy</p>
+        </div>
+
+        <div class="item">
+            <a href="https://www.minds.com/ratumemek" target="_blank">
+                <img src="https://www.minds.com/icon/1749838066538782720/large/1742569905/" alt="RatuMemek">
+            </a> 
+            <p>RatuMemek</p>
+        </div>
+
+        <div class="item">
+            <a href="https://www.minds.com/lendirmemekteman/" target="_blank">
+                <img src="https://www.minds.com/icon/1749836523680829440/large/1742569537" alt="LendirMemekTeman">
+            </a> 
+            <p>LendirMemekTeman</p>
+        </div>
+
+        <div class="item">
+            <a href="https://www.minds.com/MenghisapMemek_Kushina_/" target="_blank">
+                <img src="https://www.minds.com/icon/1749190647035731968/large/1742415548" alt="MenghisapMemek_Kushina_">
+            </a> 
+            <p>MenghisapMemek_Kushina_</p>
+        </div>
+
+
+        <div class="item">
+            <a href="https://www.minds.com/MenjilatiMemek_Ino/" target="_blank">
+                <img src="https://cdn.minds.com/icon/1749185262514888704/large/1742414264" alt="MenjilatiMemek_Ino">
+            </a> 
+            <p>MenjilatiMemek_Ino</p>
+        </div>
+
+        <div class="item">
+            <a href="https://www.minds.com/LucyWetPussy/" target="_blank">
+                <img src="https://cdn.minds.com/icon/1749182174138998784/large/1742413695" alt="LucyWetPussy">
+            </a> 
+            <p>LucyWetPussy</p>
+        </div>
+
+        <div class="item">
+            <a href="https://www.minds.com/AuroraHornyPussy/" target="_blank">
+                <img src="https://www.minds.com/icon/1748761196112125952/large/1742313159/" alt="AuroraHornyPussy">
+            </a> 
+            <p>AuroraHornyPussy</p>
+        </div> 
+
+        <div class="item">
+            <a href="https://www.minds.com/oliviapussy/" target="_blank">
+                <img src="https://www.minds.com/icon/1748758841308225536/large/1742312598/" alt="OliviaPussy">
+            </a> 
+            <p>OliviaPussy</p>
+        </div> 
+
+        <div class="item">
+            <a href="https://www.minds.com/hanapussy/" target="_blank">
+                <img src="https://www.minds.com/icon/1748756156232241152/large/1742311957" alt="HanaPussy">
+            </a> 
+            <p>HanaPussy</p>
+        </div> 
+
+        <div class="item">
+            <a href="https://www.minds.com/gwenpussy/" target="_blank">
+                <img src="https://www.minds.com/icon/1748748546766540800/large/1742310143" alt="GwenPussy">
+            </a> 
+            <p>GwenPussy</p>
+        </div>    
+    
+    <div class="item">
+        <a href="https://www.minds.com/blowjoblovers/" target="_blank">
+            <img src="https://cdn.minds.com/icon/1748667474896752640/large/1742291609" alt="BlowjobLovers">
+        </a> 
+        <p>BlowjobLovers</p>
+    </div>
+
+    <div class="item">
+        <a href="https://www.minds.com/cameltoes2/" target="_blank">
+            <img src="https://cdn.minds.com/icon/1746920618647642112/large/1741874531" alt="CamelToes2">
+        </a> 
+        <p>CamelToes2</p>
+    </div>
+
+	<div class="item">
+	    <a href="https://www.minds.com/ahrijuicypussy/" target="_blank">
+	        <img src="https://cdn.minds.com/icon/1726157227125661696/large/1736924278" alt="AhriJuicyPussy">
+	    </a> 
+	    <p>AhriJuicyPussy</p>
+	</div>
+
+        <div class="item">
+            <a href="https://www.minds.com/ameliaregina/" target="_blank"><img src="https://cdn.minds.com/icon/1697553833263108104" alt="Image 1"></a>
+            <p>AmeliaRegina</p>
+        </div>
+<div class="item">
+    <a href="https://www.minds.com/analcum/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1707426947853717520/large/1732459529" alt="AnalCum">
+    </a> 
+    <p>AnalCum</p>
+</div>
+
+<div class="item">
+    <a href="https://www.minds.com/annasquirt/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1726906021567275008/large/1737102752" alt="AnnaSquirt">
+    </a> 
+    <p>AnnaSquirt</p>
+</div>
+<div class="item">
+    <a href="https://www.minds.com/atago72/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1705448370245472269/large/1731986852" alt="Atago72">
+    </a> 
+    <p>Atago72</p>
+</div>
+
+<div class="item">
+    <a href="https://www.minds.com/cumfactory/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1707121606809096194/large/1732386198" alt="CumFactory">
+    </a>
+    <p>CumFactory</p>
+</div>
+<div class="item">
+    <a href="https://www.minds.com/deeppussy/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1706040735851089937/large/1732129121" alt="DeepPussy">
+    </a> 
+    <p>DeepPussy</p>
+</div>
+
+<div class="item">
+    <a href="https://www.minds.com/elena53/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1724774793380630528/large/1736594587" alt="Elena53">
+    </a> 
+    <p>Elena53</p>
+</div>
+
+<div class="item">
+    <a href="https://www.minds.com/eridavira/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1703342529287557137/large/1731955811" alt="Eridavira">
+    </a> 
+    <p>Eridavira</p>
+</div>
+<div class="item">
+    <a href="https://www.minds.com/eroticadministrator/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1725626445889277952/large/1736797731" alt="EroticAdministrator">
+    </a> 
+    <p>EroticAdministrator</p>
+</div>
+
+<div class="item">
+    <a href="https://www.minds.com/fellatiano/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1705555185813688328/large/1732012198" alt="Fellatiano">
+    </a> 
+    <p>Fellatiano</p>
+</div>
+<div class="item">
+    <a href="https://www.minds.com/ffelatiano/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1725159540653035520/large/1736686670" alt="Ffelatiano">
+    </a> 
+    <p>Ffelatiano</p>
+</div>
+<div class="item">
+    <a href="https://www.minds.com/jessicarabit/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1707707341568217097/large/1732525559" alt="JessicaRabit">
+    </a> 
+    <p>JessicaRabit</p>
+</div>
+
+<div class="item">
+    <a href="https://www.minds.com/futanari53/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1724514670921916416/large/1736532505" alt="Futanari53">
+    </a> 
+    <p>Futanari53</p>
+</div>
+<div class="item">
+    <a href="https://www.minds.com/imaindah/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1705492732325138445/large/1731997416" alt="ImaIndah">
+    </a> 
+    <p>ImaIndah</p>
+</div>
+
+<div class="item">
+    <a href="https://www.minds.com/kitagawafuta/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1726114383945277440/large/1736913945" alt="KitagawaFuta">
+    </a> 
+    <p>KitagawaFuta</p>
+</div>
+<div class="item">
+    <a href="https://www.minds.com/linana/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1707734236561149966/large/1732532763" alt="Linana">
+    </a> 
+    <p>Linana</p>
+</div>
+
+<div class="item">
+    <a href="https://www.minds.com/moekahana13/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1705121128281804820/large/1731987254" alt="Moekahana13">
+    </a> 
+    <p>Moekahana13</p>
+</div>
+<div class="item">
+    <a href="https://www.minds.com/nanaamelia/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1725154674313289728/large/1736685243" alt="NanaAmelia">
+    </a> 
+    <p>NanaAmelia</p>
+</div>
+<div class="item">
+    <a href="https://www.minds.com/pussyjuicy/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1705881731413839874/large/1732090037" alt="PussyJuicy">
+    </a> 
+    <p>PussyJuicy</p>
+</div>
+
+<div class="item">
+    <a href="https://www.minds.com/pussylicking/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1712795794903404559/large/1733738688" alt="PussyLicking">
+    </a>
+    <p>PussyLicking</p>
+</div>
+
+<div class="item">
+    <a href="https://www.minds.com/pussyofficegirl/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1726621820029526016/large/1737034974" alt="PussyOfficeGirl">
+    </a> 
+    <p>PussyOfficeGirl</p>
+</div>
+<div class="item">
+    <a href="https://www.minds.com/pyraslut/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1726899601690075136/large/1737101082" alt="PyraSlut">
+    </a>
+    <p>PyraSlut</p>
+</div>
+
+<div class="item">
+    <a href="https://www.minds.com/regina_claudia/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1726973124802519040/large/1737133352" alt="Regina_Claudia">
+    </a> 
+    <p>Regina_Claudia</p>
+</div>
+<div class="item">
+    <a href="https://www.minds.com/rikkapussy/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1705704720204566529/large/1732047823" alt="RikkaPussy">
+    </a> 
+    <p>RikkaPussy</p>
+</div>
+
+<div class="item">
+    <a href="https://www.minds.com/sakuraharuno2078/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1715640970994782208/large/1734482511" alt="SakuraHaruno2078">
+    </a> 
+    <p>SakuraHaruno2078</p>
+</div>
+
+<div class="item">
+    <a href="https://www.minds.com/santapussygirl/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1726106132713312256/large/1736913029" alt="SantaPussyGirl">
+    </a> 
+    <p>SantaPussyGirl</p>
+</div>
+
+<div class="item">
+    <a href="https://www.minds.com/theexoticpussy/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1726908894812315648/large/1737104130" alt="TheExoticPussy">
+    </a>
+    <p>TheExoticPussy</p>
+</div>
+<div class="item">
+    <a href="https://www.minds.com/viperfellatio/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1731279182366777344/large/1738145306" alt="ViperFellatio">
+    </a> 
+    <p>ViperFellatio</p>
+</div>
+<div class="item">
+    <a href="https://www.minds.com/wetonahole/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1727361247709503488/large/1737211298" alt="Wetonahole">
+    </a> 
+    <p>Wetonahole</p>
+</div>
+
+<div class="item">
+    <a href="https://www.minds.com/wetonahole2/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1727363709858226176/large/1737211916" alt="Wetonahole2">
+    </a> 
+    <p>Wetonahole2</p>
+</div>
+<div class="item">
+    <a href="https://www.minds.com/yuanita53/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1724408538313023488/large/1736532187" alt="Yuanita53">
+    </a> 
+    <p>Yuanita53</p>
+</div>
+
+<div class="item">
+    <a href="https://www.minds.com/yunaaurel/" target="_blank">
+        <img src="https://cdn.minds.com/icon/1726120356021800960/large/1736915799" alt="YunaAurel">
+    </a> 
+    <p>Yuna Aurel</p>
+</div>
+
+    </div>
+    <div class="footer">2024 <span>Eri Davira</span></div>
+
+    <script>
+        // Membuat tombol alfabet
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        const alphabetButtons = document.getElementById('alphabetButtons');
+        const itemsContainer = document.getElementById('itemsContainer');
+        const items = document.querySelectorAll('.item');
+
+        // Membuat tombol untuk setiap huruf
+        alphabet.forEach(letter => {
+            const button = document.createElement('button');
+            button.className = 'alphabet-btn';
+            button.textContent = letter;
+            button.addEventListener('click', () => filterByLetter(letter));
+            alphabetButtons.appendChild(button);
+        });
+
+        // Tambahkan fungsi untuk menginisialisasi nomor urut
+        function initializeItemNumbers() {
+            const items = Array.from(document.querySelectorAll('.item'));
+            const totalItems = items.length;
+            
+            items.forEach((item, index) => {
+                // Tambahkan data-number (nomor urut dari bawah ke atas)
+                const itemNumber = totalItems - index;
+                item.setAttribute('data-number', itemNumber);
+                
+                // Tambahkan elemen nomor yang visible
+                const numberElement = document.createElement('span');
+                numberElement.className = 'item-number';
+                numberElement.textContent = `#${itemNumber}`;
+                item.insertBefore(numberElement, item.firstChild);
+            });
+        }
+
+        // Update fungsi sortItems
+        function sortItems(sortType) {
+            const container = document.getElementById('itemsContainer');
+            const items = Array.from(container.getElementsByClassName('item'));
+            
+            items.sort((a, b) => {
+                const nameA = a.querySelector('p').textContent.toLowerCase();
+                const nameB = b.querySelector('p').textContent.toLowerCase();
+                const numberA = parseInt(a.getAttribute('data-number'));
+                const numberB = parseInt(b.getAttribute('data-number'));
+                
+                switch(sortType) {
+                    case 'alphabetical':
+                        return nameA.localeCompare(nameB);
+                    case 'alphabetical-reverse':
+                        return nameB.localeCompare(nameA);
+                    case 'latest':
+                        // Urutkan berdasarkan nomor (terbesar ke terkecil)
+                        return numberB - numberA;
+                    default:
+                        return 0;
+                }
+            });
+            
+            // Hapus semua item dari container
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+            
+            // Tambahkan kembali item yang sudah diurutkan
+            items.forEach(item => container.appendChild(item));
+            
+            // Reset filter dan tampilkan semua item
+            resetFilterAndShowAll();
+        }
+
+        // Fungsi helper untuk reset filter dan tampilkan semua item
+        function resetFilterAndShowAll() {
+            // Reset filter alfabet
+            document.querySelectorAll('.alphabet-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Aktifkan tombol "All"
+            let allButton = document.querySelector('.alphabet-btn[data-letter="all"]');
+            if (allButton) {
+                allButton.classList.add('active');
+            }
+            
+            // Tampilkan semua item
+            const items = document.querySelectorAll('.item');
+            items.forEach(item => item.classList.remove('hidden'));
+            
+            // Update total
+            updateVisibleCount();
+        }
+
+        // Event listener untuk tombol pengurutan
+        document.querySelectorAll('.sort-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                // Hapus kelas active dari semua tombol
+                document.querySelectorAll('.sort-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Tambah kelas active ke tombol yang diklik
+                e.target.classList.add('active');
+                
+                // Urutkan item
+                sortItems(e.target.dataset.sort);
+            });
+        });
+
+        // Fungsi untuk memfilter item berdasarkan huruf
+        function filterByLetter(letter) {
+            const activeSort = document.querySelector('.sort-btn.active').dataset.sort;
+            
+            document.querySelectorAll('.alphabet-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            const items = document.querySelectorAll('.item');
+            items.forEach(item => {
+                const name = item.querySelector('p').textContent.toLowerCase();
+                if (letter.toLowerCase() === 'all') {
+                    item.classList.remove('hidden');
+                } else if (name.startsWith(letter.toLowerCase())) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+            updateVisibleCount();
+        }
+
+        // Menghitung total akun
+        function updateTotalAccounts() {
+            const totalAccounts = document.querySelectorAll('.item').length;
+            const totalNumberElement = document.getElementById('totalAccounts');
+            
+            // Animasi counting
+            let current = 0;
+            const duration = 1000; // 1 detik
+            const steps = 60;
+            const increment = totalAccounts / steps;
+            const stepTime = duration / steps;
+
+            const counter = setInterval(() => {
+                current += increment;
+                if (current >= totalAccounts) {
+                    current = totalAccounts;
+                    clearInterval(counter);
+                }
+                totalNumberElement.textContent = Math.round(current);
+            }, stepTime);
+        }
+
+        // Panggil fungsi saat halaman dimuat
+        window.addEventListener('load', updateTotalAccounts);
+
+        // Update total saat filter diaktifkan
+        function updateVisibleCount() {
+            const visibleItems = document.querySelectorAll('.item:not(.hidden)').length;
+            const totalNumberElement = document.getElementById('totalAccounts');
+            totalNumberElement.textContent = visibleItems;
+        }
+
+        // Tambahkan tombol "All" di awal
+        window.addEventListener('DOMContentLoaded', () => {
+            const allButton = document.createElement('button');
+            allButton.className = 'alphabet-btn active';
+            allButton.textContent = 'All';
+            allButton.dataset.letter = 'all';
+            allButton.addEventListener('click', () => filterByLetter('all'));
+            alphabetButtons.insertBefore(allButton, alphabetButtons.firstChild);
+            initializeItemNumbers();
+        });
+    </script>
+</body>
+</html>
