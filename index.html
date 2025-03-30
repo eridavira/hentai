@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Galeri foto seni dan kehidupan yang menakjubkan">
+    <meta name="author" content="Eri Davira">
+    <link rel="icon" href="https://files.fm/thumb_show.php?i=rve7c3t9x8" type="image/png">
+    <title>Hentai Gallery</title>
+    <!-- Font Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .website-header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .website-header h1 {
+            font-size: 3.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #fff, #7dd3fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+
+        .website-header .subtitle {
+            font-size: 1.2em;
+            color: #888;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .collection-counter {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            color: #7dd3fc;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            background-color: rgba(45, 45, 45, 0.7);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .gallery-item {
+            position: relative;
+            background-color: #2d2d2d;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            flex: 0 1 calc(14.28% - 15px);
+            min-width: 150px;
+            max-width: 180px;
+            border: 2px solid rgba(125, 211, 252, 0.3);
+            box-shadow: 
+                0 5px 15px rgba(0, 0, 0, 0.2),
+                0 0 20px rgba(125, 211, 252, 0.1),
+                inset 0 0 20px rgba(125, 211, 252, 0.05);
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(5px);
+        }
+
+        .image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px 15px 0 0;
+            aspect-ratio: 3/4;
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(
+                135deg, 
+                rgba(255, 255, 255, 0.1) 0%,
+                rgba(255, 255, 255, 0.05) 100%
+            );
+        }
+
+        .gallery-image {
+            width: 110%;
+            height: 110%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.5s ease, filter 0.3s ease;
+            filter: brightness(0.95) contrast(1.1);
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(1.02);
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .image-title {
+            text-align: center;
+            color: #ffffff;
+            padding: 10px;
+            font-size: 0.85em;
+            background: rgba(0, 0, 0, 0.7);
+            margin: 0;
+            border-radius: 0 0 15px 15px;
+            border-top: 1px solid rgba(125, 211, 252, 0.2);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 0.5px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover .image-title {
+            height: auto;
+            white-space: normal;
+            position: absolute;
+            bottom: 0;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 0 5px 5px 5px;
+            width: calc(100% - 10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-7px) scale(1.02);
+            border-color: rgba(125, 211, 252, 0.6);
+            box-shadow: 
+                0 15px 30px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(125, 211, 252, 0.2),
+                inset 0 0 30px rgba(125, 211, 252, 0.1);
+        }
+
+        .gallery-item:hover .gallery-image {
+            transform: translate(-50%, -50%) scale(1.08);
+            filter: brightness(1.1) contrast(1.2);
+        }
+
+        .gallery-item:hover .overlay {
+            opacity: 1;
+        }
+
+        .sort-buttons {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sort-button {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9em;
+        }
+
+        .sort-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .sort-button.active {
+            background: linear-gradient(45deg, #7dd3fc, #66ff99);
+            border-color: transparent;
+        }
+
+        .filter-button {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9em;
+        }
+
+        .filter-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .filter-button.active {
+            background: linear-gradient(45deg, #7dd3fc, #66ff99);
+            border-color: transparent;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #888;
+            margin-top: 50px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 1400px) {
+            .gallery-item {
+                flex: 0 1 calc(16.666% - 15px);
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .gallery-item {
+                flex: 0 1 calc(20% - 15px);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .gallery-item {
+                flex: 0 1 calc(33.333% - 15px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .website-header h1 {
+                font-size: 2.2em;
+            }
+            .gallery-item {
+                flex: 0 1 calc(50% - 15px);
+            }
+            .sort-buttons {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+            .sort-button {
+                width: calc(50% - 10px);
+            }
+            .search-container {
+                width: 90%;
+            }
+            .random-button {
+                bottom: 15px;
+                right: 15px;
+                padding: 8px 15px;
+                font-size: 0.85em;
+            }
+            .minds-menu {
+                top: 10px;
+                left: 10px;
+            }
+            .minds-button {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .website-header h1 {
+                font-size: 1.8em;
+            }
+            .gallery-item {
+                flex: 0 1 100%;
+            }
+            .sort-button {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+
+        /* Tambahkan style untuk search box */
+        .search-container {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto 30px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 45px 12px 20px;
+            border: 2px solid rgba(125, 211, 252, 0.3);
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1em;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: rgba(125, 211, 252, 0.6);
+            box-shadow: 0 0 15px rgba(125, 211, 252, 0.2);
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+        }
+
+        /* Style untuk item yang disembunyikan */
+        .gallery-item.hidden {
+            display: none;
+        }
+
+        /* Pesan tidak ditemukan */
+        .no-results {
+            text-align: center;
+            color: #fff;
+            padding: 20px;
+            font-size: 1.2em;
+            display: none;
+        }
+
+        .no-results.show {
+            display: block;
+        }
+
+        /* Style untuk tombol random */
+        .random-button {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: linear-gradient(45deg, #ff69b4, #7dd3fc);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            text-decoration: none;
+        }
+
+        .random-button i {
+            font-size: 1em;
+            transition: transform 0.3s ease;
+        }
+
+        .random-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .random-button:hover i {
+            transform: rotate(180deg);
+        }
+
+        /* Style untuk ongoing item */
+        .gallery-item.ongoing {
+            position: relative;
+        }
+
+        .ongoing-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(45deg, #7dd3fc, #66ff99);
+            color: #000;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.7em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: glowPulse 2s infinite;
+        }
+
+        .wave-loading {
+            display: flex;
+            gap: 2px;
+            margin-left: 3px;
+        }
+
+        .wave-loading span {
+            display: inline-block;
+            width: 3px;
+            height: 3px;
+            background-color: #000;
+            border-radius: 50%;
+            animation: wave 1.5s infinite;
+        }
+
+        .wave-loading span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .wave-loading span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes wave {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-3px);
+            }
+        }
+
+        @keyframes glowPulse {
+            0% {
+                box-shadow: 0 0 5px rgba(125, 211, 252, 0.3),
+                           0 0 10px rgba(125, 211, 252, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 15px rgba(125, 211, 252, 0.5),
+                           0 0 25px rgba(125, 211, 252, 0.3);
+            }
+            100% {
+                box-shadow: 0 0 5px rgba(125, 211, 252, 0.3),
+                           0 0 10px rgba(125, 211, 252, 0.2);
+            }
+        }
+
+        /* Style untuk coming soon item */
+        .gallery-item.coming-soon {
+            position: relative;
+            pointer-events: none;
+        }
+
+        .gallery-item.coming-soon .gallery-image {
+            filter: blur(3px) grayscale(50%);
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item.coming-soon:hover .gallery-image {
+            filter: blur(5px) grayscale(70%);
+        }
+
+        .coming-soon-badge {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.75);
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.75em;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            z-index: 5;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            animation: pulseGlow 2s infinite;
+            backdrop-filter: none;
+        }
+
+        .gallery-item.coming-soon .image-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 5px rgba(125, 211, 252, 0.3),
+                           0 0 10px rgba(125, 211, 252, 0.2);
+                border-color: rgba(255, 255, 255, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 15px rgba(125, 211, 252, 0.5),
+                           0 0 25px rgba(125, 211, 252, 0.3);
+                border-color: rgba(255, 255, 255, 0.5);
+            }
+            100% {
+                box-shadow: 0 0 5px rgba(125, 211, 252, 0.3),
+                           0 0 10px rgba(125, 211, 252, 0.2);
+                border-color: rgba(255, 255, 255, 0.3);
+            }
+        }
+
+        /* Style untuk menu MINDS */
+        .minds-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .minds-button {
+            background: linear-gradient(135deg, #ffd700, #daa520);
+            color: #000;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            box-shadow: 
+                0 4px 15px rgba(218, 165, 32, 0.3),
+                0 0 0 2px rgba(255, 215, 0, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+        }
+
+        .minds-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 6px 20px rgba(218, 165, 32, 0.4),
+                0 0 0 3px rgba(255, 215, 0, 0.4);
+            background: linear-gradient(135deg, #ffd700, #f0b000);
+        }
+
+        .minds-button i {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Tambahkan menu MINDS -->
+    <div class="minds-menu">
+        <a href="minds.html" class="minds-button" target="_blank">
+            <i class="fas fa-brain"></i>
+            MINDS
+        </a>
+    </div>
+
+    <div class="container">
+        <header class="website-header">
+            <h1>Hentai Gallery</h1>
+            <p class="subtitle">Explore our curated collection of exclusive artworks</p>
+            <div class="collection-counter">Total Collection: <span id="totalCollections">0</span></div>
+        </header>
+
+        <!-- Tambahkan search box -->
+        <div class="search-container">
+            <input type="text" class="search-box" placeholder="Search gallery..." id="searchBox">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+
+        <div class="sort-buttons">
+            <button class="sort-button" data-sort="all">All</button>
+            <button class="sort-button" data-sort="name-asc">Name (A-Z)</button>
+            <button class="sort-button" data-sort="name-desc">Name (Z-A)</button>
+            <button class="sort-button" data-sort="date-new">Latest</button>
+            <button class="sort-button" data-sort="date-old">Oldest</button>
+            <button class="sort-button filter-button" data-filter="ongoing">Ongoing</button>
+            <button class="sort-button filter-button" data-filter="coming-soon">Coming Soon</button>
+        </div>
+
+        <!-- Tambahkan pesan tidak ditemukan -->
+        <div class="no-results">No matching items found</div>
+
+        <div class="gallery">
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <a href="cowgirlcynthia_part1.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=hub9ucmvwy" alt="Cynthia Cowgirl" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">Cynthia Cowgirl</p>
+            </div>                    
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <a href="SchoolGirls.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=tt6ee9vd9q" alt="School Girls" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">School Girls</p>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <a href="FutanariGallery.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=dkk28qf7qs" alt="Futanari Gallery" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">Futanari Gallery</p>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <a href="FutanariLearning.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=ywse8rawmk" alt="Futanari Learning" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">Futanari Learning</p>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <a href="BattleAngel.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=e5qbzpp47g" alt="Random Collection" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">Battle Angel</p>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <a href="2generatornow.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=f8xxdcx4ny" alt="Random Collection" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">Random Pic from Generator Now 2</p>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <a href="random2.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=3c4g3m85wn" alt="Random Collection" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">Random Collection 2</p>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <a href="random.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=5jducy68nt" alt="Random Collection" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">Random Collection</p>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <a href="1generatornow.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=m8mv2fhz9f" alt="Random Pic from Generator Now" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">Random Pic from Generator Now</p>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <a href="Chevreuseinterrogationtactic.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=p2k3mvu6fv" alt="Chevreuse interrogation tactic" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">Chevreuse Interrogation Tactic</p>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <a href="chevylostabet.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=rve7c3t9x8" alt="Chevy lost a bet" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">Chevy Lost a Bet</p>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <a href="ChevWrio.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=9p6te4b566" alt="ChevWrio" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">ChevWrio</p>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <a href="Chevreuse.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=sxektzhbcd" alt="Cevreuse" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">Cevreuse</p>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <a href="thc.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=mqsatx3z5w" alt="THC" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">THC</p>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <a href="athenaasamiya.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=ddtvnq9vnp" alt="Athena Asamiya Gallery" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                    <div class="ongoing-badge">
+                        Ongoing
+                        <div class="wave-loading">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+                <p class="image-title">Athena Asamiya Gallery</p>
+            </div>
+            
+            <div class="gallery-item">
+                <div class="image-container">
+                    <a href="spreadpussy.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=cjm5uc6m4d" alt="Spread Pussy" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                    <div class="ongoing-badge">
+                        Ongoing
+                        <div class="wave-loading">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+                <p class="image-title">Spread Pussy</p>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
+                    <a href="reiko.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=eg4puftne4" alt="Reiko" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">Reiko</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tambahkan tombol random -->
+    <a href="#" class="random-button" id="randomButton">
+        <i class="fas fa-random"></i>
+        Random Gallery
+    </a>
+
+    <footer>
+        <p>&copy; 2025 Copyright Eri Davira. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            const totalCollectionsElement = document.getElementById('totalCollections');
+            const galleryGrid = document.querySelector('.gallery');
+            const sortButtons = document.querySelectorAll('.sort-button');
+            const filterButtons = document.querySelectorAll('.filter-button');
+            const searchBox = document.getElementById('searchBox');
+            const noResults = document.querySelector('.no-results');
+            const randomButton = document.getElementById('randomButton');
+            
+            let currentFilter = 'all';
+            let currentSort = 'date-new';
+
+            // Sembunyikan item coming soon secara default
+            document.querySelectorAll('.gallery-item.coming-soon').forEach(item => {
+                item.classList.add('hidden');
+            });
+
+            // Update total collections count (tidak termasuk coming soon)
+            const visibleItems = Array.from(galleryItems).filter(item => !item.classList.contains('coming-soon'));
+            totalCollectionsElement.textContent = visibleItems.length;
+
+            // Data galeri dengan status
+            const galleryData = [
+                { element: document.querySelector('a[href="cowgirlcynthia_part1.html"]').parentNode.parentNode, 
+                  name: "Cynthia Cowgirl", 
+                  date: new Date('2024-01-19'),
+                  status: 'regular' },
+                { element: document.querySelector('a[href="SchoolGirls.html"]').parentNode.parentNode, 
+                  name: "School Girls", 
+                  date: new Date('2024-01-19'),
+                  status: 'regular' },
+                { element: document.querySelector('a[href="FutanariGallery.html"]').parentNode.parentNode, 
+                  name: "Futanari Gallery", 
+                  date: new Date('2024-01-19'),
+                  status: 'regular' },
+                { element: document.querySelector('a[href="FutanariLearning.html"]').parentNode.parentNode, 
+                  name: "Futanari Learning", 
+                  date: new Date('2024-01-19'),
+                  status: 'regular' },
+                { element: document.querySelector('a[href="BattleAngel.html"]').parentNode.parentNode, 
+                  name: "Battle Angel", 
+                  date: new Date('2024-01-19'),
+                  status: 'regular' },
+                { element: document.querySelector('a[href="2generatornow.html"]').parentNode.parentNode, 
+                  name: "Random Pic from Generator Now 2", 
+                  date: new Date('2024-01-02'),
+                  status: 'regular' },
+                { element: document.querySelector('a[href="random2.html"]').parentNode.parentNode, 
+                  name: "Random Collection 2", 
+                  date: new Date('2024-01-01'),
+                  status: 'pinned' },
+                { element: document.querySelector('a[href="random.html"]').parentNode.parentNode, 
+                  name: "Random Collection", 
+                  date: new Date('2024-01-01'),
+                  status: 'pinned' },
+                { element: document.querySelector('a[href="1generatornow.html"]').parentNode.parentNode, 
+                  name: "Random Pic from Generator Now", 
+                  date: new Date('2024-01-18'),
+                  status: 'regular' },
+                { element: document.querySelector('a[href="Chevreuseinterrogationtactic.html"]').parentNode.parentNode, 
+                  name: "Chevreuse interrogation tactic", 
+                  date: new Date('2024-01-11'),
+                  status: 'regular' },
+                { element: document.querySelector('a[href="chevylostabet.html"]').parentNode.parentNode, 
+                  name: "Chevy lost a bet", 
+                  date: new Date('2024-01-12'),
+                  status: 'regular' },
+                { element: document.querySelector('a[href="ChevWrio.html"]').parentNode.parentNode, 
+                  name: "ChevWrio", 
+                  date: new Date('2024-01-13'),
+                  status: 'regular' },
+                { element: document.querySelector('a[href="Chevreuse.html"]').parentNode.parentNode,
+                  name: "Chevreuse",
+                  date: new Date('2024-01-14'),
+                  status: 'regular' },
+                { element: document.querySelector('a[href="thc.html"]').parentNode.parentNode,
+                  name: "THC",
+                  date: new Date('2024-01-15'),
+                  status: 'regular' },
+                { element: document.querySelector('a[href="athenaasamiya.html"]').parentNode.parentNode,
+                  name: "Athena Asamiya Gallery",
+                  date: new Date('2024-01-16'),
+                  status: 'ongoing' },
+                { element: document.querySelector('a[href="spreadpussy.html"]').parentNode.parentNode,
+                  name: "Spread Pussy",
+                  date: new Date('2024-01-17'),
+                  status: 'ongoing' },
+                { element: document.querySelector('a[href="reiko.html"]').parentNode.parentNode,
+                  name: "Reiko",
+                  date: new Date('2024-01-18'),
+                  status: 'regular' }
+                  
+                  
+            ];
+
+            function applyFilter(type, isFilter = false) {
+                // Reset semua tombol terlebih dahulu
+                sortButtons.forEach(btn => btn.classList.remove('active'));
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                
+                if (type === 'all') {
+                    // Tampilkan semua item
+                    galleryData.forEach(item => {
+                        item.element.classList.remove('hidden');
+                    });
+                    // Aktifkan tombol All
+                    document.querySelector('[data-sort="all"]').classList.add('active');
+                } else if (isFilter) {
+                    currentFilter = type;
+                    // Aktifkan tombol filter yang ditekan
+                    const activeFilterBtn = document.querySelector(`[data-filter="${type}"]`);
+                    if (activeFilterBtn) {
+                        activeFilterBtn.classList.add('active');
+                    }
+
+                    // Filter items berdasarkan status
+                    galleryData.forEach(item => {
+                        if (type === 'ongoing') {
+                            item.element.classList.toggle('hidden', item.status !== 'ongoing');
+                        } else if (type === 'coming-soon') {
+                            item.element.classList.toggle('hidden', item.status !== 'coming-soon');
+                        }
+                    });
+                } else {
+                    // Ini untuk sorting
+                    currentSort = type;
+                    currentFilter = 'all';
+                    
+                    // Aktifkan tombol sort yang ditekan
+                    const activeSortBtn = document.querySelector(`[data-sort="${type}"]`);
+                    if (activeSortBtn) {
+                        activeSortBtn.classList.add('active');
+                    }
+
+                    // Tampilkan semua item sebelum sorting
+                    galleryData.forEach(item => {
+                        item.element.classList.remove('hidden');
+                    });
+
+                    // Terapkan pengurutan
+                    sortGallery(type);
+                }
+
+                // Update total collections count
+                updateCollectionCount();
+            }
+
+            function updateCollectionCount() {
+                const visibleCount = galleryData.filter(item => !item.element.classList.contains('hidden')).length;
+                totalCollectionsElement.textContent = visibleCount;
+
+                // Tampilkan pesan jika tidak ada hasil
+                if (visibleCount === 0) {
+                    noResults.classList.add('show');
+                } else {
+                    noResults.classList.remove('show');
+                }
+            }
+
+            // Event listener untuk tombol sort
+            sortButtons.forEach(button => {
+                if (!button.classList.contains('filter-button')) {
+                    button.addEventListener('click', function() {
+                        const sortType = this.dataset.sort;
+                        if (sortType) {
+                            applyFilter(sortType, false);
+                        }
+                    });
+                }
+            });
+
+            // Event listener untuk tombol filter
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const filterType = this.dataset.filter;
+                    if (filterType) {
+                        applyFilter(filterType, true);
+                    }
+                });
+            });
+
+            function sortGallery(sortType) {
+                // Pisahkan item yang di-pin dan yang tidak
+                const pinnedItems = galleryData.filter(item => item.status === 'pinned');
+                const regularItems = galleryData.filter(item => item.status !== 'pinned');
+
+                // Urutkan hanya item regular
+                switch(sortType) {
+                    case 'name-asc':
+                        regularItems.sort((a, b) => a.name.localeCompare(b.name));
+                        break;
+                    case 'name-desc':
+                        regularItems.sort((a, b) => b.name.localeCompare(a.name));
+                        break;
+                    case 'date-new':
+                        regularItems.sort((a, b) => b.date - a.date);
+                        break;
+                    case 'date-old':
+                        regularItems.sort((a, b) => a.date - b.date);
+                        break;
+                }
+
+                // Hapus semua item dari gallery
+                while (galleryGrid.firstChild) {
+                    galleryGrid.removeChild(galleryGrid.firstChild);
+                }
+
+                // Tambahkan kembali item yang di-pin terlebih dahulu
+                pinnedItems.forEach(item => {
+                    galleryGrid.appendChild(item.element);
+                });
+
+                // Kemudian tambahkan item regular yang sudah diurutkan
+                regularItems.forEach(item => {
+                    galleryGrid.appendChild(item.element);
+                });
+            }
+
+            // Modifikasi fungsi pencarian
+            function searchGallery(searchTerm) {
+                searchTerm = searchTerm.toLowerCase();
+                let visibleItems = 0;
+
+                galleryData.forEach(item => {
+                    const title = item.name.toLowerCase();
+                    const element = item.element;
+                    
+                    // Item yang di-pin selalu ditampilkan
+                    if (item.status === 'pinned') {
+                        element.classList.remove('hidden');
+                        visibleItems++;
+                        return;
+                    }
+
+                    // Tentukan visibilitas berdasarkan filter aktif
+                    let shouldBeVisible = false;
+                    if (currentFilter === 'ongoing') {
+                        shouldBeVisible = item.status === 'ongoing';
+                    } else if (currentFilter === 'coming-soon') {
+                        shouldBeVisible = item.status === 'coming-soon';
+                    } else {
+                        shouldBeVisible = true;
+                    }
+
+                    // Terapkan pencarian
+                    if (shouldBeVisible && title.includes(searchTerm)) {
+                        element.classList.remove('hidden');
+                        visibleItems++;
+                    } else {
+                        element.classList.add('hidden');
+                    }
+                });
+
+                updateCollectionCount();
+            }
+
+            // Event listener untuk search box
+            let searchTimeout;
+            searchBox.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    searchGallery(this.value);
+                }, 300); // Delay pencarian untuk performa
+            });
+
+            // Daftar halaman yang tersedia
+            const availablePages = [
+                'cowgirlcynthia_part1.html',
+                'SchoolGirls.html',
+                'FutanariGallery.html',
+                'FutanariLearning.html',
+                'battleangel.html',
+                'random.html',
+                '2generatornow.html',
+                '1generatornow.html',
+                'Chevreuseinterrogationtactic.html',
+                'chevylostabet.html',
+                'ChevWrio.html',
+                'Chevreuse.html',
+                'thc.html',
+                'spreadpussy.html',
+                'reiko.html',
+                'athenaasamiya.html'
+            ];
+
+            // Fungsi untuk membuka halaman random
+            function openRandomPage() {
+                const randomIndex = Math.floor(Math.random() * availablePages.length);
+                window.location.href = availablePages[randomIndex];
+            }
+
+            // Event listener untuk tombol random
+            randomButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                openRandomPage();
+            });
+
+            // Fungsi untuk mengelola cache storage
+            const CACHE_SIZE_LIMIT = 50 * 1024 * 1024; // 50MB limit
+            const CACHE_KEY_PREFIX = 'img_cache_';
+
+            async function manageImageCache() {
+                try {
+                    // Hitung total ukuran cache saat ini
+                    let totalSize = 0;
+                    for(let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if(key.startsWith(CACHE_KEY_PREFIX)) {
+                            totalSize += localStorage.getItem(key).length;
+                        }
+                    }
+
+                    // Jika melebihi batas, hapus cache lama
+                    if(totalSize > CACHE_SIZE_LIMIT) {
+                        const keysToRemove = [];
+                        for(let i = 0; i < localStorage.length; i++) {
+                            const key = localStorage.key(i);
+                            if(key.startsWith(CACHE_KEY_PREFIX)) {
+                                keysToRemove.push(key);
+                            }
+                        }
+                        // Hapus 50% cache terlama
+                        keysToRemove.slice(0, Math.floor(keysToRemove.length / 2)).forEach(key => {
+                            localStorage.removeItem(key);
+                        });
+                    }
+                } catch(error) {
+                    console.warn('Cache management error:', error);
+                }
+            }
+
+            // Fungsi untuk menyimpan cache dengan penanganan error
+            async function cacheImage(url, imageData) {
+                try {
+                    await manageImageCache();
+                    localStorage.setItem(CACHE_KEY_PREFIX + url, imageData);
+                } catch(error) {
+                    console.warn('Failed to cache image:', error);
+                    // Hapus semua cache jika quota terlampaui
+                    if(error.name === 'QuotaExceededError') {
+                        try {
+                            Object.keys(localStorage).forEach(key => {
+                                if(key.startsWith(CACHE_KEY_PREFIX)) {
+                                    localStorage.removeItem(key);
+                                }
+                            });
+                        } catch(e) {
+                            console.error('Failed to clear cache:', e);
+                        }
+                    }
+                }
+            }
+
+            // Fungsi untuk mengambil cache
+            function getCachedImage(url) {
+                try {
+                    return localStorage.getItem(CACHE_KEY_PREFIX + url);
+                } catch(error) {
+                    console.warn('Failed to get cached image:', error);
+                    return null;
+                }
+            }
+
+            // Preload dan cache gambar galeri
+            document.querySelectorAll('.gallery-image').forEach(img => {
+                const imageUrl = img.src;
+                if(!getCachedImage(imageUrl)) {
+                    fetch(imageUrl)
+                        .then(response => response.blob())
+                        .then(blob => {
+                            const reader = new FileReader();
+                            reader.onloadend = () => cacheImage(imageUrl, reader.result);
+                            reader.readAsDataURL(blob);
+                        })
+                        .catch(error => console.warn('Image preload failed:', error));
+                }
+            });
+        });
+    </script>
+</body>
+</html>
