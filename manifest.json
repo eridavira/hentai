@@ -1,0 +1,16 @@
+{
+    "name": "Generator Now",
+    "short_name": "Generator",
+    "description": "Random Pic from Generator Now",
+    "start_url": "1generatornow.html",
+    "display": "standalone",
+    "background_color": "#1a1a1a",
+    "theme_color": "#1a1a1a",
+    "icons": [
+        {
+            "src": "https://files.fm/thumb_show.php?i=m8mv2fhz9f",
+            "sizes": "192x192",
+            "type": "image/png"
+        }
+    ]
+} 
