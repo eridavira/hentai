@@ -6,7 +6,129 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="icon" type="image/png" href="favicon.png">
   <title>Galeri</title>
-  <link rel="stylesheet" href="stylespremium.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Karla', sans-serif;
+    }
+
+    body {
+      color: #fff;
+    }
+
+    .container {
+      width: 100%;
+      min-height: 100vh;
+      background-image: url(back.jpg);
+      background-position: center;
+      background-size: cover;
+      background-attachment: fixed;
+      padding-top: 35px;
+      padding-left: 8%;
+      padding-right: 8%;
+      padding-bottom: 20px;
+    }
+
+    nav {
+      padding: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+    }
+
+    .logo a {
+      font-size: 40px;
+      text-decoration: none;
+    }
+
+    span {
+      color: #f9004d;
+    }
+
+    nav ul li {
+      display: inline-block;
+      list-style: none;
+      margin: 10px 15px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      transition: 0.5s;
+    }
+
+    nav ul li a:hover {
+      color: #f9004d;
+    }
+
+    .gallery {
+      text-align: center;
+      margin-top: 70px;
+    }
+
+    .gallery-container {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      padding: 20px;
+    }
+
+    .gallery-container img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border: 3px solid #fff;
+      border-radius: 8px;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .gallery-container img:hover {
+      transform: scale(1.05);
+      border-color: #f9004d;
+    }
+
+    .navigation-buttons {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 20px 30px;
+      margin-top: 50px;
+      position: relative;
+    }
+
+    .navigation-buttons a {
+      text-decoration: none;
+      padding: 14px 30px;
+      font-size: 18px;
+      font-weight: 500;
+      color: #fff;
+      background: linear-gradient(45deg, #00bcd4, #8e2de2);
+      border: 2px solid transparent;
+      border-radius: 30px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      position: relative;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 188, 212, 0.4);
+    }
+
+    .navigation-buttons a:hover {
+      background: linear-gradient(45deg, #8e2de2, #00bcd4);
+      border-color: #fff;
+      color: #fff;
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(0, 188, 212, 0.6), 0 6px 30px rgba(142, 45, 226, 0.6);
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -16,20 +138,13 @@
       </div>
       <ul>
         <li><a href="index.html">Home</a></li>
-        <!--<li><a href="#">About</a></li>
-        <li><a href="#">Services</a></li>
-        <li><a href="#">Contact</a></li>-->
       </ul>
     </nav>
 
-    <!-- Gallery Section -->
     <section class="gallery">
-      <div class="gallery-container" id="gallery-container">
-        <!-- Images will be dynamically loaded here -->
-      </div>
+      <div class="gallery-container" id="gallery-container"></div>
     </section>
 
-    <!-- Tombol Next dan Previous -->
     <div class="navigation-buttons">
       <a href="#" class="prev-btn" id="prev-btn">Previous</a>
       <a href="#" class="next-btn" id="next-btn">Next</a>
@@ -37,13 +152,8 @@
   </div>
 
   <script>
-    // Array yang berisi URL gambar dalam format pendek
     const allImages = [
-      "https://files.fm/f/mjhsteytwk", "https://files.fm/f/dss7h9es6r", "https://files.fm/f/w5mzm2qa4c", "https://files.fm/f/fpumd7yyqa", "https://files.fm/f/5u9285cqbd", "https://files.fm/f/bfc2sts4jd", 
-      "https://files.fm/f/6vhrmd3w77", "https://files.fm/f/acns9mqsk5", "https://files.fm/f/wwdmb85cb7", "https://files.fm/f/wta5rd7x4z", "https://files.fm/f/9zbpbayubs", "https://files.fm/f/3rpwhjqc5v",
-      "https://files.fm/f/tkx6vps6fz", "https://files.fm/f/en5tf897vc", "https://files.fm/f/fq3bbmkr3p", "https://files.fm/f/xvtc9mtuqe", "https://files.fm/f/h46vtkdx3b", "https://files.fm/f/nenpza8sys",
-      "https://files.fm/f/8fe3zcpv4a", "https://files.fm/f/8f235rzfqs", "https://files.fm/f/naaxjh3q4g", "https://files.fm/f/4e36etgm3m", "https://files.fm/f/3j8m7rz8w3", "https://files.fm/f/rfsxa6d8ns", 
-      "https://files.fm/f/hy8ppv4adt", "https://files.fm/f/bg638hdevj", "https://files.fm/f/cjm5uc6m4d", "https://files.fm/f/rxny6rcdbw", "https://files.fm/f/29ed5ecaed", "https://files.fm/f/egy3dc83d9", 
+      "https://files.fm/f/mjhsteytwk", "https://files.fm/f/dss7h9es6r", "https://files.fm/f/w5mzm2qa4c",
     ];
 
     let currentPage = 0;
@@ -52,43 +162,28 @@
     function getModifiedLink(originalUrl) {
       try {
         const urlObj = new URL(originalUrl);
-        const pathParts = urlObj.pathname.split("/"); // Pisahkan URL berdasarkan "/"
-        const fileId = pathParts[pathParts.length - 1]; // Ambil ID dari bagian terakhir
-
-        // Jika formatnya "https://files.fm/f/{id}"
-        if (urlObj.hostname === "files.fm" && pathParts[1] === "f") {
-          return `https://files.fm/thumb_show.php?i=${fileId}`;
-        }
-        return originalUrl; // Jika bukan format yang dikenali, kembalikan original
+        const pathParts = urlObj.pathname.split("/");
+        const fileId = pathParts[pathParts.length - 1];
+        return `https://files.fm/thumb_show.php?i=${fileId}`;
       } catch (error) {
-        console.error("Invalid URL:", originalUrl);
         return originalUrl;
       }
     }
 
-    // Fungsi untuk memuat galeri
     function loadGallery(page) {
       const galleryContainer = document.getElementById("gallery-container");
       galleryContainer.innerHTML = "";
-
       const startIndex = page * imagesPerPage;
-      const endIndex = startIndex + imagesPerPage;
-      const imagesToDisplay = allImages.slice(startIndex, endIndex);
-
-      imagesToDisplay.forEach((imageSrc) => {
+      const imagesToDisplay = allImages.slice(startIndex, startIndex + imagesPerPage);
+      imagesToDisplay.forEach(imageSrc => {
         const imgElement = document.createElement("img");
         imgElement.src = getModifiedLink(imageSrc);
-        imgElement.alt = "Image";
         imgElement.classList.add("gallery-image");
-        imgElement.loading = "lazy";
-        imgElement.addEventListener("click", () => {
-          window.open(getModifiedLink(imageSrc), "_blank");
-        });
+        imgElement.addEventListener("click", () => window.open(getModifiedLink(imageSrc), "_blank"));
         galleryContainer.appendChild(imgElement);
       });
     }
 
-    // Tombol Next dan Previous
     document.getElementById("next-btn").addEventListener("click", () => {
       if ((currentPage + 1) * imagesPerPage < allImages.length) {
         currentPage++;
@@ -103,7 +198,6 @@
       }
     });
 
-    // Memuat halaman pertama pada awalnya
     loadGallery(currentPage);
   </script>
 </body>
