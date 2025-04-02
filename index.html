@@ -644,6 +644,16 @@
 
             <div class="gallery-item">
                 <div class="image-container">
+                    <a href="RandomPremium.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=3j8m7rz8w3" alt="Random Gallery (Ver 2)" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">Random Gallery (Ver 2)</p>
+            </div> 
+
+            <div class="gallery-item">
+                <div class="image-container">
                     <a href="SamuiForestCM.html" class="gallery-link">
                         <img src="https://files.fm/thumb_show.php?i=un4fxdggyz" alt="Samui Forest CM" class="gallery-image">
                         <div class="overlay"></div>
@@ -885,6 +895,10 @@
 
             // Data galeri dengan status
             const galleryData = [
+                { element: document.querySelector('a[href="RandomPremium.html"]').parentNode.parentNode, 
+                  name: "Random Gallery (Ver2)", 
+                  date: new Date('2024-01-22'),
+                  status: 'pinned' },
                 { element: document.querySelector('a[href="SamuiForestCM.html"]').parentNode.parentNode, 
                   name: "Hypnosis App", 
                   date: new Date('2024-01-21'),
@@ -1137,6 +1151,7 @@
 
             // Daftar halaman yang tersedia
             const availablePages = [
+                'RandomPremium.html',
                 'SamuiForestCM.html',
                 'HypnosisApp.html',
                 'cowgirlcynthia_part1.html',
