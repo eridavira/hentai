@@ -644,6 +644,16 @@
 
             <div class="gallery-item">
                 <div class="image-container">
+                    <a href="kushina-hokagetier.html" class="gallery-link">
+                        <img src="https://files.fm/thumb.php?i=cs7tmqjcss" alt="Kushina - Hokage Tier" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">Kushina - Hokage Tier</p>
+            </div> 
+
+            <div class="gallery-item">
+                <div class="image-container">
                     <a href="crossed-legs.html" class="gallery-link">
                         <img src="https://files.fm/thumb.php?i=yjj2g3a684" alt="Crossed Legs" class="gallery-image">
                         <div class="overlay"></div>
@@ -919,7 +929,11 @@
 
             // Data galeri dengan status
             const galleryData = [
-            { element: document.querySelector('a[href="crossed-legs.html"]').parentNode.parentNode, 
+                { element: document.querySelector('a[href="kushina-hokagetier.html"]').parentNode.parentNode, 
+                  name: "Kushina - Hokage Tier", 
+                  date: new Date('2024-01-25'),
+                  status: 'regular' },
+                { element: document.querySelector('a[href="crossed-legs.html"]').parentNode.parentNode, 
                   name: "Crossed Legs", 
                   date: new Date('2024-01-25'),
                   status: 'regular' },
@@ -1175,6 +1189,7 @@
 
             // Daftar halaman yang tersedia
             const availablePages = [
+                'kushina-hokagetier.html',
                 'crossed-legs.html',
                 'futanari-menu.html',
                 'konoha-fellatio.html',
