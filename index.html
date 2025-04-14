@@ -644,10 +644,28 @@
 
             <div class="gallery-item">
                 <div class="image-container">
+                    <a href="crossed-legs.html" class="gallery-link">
+                        <img src="https://files.fm/thumb.php?i=yjj2g3a684" alt="Crossed Legs" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">Crossed Legs</p>
+            </div> 
+
+            <div class="gallery-item">
+                <div class="image-container">
                     <a href="futanari-menu.html" class="gallery-link">
                         <img src="https://files.fm/thumb.php?i=vrn9smutsb" alt="Futanari Gallery Menu" class="gallery-image">
                         <div class="overlay"></div>
                     </a>
+                    <div class="ongoing-badge">
+                        Ongoing
+                        <div class="wave-loading">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
                 </div>
                 <p class="image-title">Futanari Gallery Menu</p>
             </div> 
@@ -901,6 +919,10 @@
 
             // Data galeri dengan status
             const galleryData = [
+            { element: document.querySelector('a[href="crossed-legs.html"]').parentNode.parentNode, 
+                  name: "Crossed Legs", 
+                  date: new Date('2024-01-25'),
+                  status: 'regular' },
                 { element: document.querySelector('a[href="futanari-menu.html"]').parentNode.parentNode, 
                   name: "Futanari Gallery Menu", 
                   date: new Date('2024-01-24'),
@@ -1153,6 +1175,7 @@
 
             // Daftar halaman yang tersedia
             const availablePages = [
+                'crossed-legs.html',
                 'futanari-menu.html',
                 'konoha-fellatio.html',
                 'generatornow.html',
