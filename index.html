@@ -644,6 +644,16 @@
 
             <div class="gallery-item">
                 <div class="image-container">
+                    <a href="nanataipei.html" class="gallery-link">
+                        <img src="https://files.fm/thumb_show.php?i=8hxwuwe7jg" alt="Nana Taipei" class="gallery-image">
+                        <div class="overlay"></div>
+                    </a>
+                </div>
+                <p class="image-title">Nana Taipei</p>
+            </div>
+
+            <div class="gallery-item">
+                <div class="image-container">
                     <a href="karenina.html" class="gallery-link">
                         <img src="https://files.fm/thumb.php?i=a8vuzeuy49" alt="Karenina" class="gallery-image">
                         <div class="overlay"></div>
@@ -950,6 +960,11 @@
             // Data galeri dengan status
             const galleryData = [
 
+                { element: document.querySelector('a[href="nanataipei.html"]').parentNode.parentNode, 
+                  name: "Nana Taipei", 
+                  date: new Date('2024-01-28'),
+                  status: 'regular' },
+
                 { element: document.querySelector('a[href="karenina.html"]').parentNode.parentNode, 
                   name: "Karenina", 
                   date: new Date('2024-01-27'),
@@ -1218,6 +1233,7 @@
 
             // Daftar halaman yang tersedia
             const availablePages = [
+                'nanataipei.html',
                 'karenina.html',
                 'Yuna.html',
                 'kushina-hokagetier.html',
