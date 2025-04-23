@@ -1,24 +1,22 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hentai Gallery</title>
-  <link rel="icon" href="https://files.fm/thumb_show.php?i=rve7c3t9x8" type="image/png">
-  <link rel="stylesheet" href="stylebeta.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Galeri Pintar</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Hentai Gallery</h1>
-  <input type="text" id="search" placeholder="Cari gambar dan tekan Enter...">
+  <h1>Galeri Pintar</h1>
+
+  <input type="text" id="search" placeholder="Cari gambar atau tag lalu tekan Enter..." />
+
   <div class="controls">
-    <button id="prevBtn" title="Sebelumnya">
-      ⬅️
-    </button>
+    <button id="prevBtn" title="Halaman sebelumnya">⬅️</button>
     <span id="pageLabel">Page ?</span>
-    <button id="nextBtn" title="Berikutnya">
-      ➡️
-    </button>
+    <button id="nextBtn" title="Halaman berikutnya">➡️</button>
   </div>
+
   <div class="gallery" id="gallery"></div>
   <div id="loading">Memuat...</div>
 
@@ -30,8 +28,8 @@
     const nextBtn = document.getElementById('nextBtn');
     const pageLabel = document.getElementById('pageLabel');
 
-    const maxPages = 2; // Ubah sesuai jumlah file json
-    const availablePages = Array.from({ length: maxPages }, (_, i) => maxPages - i); // [5,4,3,2,1]
+    const maxPages = 5; // Jumlah total file JSON
+    const availablePages = Array.from({ length: maxPages }, (_, i) => maxPages - i); // Misal: [5,4,3,2,1]
     let currentIndex = 0;
 
     async function fetchJsonFile(page) {
@@ -46,6 +44,11 @@
 
     function renderImages(images) {
       gallery.innerHTML = '';
+      if (images.length === 0) {
+        gallery.innerHTML = '<p style="text-align:center;color:#888;">Tidak ada hasil ditemukan.</p>';
+        return;
+      }
+
       images.forEach(image => {
         const item = document.createElement('div');
         item.classList.add('gallery-item');
@@ -95,7 +98,8 @@
         for (const page of availablePages) {
           const data = await fetchJsonFile(page);
           results = results.concat(data.filter(item =>
-            item.title.toLowerCase().includes(query)
+            item.title.toLowerCase().includes(query) ||
+            (item.tags && item.tags.some(tag => tag.toLowerCase().includes(query)))
           ));
         }
 
