@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Galeri Pintar</title>
+  <title>Hentai</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Galeri Pintar</h1>
+  <h1>Hentai Gallery</h1>
 
-  <input type="text" id="search" placeholder="Cari gambar atau tag lalu tekan Enter..." />
+  <input type="text" id="search" placeholder="Cari apa yang ada aja.." />
 
   <div class="controls">
     <button id="prevBtn" title="Halaman sebelumnya">⬅️</button>
@@ -18,7 +18,7 @@
   </div>
 
   <div class="gallery" id="gallery"></div>
-  <div id="loading">Memuat...</div>
+  <div id="loading">Tunggu</div>
 
   <script>
     const gallery = document.getElementById('gallery');
@@ -28,7 +28,7 @@
     const nextBtn = document.getElementById('nextBtn');
     const pageLabel = document.getElementById('pageLabel');
 
-    const maxPages = 5; // Jumlah total file JSON
+    const maxPages = 2; // Jumlah total file JSON
     const availablePages = Array.from({ length: maxPages }, (_, i) => maxPages - i); // Misal: [5,4,3,2,1]
     let currentIndex = 0;
 
