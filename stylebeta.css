@@ -94,4 +94,35 @@
       font-size: 14px;
     }
   }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 16px;
+  }
+  
+  .controls button {
+    background: #222;
+    border: 2px solid #444;
+    color: #ddd;
+    padding: 10px 14px;
+    font-size: 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .controls button:hover {
+    background-color: #00bcd4;
+    color: #000;
+  }
+  
+  #pageLabel {
+    font-weight: bold;
+    font-size: 18px;
+    color: #aaa;
+  }
+  
   

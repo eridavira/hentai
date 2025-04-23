@@ -2,28 +2,41 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Galeri Foto Lazy Loading</title>
-  <link rel="stylesheet" href="stylebeta.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Galeri Paginated</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Galeri Foto Lazy Loading</h1>
+  <h1>Galeri Foto</h1>
   <input type="text" id="search" placeholder="Cari gambar dan tekan Enter...">
+  <div class="controls">
+    <button id="prevBtn" title="Sebelumnya">
+      ⬅️
+    </button>
+    <span id="pageLabel">Page ?</span>
+    <button id="nextBtn" title="Berikutnya">
+      ➡️
+    </button>
+  </div>
   <div class="gallery" id="gallery"></div>
   <div id="loading">Memuat...</div>
 
   <script>
-    let currentPage = 1;
-    const maxPages = 5;
     const gallery = document.getElementById('gallery');
     const loading = document.getElementById('loading');
     const searchInput = document.getElementById('search');
-    let isLoading = false;
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const pageLabel = document.getElementById('pageLabel');
+
+    const maxPages = 5; // Ubah sesuai jumlah file json
+    const availablePages = Array.from({ length: maxPages }, (_, i) => maxPages - i); // [5,4,3,2,1]
+    let currentIndex = 0;
 
     async function fetchJsonFile(page) {
       try {
         const response = await fetch(`images${page}.json`);
-        if (!response.ok) throw new Error('File tidak ditemukan');
+        if (!response.ok) throw new Error('Gagal ambil data');
         return await response.json();
       } catch (err) {
         return [];
@@ -31,79 +44,66 @@
     }
 
     function renderImages(images) {
+      gallery.innerHTML = '';
       images.forEach(image => {
         const item = document.createElement('div');
         item.classList.add('gallery-item');
-        
-        // Membungkus gambar dalam elemen <a> untuk memberikan link
         const link = document.createElement('a');
-        link.href = image.link || '#';  // Jika tidak ada link, default ke '#'
-        link.target = '_blank';  // Membuka di tab baru
+        link.href = image.link || '#';
+        link.target = '_blank';
         link.innerHTML = `
           <img src="${image.url}" alt="${image.title}">
           <h3>${image.title}</h3>
         `;
-        
-        // Menambahkan item ke galeri di atas (prepending)
-        gallery.prepend(item);
         item.appendChild(link);
-        
+        gallery.appendChild(item);
         setTimeout(() => item.classList.add('loaded'), 100);
       });
     }
 
-    async function lazyLoadNextPage() {
-      if (isLoading) return;
-      isLoading = true;
+    async function loadCurrentPage() {
+      const page = availablePages[currentIndex];
+      pageLabel.textContent = `Page ${page}`;
       loading.style.display = 'block';
-
-      const data = await fetchJsonFile(currentPage);
+      const data = await fetchJsonFile(page);
       renderImages(data);
-      currentPage++;
-
-      isLoading = false;
       loading.style.display = 'none';
     }
 
-    async function searchAcrossAllPages(query) {
-      gallery.innerHTML = '';
-      loading.style.display = 'block';
-      let allResults = [];
-
-      for (let i = 1; i <= maxPages; i++) {
-        const data = await fetchJsonFile(i);
-        const matches = data.filter(item => item.title.toLowerCase().includes(query.toLowerCase()));
-        allResults = allResults.concat(matches);
-      }
-
-      renderImages(allResults);
-      loading.style.display = 'none';
-    }
-
-    window.addEventListener('scroll', () => {
-      const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-      const isBottom = scrollTop + clientHeight >= scrollHeight - 10;
-
-      if (isBottom && !searchInput.value.trim()) {
-        lazyLoadNextPage();
+    prevBtn.addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        loadCurrentPage();
       }
     });
 
-    searchInput.addEventListener('keydown', (event) => {
+    nextBtn.addEventListener('click', () => {
+      if (currentIndex < availablePages.length - 1) {
+        currentIndex++;
+        loadCurrentPage();
+      }
+    });
+
+    searchInput.addEventListener('keydown', async (event) => {
       if (event.key === 'Enter') {
-        const query = event.target.value.trim();
-        currentPage = 1;
+        const query = event.target.value.trim().toLowerCase();
+        gallery.innerHTML = '';
+        loading.style.display = 'block';
 
-        if (query) {
-          searchAcrossAllPages(query);
-        } else {
-          gallery.innerHTML = '';
-          lazyLoadNextPage();
+        let results = [];
+        for (const page of availablePages) {
+          const data = await fetchJsonFile(page);
+          results = results.concat(data.filter(item =>
+            item.title.toLowerCase().includes(query)
+          ));
         }
+
+        renderImages(results);
+        loading.style.display = 'none';
       }
     });
 
-    lazyLoadNextPage();
+    loadCurrentPage(); // Load pertama kali
   </script>
 </body>
 </html>
