@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="https://files.fm/thumb_show.php?i=rve7c3t9x8" type="image/png">
+  <title>Random</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Hentai Gallery - Random</h1>
+
+  <input type="text" id="search" placeholder="Cari apa yang ada aja.." />
+
+  <div class="controls">
+    <button id="prevBtn" title="Halaman sebelumnya">⬅️</button>
+    <span id="pageLabel">Page ?</span>
+    <button id="nextBtn" title="Halaman berikutnya">➡️</button>
+  </div>
+
+  <div class="gallery" id="gallery"></div>
+  <div id="loading">Tunggu</div>
+
+  <script>
+    const gallery = document.getElementById('gallery');
+    const loading = document.getElementById('loading');
+    const searchInput = document.getElementById('search');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const pageLabel = document.getElementById('pageLabel');
+
+    const maxPages = 2; // Jumlah total file JSON
+    const availablePages = Array.from({ length: maxPages }, (_, i) => maxPages - i); // Misal: [5,4,3,2,1]
+    let currentIndex = 0;
+
+    async function fetchJsonFile(page) {
+      try {
+        const response = await fetch(`random${page}.json`);
+        if (!response.ok) throw new Error('Gagal ambil data');
+        return await response.json();
+      } catch (err) {
+        return [];
+      }
+    }
+
+    function renderImages(images) {
+      gallery.innerHTML = '';
+      if (images.length === 0) {
+        gallery.innerHTML = '<p style="text-align:center;color:#888;">Tidak ada hasil ditemukan.</p>';
+        return;
+      }
+
+      images.forEach(image => {
+        const item = document.createElement('div');
+        item.classList.add('gallery-item');
+        const link = document.createElement('a');
+        link.href = image.link || '#';
+        link.target = '_blank';
+        link.innerHTML = `
+          <img src="${image.url}" alt="${image.title}">
+          <h3>${image.title}</h3>
+        `;
+        item.appendChild(link);
+        gallery.appendChild(item);
+        setTimeout(() => item.classList.add('loaded'), 100);
+      });
+    }
+
+    async function loadCurrentPage() {
+      const page = availablePages[currentIndex];
+      pageLabel.textContent = `Page ${page}`;
+      loading.style.display = 'block';
+      const data = await fetchJsonFile(page);
+      renderImages(data);
+      loading.style.display = 'none';
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        loadCurrentPage();
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentIndex < availablePages.length - 1) {
+        currentIndex++;
+        loadCurrentPage();
+      }
+    });
+
+    searchInput.addEventListener('keydown', async (event) => {
+      if (event.key === 'Enter') {
+        const query = event.target.value.trim().toLowerCase();
+        gallery.innerHTML = '';
+        loading.style.display = 'block';
+
+        let results = [];
+        for (const page of availablePages) {
+          const data = await fetchJsonFile(page);
+          results = results.concat(data.filter(item =>
+            item.title.toLowerCase().includes(query) ||
+            (item.tags && item.tags.some(tag => tag.toLowerCase().includes(query)))
+          ));
+        }
+
+        renderImages(results);
+        loading.style.display = 'none';
+      }
+    });
+
+    loadCurrentPage(); // Load pertama kali
+  </script>
+</body>
+</html>
