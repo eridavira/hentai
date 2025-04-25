@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Musik Embed Lazy Load</title>
+  <style>
+    body { font-family: Arial; text-align: center; padding: 30px; }
+    #info { margin-bottom: 20px; }
+    #player-container { width: 100%; max-width: 500px; margin: auto; }
+    button { padding: 10px 20px; font-size: 16px; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <div id="info">
+    <h2 id="title">Judul Lagu</h2>
+    <p id="artist">Artis</p>
+  </div>
+
+  <div id="player-container"></div>
+
+  <br>
+  <button onclick="loadNext()">Next</button>
+
+  <script>
+    let index = 1;
+
+    function loadMusic(jsonFile) {
+      fetch(jsonFile)
+        .then(response => {
+          if (!response.ok) throw new Error("Gagal memuat JSON");
+          return response.json();
+        })
+        .then(data => {
+          document.getElementById("title").textContent = data.title;
+          document.getElementById("artist").textContent = data.artist;
+
+          // Ganti embed player
+          const container = document.getElementById("player-container");
+          container.innerHTML = data.embed_code;
+        })
+        .catch(error => {
+          alert("Gagal memuat musik: " + error.message);
+        });
+    }
+
+    function loadNext() {
+      index += 1;
+      const jsonFile = `musik${index}.json`;
+      loadMusic(jsonFile);
+    }
+
+    window.onload = function () {
+      loadMusic("musik1.json");
+    };
+  </script>
+
+</body>
+</html>
