@@ -55,7 +55,6 @@
         item.classList.add('gallery-item');
         const link = document.createElement('a');
         link.href = image.link || '#';
-        link.target = '_blank';
         link.innerHTML = `
           <img src="${image.url}" alt="${image.title}">
           <h3>${image.title}</h3>
