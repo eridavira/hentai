@@ -29,7 +29,7 @@
     const nextBtn = document.getElementById('nextBtn');
     const pageLabel = document.getElementById('pageLabel');
 
-    const maxPages = 2; // Jumlah total file JSON
+    const maxPages = 1; // Jumlah total file JSON
     const availablePages = Array.from({ length: maxPages }, (_, i) => maxPages - i); // Misal: [5,4,3,2,1]
     let currentIndex = 0;
 
@@ -62,7 +62,7 @@
         `;
         item.appendChild(link);
         gallery.appendChild(item);
-        setTimeout(() => item.classList.add('loaded'), 100);
+        setTimeout(() => item.classList.add('loaded'), 50);
       });
     }
 
