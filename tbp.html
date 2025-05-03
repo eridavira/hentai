@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>3 Body Problem - Infinite Gravity</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: black; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let zoom = 1;
+let offsetX = 0;
+let offsetY = 0;
+let isDragging = false;
+let dragStart = { x: 0, y: 0 };
+
+// Setting gravitasi
+const G = 5;           // G bisa kecil, karena 1/r lebih kuat
+const minDistance = 20; // Biar ga ledak pas terlalu dekat
+
+class Body {
+  constructor(x, y, mass, color) {
+    this.x = x;
+    this.y = y;
+    this.mass = mass;
+    this.vx = (Math.random() - 0.5) * 1.5;
+    this.vy = (Math.random() - 0.5) * 1.5;
+    this.color = color;
+  }
+
+  applyGravity(other) {
+    const dx = other.x - this.x;
+    const dy = other.y - this.y;
+    let distSq = dx * dx + dy * dy;
+    let dist = Math.sqrt(distSq);
+
+    if (dist < minDistance) {
+      dist = minDistance;
+    }
+
+    // ======== GANTI PERHITUNGAN GRAVITASI DI SINI ========
+    const force = (G * this.mass * other.mass) / dist; 
+    // ====================================================
+
+    const ax = (force * dx) / dist / this.mass;
+    const ay = (force * dy) / dist / this.mass;
+
+    this.vx += ax;
+    this.vy += ay;
+  }
+
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+  }
+
+  draw() {
+    ctx.beginPath();
+    ctx.arc(
+      (this.x + offsetX) * zoom,
+      (this.y + offsetY) * zoom,
+      Math.cbrt(this.mass) * 2 * zoom,
+      0,
+      Math.PI * 2
+    );
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }
+}
+
+
+const bodies = [
+  new Body(canvas.width/2 - 150, canvas.height/2, 30, 'red'),
+  new Body(canvas.width/2 + 150, canvas.height/2, 30, 'blue'),
+  new Body(canvas.width/2, canvas.height/2 - 200, 40, 'lime'),
+
+];
+
+function animate() {
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Apply gravitasi antar semua benda
+  for (let i = 0; i < bodies.length; i++) {
+    for (let j = 0; j < bodies.length; j++) {
+      if (i !== j) {
+        bodies[i].applyGravity(bodies[j]);
+      }
+    }
+  }
+
+  bodies.forEach(body => {
+    body.update();
+    body.draw();
+  });
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+
+// ===== Event Handler untuk zoom dan drag =====
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const zoomFactor = 1.1;
+  if (e.deltaY < 0) {
+    zoom *= zoomFactor;
+  } else {
+    zoom /= zoomFactor;
+  }
+});
+
+canvas.addEventListener('mousedown', e => {
+  isDragging = true;
+  dragStart.x = e.clientX;
+  dragStart.y = e.clientY;
+});
+
+canvas.addEventListener('mousemove', e => {
+  if (isDragging) {
+    offsetX += (e.clientX - dragStart.x) / zoom;
+    offsetY += (e.clientY - dragStart.y) / zoom;
+    dragStart.x = e.clientX;
+    dragStart.y = e.clientY;
+  }
+});
+
+canvas.addEventListener('mouseup', () => {
+  isDragging = false;
+});
+
+canvas.addEventListener('mouseleave', () => {
+  isDragging = false;
+});
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+</script>
+</body>
+</html>
