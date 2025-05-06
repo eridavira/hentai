@@ -3,943 +3,550 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MINDS</title>
-    <link rel="icon" type="image/png" href="https://cdn.minds.com/icon/1697553833263108104/large/1731987254">
+    <title>Daftar Profil Siswa</title>
+
     <style>
-        * {
+        /* Daftarkan custom property --angle untuk animasi yang lebih mulus (jika browser mendukung) */
+        @property --angle {
+          syntax: '<angle>';
+          initial-value: 0deg;
+          inherits: false;
+        }
+
+        /* Basic reset & Font settings */
+        body, html {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern font stack */
+            background-color: #1a1a1a; /* Main dark background */
+            color: #f0f0f0; /* Main text color (off-white) */
+            line-height: 1.6; /* Improve readability */
         }
 
-        /* Favicon styling */
-        link[rel="shortcut icon"] {
-            border-radius: 50%;
-            overflow: hidden;
+        /* Main container */
+        .container {
+            max-width: 1200px; /* Maximum content width */
+            margin: 20px auto; /* Center horizontally, add some top/bottom margin */
+            padding: 20px; /* Padding inside the container */
         }
 
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            color: #ffffff;
-            padding: 20px;
-            position: relative;
+        /* Page Title */
+        h1 {
+            text-align: center; /* Center the title */
+            margin-bottom: 40px; /* Space below the title */
+            color: #ffffff; /* Brighter color for the title */
+            font-weight: 300; /* Lighter font weight for a modern look */
         }
 
-        .title {
-            font-size: 4.5rem;
-            font-weight: 800;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            position: relative;
-            background: linear-gradient(
-                45deg,
-                #000,
-                #0ff,
-                #00f,
-                #0ff,
-                #000
-            );
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: shine 3s linear infinite;
-            letter-spacing: 2px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            margin: 0;
-            flex: 1;
-            text-align: center;
+        /* Profile Grid Layout */
+        .profile-grid {
+            display: grid;
+            /* Create 6 equal-width columns */
+            grid-template-columns: repeat(6, 1fr);
+            gap: 40px; /* Increased gap further to accommodate thicker glow */
         }
 
-        .title::before {
-            content: 'MINDS';
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                45deg,
-                transparent 0%,
-                rgba(255, 255, 255, 0.2) 45%,
-                rgba(255, 255, 255, 0.5) 50%,
-                rgba(255, 255, 255, 0.2) 55%,
-                transparent 100%
-            );
-            background-size: 200% 100%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: shine 3s linear infinite;
-            filter: blur(1px);
+        /* Individual Profile Item */
+        .profile-item {
+            /* Background utama item dipindahkan ke ::after untuk masking */
+            background-color: transparent; /* Jadikan transparan */
+            border-radius: 10px; /* Slightly larger radius for smoother glow corner */
+            padding: 15px; /* Padding inside each item */
+            text-align: center; /* Center text and image */
+
+            position: relative; /* Needed for absolute positioning of pseudo-elements */
+            z-index: 1; /* Ensure item content is above the glow */
+            overflow: hidden; /* Keep inner content masked */
         }
 
-        .title:hover {
-            transform: scale(1.05);
-        }
-
-        @keyframes shine {
-            0% {
-                background-position: 200% center;
-            }
-            100% {
-                background-position: -200% center;
-            }
-        }
-
-        .divider {
-            width: 80%;
-            max-width: 800px;
-            height: 2px;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                #0ff 20%, 
-                #00f 50%, 
-                #0ff 80%, 
-                transparent 100%
-            );
-            margin-bottom: 40px;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-        }
-
-        .divider::before,
-        .divider::after {
+        /* Pseudo-element for the flowing gradient border */
+        .profile-item::before {
             content: '';
             position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #0ff;
-            border-radius: 50%;
-            top: -4px;
-            box-shadow: 0 0 10px #0ff;
+            z-index: -2; /* Place behind the ::after mask */
+            inset: -5px; /* Controls the thickness of the glow (Increased) */
+            border-radius: inherit; /* Match parent's border radius */
+            /* Conic gradient for the flowing effect */
+            background: conic-gradient(
+                from var(--angle),
+                #ff007f, /* Pink */
+                #ff00ff, /* Magenta */
+                #ff007f66, /* Semi-transparent pink (Less transparent) */
+                transparent,
+                transparent,
+                #ff007f66, /* Semi-transparent pink (Less transparent) */
+                #ff00ff,
+                #ff007f
+            );
+            /* Animation */
+            animation: spin 4s linear infinite;
         }
 
-        .divider::before {
-            left: 20%;
+        /* Pseudo-element to act as a mask, showing the original background */
+        .profile-item::after {
+            content: '';
+            position: absolute;
+            z-index: -1; /* Place above ::before but below content */
+            inset: 0; /* Exactly cover the parent item */
+            background-color: #2c2c2c; /* Original item background */
+            border-radius: inherit; /* Match parent's border radius */
         }
 
-        .divider::after {
-            right: 20%;
+        /* Keyframes for the spinning animation */
+        @keyframes spin {
+            from { --angle: 0deg; }
+            to { --angle: 360deg; }
         }
 
-        .container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 25px;
-            padding: 30px;
-            max-width: 1400px;
-            width: 100%;
-            text-align: center;
+
+        /* Hover effect - slightly enhance glow (optional) */
+        .profile-item:hover::before {
+           /* Optional: Make glow slightly brighter or change speed on hover */
+           /* filter: brightness(1.2); */
+        }
+         .profile-item:hover {
+             cursor: pointer; /* Indicate it's clickable */
+         }
+
+
+        /* Styling for the link within the item */
+        .profile-item a {
+            text-decoration: none; /* Remove underline from links */
+            color: inherit; /* Inherit text color from parent (.profile-item) */
+            display: block; /* Make the entire item area clickable */
+            position: relative; /* Ensure link content is above pseudo-elements */
+            z-index: 2;
         }
 
-        .item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: transform 0.3s ease;
-            position: relative;
+        /* Styling for the student image */
+        .profile-item img {
+            max-width: 100%; /* Ensure image doesn't overflow its container */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 50%; /* Make the image circular */
+            border: 3px solid #444; /* Thin dark border around the image */
+            margin-bottom: 10px; /* Space between image and name */
+            display: block; /* Prevent extra space below image */
+            margin-left: auto; /* Center the image block */
+            margin-right: auto; /* Center the image block */
+            aspect-ratio: 1 / 1; /* Force a 1:1 aspect ratio (square) before rounding */
+            object-fit: cover; /* Ensure the image covers the area without distortion */
+            position: relative; /* Ensure image is above pseudo-elements */
+            z-index: 2;
         }
 
-        .item:hover {
-            transform: translateY(-5px);
+        /* Styling for the student name */
+        .profile-item p {
+            margin: 0; /* Remove default paragraph margin */
+            font-size: 0.9em; /* Slightly smaller font size */
+            font-weight: 500; /* Medium font weight */
+            position: relative; /* Ensure text is above pseudo-elements */
+            z-index: 2;
         }
 
-        .item a {
-            display: block;
-            width: 120px;
-            height: 120px;
-            overflow: hidden;
-            border-radius: 50%;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-            transition: all 0.3s ease;
-            border: 3px solid transparent;
-        }
+        /* --- Responsive Design --- */
+        /* Adjustments for smaller screens using Media Queries */
 
-        .item a:hover {
-            border-color: #0ff;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
-        }
-
-        .item a img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-            transition: transform 0.3s ease;
-        }
-
-        .item a:hover img {
-            transform: scale(1.1);
-        }
-
-        .item p {
-            margin-top: 12px;
-            font-size: 14px;
-            color: #0ff;
-            text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-        }
-
-        .item:hover p {
-            color: #fff;
-            text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
-        }
-
-        .footer {
-            margin-top: 40px;
-            padding: 20px;
-            text-align: center;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.7);
-            position: relative;
-        }
-
-        .footer::before {
-            content: '©';
-            margin-right: 5px;
-            color: #0ff;
-            text-shadow: 0 0 5px #0ff;
-        }
-
-        .footer span {
-            color: #0ff;
-            text-shadow: 0 0 5px #0ff;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .footer:hover span {
-            color: #fff;
-        }
-        
-        @media (max-width: 768px) {
-            .title {
-                font-size: 3rem;
-                margin-bottom: 15px;
+        /* Tablets (e.g., screen width < 992px) - Change to 4 columns */
+        @media (max-width: 991.98px) {
+            .profile-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 30px; /* Adjust gap */
             }
-            
-            .divider {
-                width: 90%;
-                margin-bottom: 30px;
-            }
-            
             .container {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                gap: 15px;
-        text-shadow: 0 0 10px #0ff;
-                padding: 15px;
-            }
-
-            .item a {
-                width: 100px;
-                height: 100px;
-            }
-
-            .footer {
-                margin-top: 30px;
-                font-size: 0.8rem;
+                padding: 15px; /* Adjust container padding */
             }
         }
 
-        .search-container {
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .sort-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .sort-btn {
-            padding: 8px 20px;
-            border: 2px solid #0ff;
-            border-radius: 25px;
-            background: transparent;
-            color: #0ff;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            min-width: 100px;
-        }
-
-        .sort-btn:hover {
-            background: #0ff;
-            color: #000;
-            transform: scale(1.05);
-        }
-
-        .sort-btn.active {
-            background: #0ff;
-            color: #000;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
-        }
-
-        .alphabet-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 5px;
-            margin-bottom: 20px;
-        }
-
-        .alphabet-btn {
-            width: 35px;
-            height: 35px;
-            border: none;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            color: #0ff;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
-        }
-
-        .alphabet-btn:hover {
-            background: #0ff;
-            color: #000;
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
-        }
-
-        .alphabet-btn.active {
-            background: #0ff;
-            color: #000;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
-        }
-
-        .item.hidden {
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .alphabet-btn {
-                width: 30px;
-                height: 30px;
-                font-size: 0.9rem;
+        /* Small Tablets / Large Phones (e.g., screen width < 768px) - Change to 3 columns */
+        @media (max-width: 767.98px) {
+            .profile-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 25px; /* Adjust gap */
             }
-            
-            .sort-btn {
-                padding: 6px 15px;
-                min-width: 80px;
-                font-size: 0.9rem;
-            }
-            
-            .sort-buttons {
-                gap: 8px;
+            h1 {
+                font-size: 1.8em; /* Adjust title size */
+                margin-bottom: 30px; /* Adjust space below title */
             }
         }
 
-        .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            position: relative;
-            width: 100%;
-            max-width: 1400px;
-            padding: 0 20px;
-        }
-
-        .total-accounts {
-            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(0, 0, 255, 0.1) 100%);
-            padding: 8px 20px;
-            border-radius: 50px;
-            border: 2px solid rgba(0, 255, 255, 0.3);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .total-accounts i {
-            color: #0ff;
-            font-size: 1rem;
-            text-shadow: 0 0 10px #0ff;
-        }
-
-        .total-accounts span {
-            color: #fff;
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
-        }
-
-        @media (max-width: 768px) {
-            .header-container {
-                flex-direction: column;
-                gap: 15px;
-                position: relative;
-                padding: 0 10px;
+        /* Phones (e.g., screen width < 576px) - Change to 2 columns */
+        @media (max-width: 575.98px) {
+            .profile-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 25px; /* Adjust gap */
             }
-
-            .title {
-                font-size: 3rem;
-                margin-bottom: 15px;
+            .profile-item {
+                padding: 10px; /* Adjust item padding */
             }
-
-            .total-accounts {
-                position: relative;
-                right: auto;
-                top: auto;
-                transform: none;
-                margin-top: 10px;
-                padding: 6px 15px;
-            }
-
-            .total-accounts span {
-                font-size: 0.8rem;
-            }
-        }
-
-        .item-number {
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            background: linear-gradient(135deg, #0ff, #00f);
-            color: #fff;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            z-index: 1;
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
-        }
-
-        @media (max-width: 768px) {
-            .item-number {
-                font-size: 0.7rem;
-                padding: 2px 6px;
-                top: -8px;
-                left: -8px;
+            h1 {
+                font-size: 1.5em; /* Further adjust title size */
             }
         }
     </style>
-</head>
+    </head>
 <body>
-    <div class="header-container">
-        <a href="https://www.minds.com" target="_blank" class="title">MINDS</a>
-        <div class="total-accounts">
-            <i>👥</i>
-            <span>Total Akun: <span class="total-number" id="totalAccounts">0</span></span>
-        </div>
-    </div>
-    <div class="divider"></div>
-    
-    <div class="search-container">
-        <div class="sort-buttons">
-            <button class="sort-btn active" data-sort="alphabetical">A-Z</button>
-            <button class="sort-btn" data-sort="alphabetical-reverse">Z-A</button>
-            <button class="sort-btn" data-sort="latest">Latest</button>
-        </div>
-        <div class="alphabet-buttons" id="alphabetButtons"></div>
-    </div>
 
-    <div class="container" id="itemsContainer">
+    <div class="container">
+        <h1>MINDS</h1>
 
-        <div class="item">
-            <a href="https://www.minds.com/DeepMatingPress/" target="_blank">
-                <img src="https://www.minds.com/icon/1749844807682887680/large/1742571512/" alt="DeepMatingPress">
-            </a> 
-            <p>DeepMatingPress</p>
-        </div>
+        <div class="profile-grid">
+            <div class="profile-item">
+                <a href="https://minds.com/AmeliaRegina" target="_blank">
+                    <img src="https://cdn.minds.com/icon/1697553833263108104/" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>AmeliaRegina</p>
+                </a>
+            </div>
 
-        <div class="item">
-            <a href="https://www.minds.com/QuinnOfPussy" target="_blank">
-                <img src="https://www.minds.com/icon/1749841398804254720/large/1742570699/" alt="QuinnOfPussy">
-            </a> 
-            <p>QuinnOfPussy</p>
-        </div>
+            <div class="profile-item">
+                <a href="https://minds.com/PussyLust" target="_blank">
+                    <img src="https://www.minds.com/icon/1766358921099874304/medium" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>PussyLust</p>
+                </a>
+            </div>
 
-        <div class="item">
-            <a href="https://www.minds.com/ratumemek" target="_blank">
-                <img src="https://www.minds.com/icon/1749838066538782720/large/1742569905/" alt="RatuMemek">
-            </a> 
-            <p>RatuMemek</p>
-        </div>
+            <div class="profile-item">
+                <a href="https://minds.com/el_chan" target="_blank">
+                    <img src="https://cdn.minds.com/icon/1766122500637089792/medium" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>El_Chan</p>
+                </a>
+            </div>
 
-        <div class="item">
-            <a href="https://www.minds.com/lendirmemekteman/" target="_blank">
-                <img src="https://www.minds.com/icon/1749836523680829440/large/1742569537" alt="LendirMemekTeman">
-            </a> 
-            <p>LendirMemekTeman</p>
-        </div>
+            <div class="profile-item">
+                <a href="https://minds.com/NanaChan" target="_blank">
+                    <img src="https://www.minds.com/icon/1766078112761651200/" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>NanaChan</p>
+                </a>
+            </div>
 
-        <div class="item">
-            <a href="https://www.minds.com/MenghisapMemek_Kushina_/" target="_blank">
-                <img src="https://www.minds.com/icon/1749190647035731968/large/1742415548" alt="MenghisapMemek_Kushina_">
-            </a> 
-            <p>MenghisapMemek_Kushina_</p>
-        </div>
+            <div class="profile-item">
+                <a href="https://minds.com/yuna123" target="_blank">
+                    <img src="https://www.minds.com/icon/1763531903673851904" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>Yuna123</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/pussylicking" target="_blank">
+                    <img src="https://www.minds.com/icon/1712795794903404559" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>PussyLicking</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/oliviawetpussy" target="_blank">
+                    <img src="https://www.minds.com/icon/1748758841308225536" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>OliviaWetPussy</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/eridavira" target="_blank">
+                    <img src="https://www.minds.com/icon/1703342529287557137" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>EriDavira</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/viperfellatio" target="_blank">
+                    <img src="https://www.minds.com/icon/1731279182366777344" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>ViperFellatio</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/pussyjuicy" target="_blank">
+                    <img src="https://www.minds.com/icon/1705881731413839874" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>PussyJuicy</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/TheExoticPussy" target="_blank">
+                    <img src="https://www.minds.com/icon/1726908894812315648" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>TheExoticPussy</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/yuanita53" target="_blank">
+                    <img src="https://www.minds.com/icon/1724408538313023488" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>Yuanita53</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/Elena53" target="_blank">
+                    <img src="https://www.minds.com/icon/1724774793380630528" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>Elena53</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/JessicaRabit" target="_blank">
+                    <img src="https://www.minds.com/icon/1707707341568217097" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>JessicaRabit</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/CumFactory" target="_blank">
+                    <img src="https://www.minds.com/icon/1707121606809096194" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>CumFactory</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/Regina_Claudia" target="_blank">
+                    <img src="https://www.minds.com/icon/1726973124802519040" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>Regina_Claudia</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/NanaAmelia" target="_blank">
+                    <img src="https://www.minds.com/icon/1725154674313289728" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>NanaAmelia</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/AnalCum" target="_blank">
+                    <img src="https://www.minds.com/icon/1707426947853717520" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>AnalCum</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/SakuraHaruno2078" target="_blank">
+                    <img src="https://www.minds.com/icon/1715640970994782208" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>SakuraHaruno2078</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/deeppussy" target="_blank">
+                    <img src="https://www.minds.com/icon/1706040735851089937" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>deeppussy</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/Linana" target="_blank">
+                    <img src="https://www.minds.com/icon/1707734236561149966" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>Linana</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/rikkapussy" target="_blank">
+                    <img src="https://www.minds.com/icon/1705704720204566529" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>rikkapussy</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/Ffelatiano" target="_blank">
+                    <img src="https://www.minds.com/icon/1725159540653035520" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>Ffelatiano</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/Futanari53" target="_blank">
+                    <img src="https://www.minds.com/icon/1724514670921916416" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>Futanari53</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/Fellatiano" target="_blank">
+                    <img src="https://www.minds.com/icon/1705555185813688328" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>Fellatiano</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/AnnaSquirt" target="_blank">
+                    <img src="https://www.minds.com/icon/1726906021567275008" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>AnnaSquirt</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/Moekahana13" target="_blank">
+                    <img src="https://www.minds.com/icon/1705121128281804820" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>Moekahana13</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/WetOnahole" target="_blank">
+                    <img src="https://www.minds.com/icon/1727361247709503488" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>WetOnahole</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/PyraSlut" target="_blank">
+                    <img src="https://www.minds.com/icon/1726899601690075136" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>PyraSlut</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/HanaPussy" target="_blank">
+                    <img src="https://www.minds.com/icon/1748756156232241152" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>HanaPussy</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/CameltoeS2" target="_blank">
+                    <img src="https://www.minds.com/icon/1746920618647642112" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>CameltoeS2</p>
+                </a>
+            </div> 
+
+            <div class="profile-item">
+                <a href="https://minds.com/PussyOfficeGirl" target="_blank">
+                    <img src="https://www.minds.com/icon/1726621820029526016" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>PussyOfficeGirl</p>
+                </a>
+            </div> 
+
+            <div class="profile-item">
+                <a href="https://minds.com/MenjilatiMemek_Ino" target="_blank">
+                    <img src="https://www.minds.com/icon/1749185262514888704" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>MenjilatiMemek_Ino</p>
+                </a>
+            </div> 
+
+            <div class="profile-item">
+                <a href="https://minds.com/AuroraHornyPussy" target="_blank">
+                    <img src="https://www.minds.com/icon/1748761196112125952" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>AuroraHornyPussy</p>
+                </a>
+            </div> 
+
+            <div class="profile-item">
+                <a href="https://minds.com/LucyWetPussy" target="_blank">
+                    <img src="https://www.minds.com/icon/1749182174138998784" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>LucyWetPussy</p>
+                </a>
+            </div> 
+
+            <div class="profile-item">
+                <a href="https://minds.com/BlowjobLovers" target="_blank">
+                    <img src="https://www.minds.com/icon/1748667474896752640" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>BlowjobLovers</p>
+                </a>
+            </div> 
+
+            <div class="profile-item">
+                <a href="https://minds.com/LendirMemekTeman" target="_blank">
+                    <img src="https://www.minds.com/icon/1749836523680829440" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>LendirMemekTeman</p>
+                </a>
+            </div> 
+
+            <div class="profile-item">
+                <a href="https://minds.com/DeepMatingPress" target="_blank">
+                    <img src="https://www.minds.com/icon/1749844807682887680" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>DeepMatingPress</p>
+                </a>
+            </div> 
+
+            <div class="profile-item">
+                <a href="https://minds.com/MenghisapMemek_Kushina_" target="_blank">
+                    <img src="https://www.minds.com/icon/1749190647035731968" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>MenghisapMemek_Kushina_</p>
+                </a>
+            </div> 
+
+            <div class="profile-item">
+                <a href="https://minds.com/RatuMemek" target="_blank">
+                    <img src="https://www.minds.com/icon/1749838066538782720" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>RatuMemek</p>
+                </a>
+            </div> 
+
+            <div class="profile-item">
+                <a href="https://minds.com/QuinnOfPussy" target="_blank">
+                    <img src="https://www.minds.com/icon/1749841398804254720" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>QuinnOfPussy</p>
+                </a>
+            </div> 
+
+            <div class="profile-item">
+                <a href="https://minds.com/YunaAurel" target="_blank">
+                    <img src="https://www.minds.com/icon/1726120356021800960" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>YunaAurel</p>
+                </a>
+            </div> 
+
+            <div class="profile-item">
+                <a href="https://minds.com/WetOnahole2" target="_blank">
+                    <img src="https://www.minds.com/icon/1727363709858226176" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>WetOnahole2</p>
+                </a>
+            </div> 
+
+            <div class="profile-item">
+                <a href="https://minds.com/SantaPussyGirl" target="_blank">
+                    <img src="https://www.minds.com/icon/1726106132713312256" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>SantaPussyGirl</p>
+                </a>
+            </div> 
+
+            <div class="profile-item">
+                <a href="https://minds.com/AhriJuicyPussy" target="_blank">
+                    <img src="https://www.minds.com/icon/1726157227125661696" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>AhriJuicyPussy</p>
+                </a>
+            </div> 
+
+            <div class="profile-item">
+                <a href="https://minds.com/EroticAdministrator" target="_blank">
+                    <img src="https://www.minds.com/icon/1725626445889277952" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>EroticAdministrator</p>
+                </a>
+            </div> 
+
+            <div class="profile-item">
+                <a href="https://minds.com/Imaindah" target="_blank">
+                    <img src="https://www.minds.com/icon/1705492732325138445" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>Imaindah</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/Atago72" target="_blank">
+                    <img src="https://www.minds.com/icon/1705448370245472269" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>Atago72</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/KitagawaFuta" target="_blank">
+                    <img src="https://www.minds.com/icon/1726114383945277440" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p>KitagawaFuta</p>
+                </a>
+            </div>
+
+            <div class="profile-item">
+                <a href="https://minds.com/KitagawaFuta" target="_blank">
+                    <img src="https://www.minds.com/icon/" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p></p>
+                </a>
+            </div>
+
+            <!-- <div class="profile-item">
+                <a href="https://minds.com/" target="_blank">
+                    <img src="https://www.minds.com/icon/" alt="Foto Siswa 1" onerror="this.src='https://placehold.co/100x100/2c2c2c/f0f0f0?text=Foto'">
+                    <p></p>
+                </a>
+            </div> -->
 
 
-        <div class="item">
-            <a href="https://www.minds.com/MenjilatiMemek_Ino/" target="_blank">
-                <img src="https://cdn.minds.com/icon/1749185262514888704/large/1742414264" alt="MenjilatiMemek_Ino">
-            </a> 
-            <p>MenjilatiMemek_Ino</p>
-        </div>
-
-        <div class="item">
-            <a href="https://www.minds.com/LucyWetPussy/" target="_blank">
-                <img src="https://cdn.minds.com/icon/1749182174138998784/large/1742413695" alt="LucyWetPussy">
-            </a> 
-            <p>LucyWetPussy</p>
-        </div>
-
-        <div class="item">
-            <a href="https://www.minds.com/AuroraHornyPussy/" target="_blank">
-                <img src="https://www.minds.com/icon/1748761196112125952/large/1742313159/" alt="AuroraHornyPussy">
-            </a> 
-            <p>AuroraHornyPussy</p>
-        </div> 
-
-        <div class="item">
-            <a href="https://www.minds.com/oliviapussy/" target="_blank">
-                <img src="https://www.minds.com/icon/1748758841308225536/large/1742312598/" alt="OliviaPussy">
-            </a> 
-            <p>OliviaPussy</p>
-        </div> 
-
-        <div class="item">
-            <a href="https://www.minds.com/hanapussy/" target="_blank">
-                <img src="https://www.minds.com/icon/1748756156232241152/large/1742311957" alt="HanaPussy">
-            </a> 
-            <p>HanaPussy</p>
-        </div> 
-
-        <div class="item">
-            <a href="https://www.minds.com/gwenpussy/" target="_blank">
-                <img src="https://www.minds.com/icon/1748748546766540800/large/1742310143" alt="GwenPussy">
-            </a> 
-            <p>GwenPussy</p>
-        </div>    
-    
-    <div class="item">
-        <a href="https://www.minds.com/blowjoblovers/" target="_blank">
-            <img src="https://cdn.minds.com/icon/1748667474896752640/large/1742291609" alt="BlowjobLovers">
-        </a> 
-        <p>BlowjobLovers</p>
-    </div>
-
-    <div class="item">
-        <a href="https://www.minds.com/cameltoes2/" target="_blank">
-            <img src="https://cdn.minds.com/icon/1746920618647642112/large/1741874531" alt="CamelToes2">
-        </a> 
-        <p>CamelToes2</p>
-    </div>
-
-	<div class="item">
-	    <a href="https://www.minds.com/ahrijuicypussy/" target="_blank">
-	        <img src="https://cdn.minds.com/icon/1726157227125661696/large/1736924278" alt="AhriJuicyPussy">
-	    </a> 
-	    <p>AhriJuicyPussy</p>
-	</div>
-
-        <div class="item">
-            <a href="https://www.minds.com/ameliaregina/" target="_blank"><img src="https://cdn.minds.com/icon/1697553833263108104" alt="Image 1"></a>
-            <p>AmeliaRegina</p>
-        </div>
-<div class="item">
-    <a href="https://www.minds.com/analcum/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1707426947853717520/large/1732459529" alt="AnalCum">
-    </a> 
-    <p>AnalCum</p>
-</div>
-
-<div class="item">
-    <a href="https://www.minds.com/annasquirt/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1726906021567275008/large/1737102752" alt="AnnaSquirt">
-    </a> 
-    <p>AnnaSquirt</p>
-</div>
-<div class="item">
-    <a href="https://www.minds.com/atago72/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1705448370245472269/large/1731986852" alt="Atago72">
-    </a> 
-    <p>Atago72</p>
-</div>
-
-<div class="item">
-    <a href="https://www.minds.com/cumfactory/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1707121606809096194/large/1732386198" alt="CumFactory">
-    </a>
-    <p>CumFactory</p>
-</div>
-<div class="item">
-    <a href="https://www.minds.com/deeppussy/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1706040735851089937/large/1732129121" alt="DeepPussy">
-    </a> 
-    <p>DeepPussy</p>
-</div>
-
-<div class="item">
-    <a href="https://www.minds.com/elena53/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1724774793380630528/large/1736594587" alt="Elena53">
-    </a> 
-    <p>Elena53</p>
-</div>
-
-<div class="item">
-    <a href="https://www.minds.com/eridavira/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1703342529287557137/large/1731955811" alt="Eridavira">
-    </a> 
-    <p>Eridavira</p>
-</div>
-<div class="item">
-    <a href="https://www.minds.com/eroticadministrator/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1725626445889277952/large/1736797731" alt="EroticAdministrator">
-    </a> 
-    <p>EroticAdministrator</p>
-</div>
-
-<div class="item">
-    <a href="https://www.minds.com/fellatiano/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1705555185813688328/large/1732012198" alt="Fellatiano">
-    </a> 
-    <p>Fellatiano</p>
-</div>
-<div class="item">
-    <a href="https://www.minds.com/ffelatiano/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1725159540653035520/large/1736686670" alt="Ffelatiano">
-    </a> 
-    <p>Ffelatiano</p>
-</div>
-<div class="item">
-    <a href="https://www.minds.com/jessicarabit/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1707707341568217097/large/1732525559" alt="JessicaRabit">
-    </a> 
-    <p>JessicaRabit</p>
-</div>
-
-<div class="item">
-    <a href="https://www.minds.com/futanari53/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1724514670921916416/large/1736532505" alt="Futanari53">
-    </a> 
-    <p>Futanari53</p>
-</div>
-<div class="item">
-    <a href="https://www.minds.com/imaindah/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1705492732325138445/large/1731997416" alt="ImaIndah">
-    </a> 
-    <p>ImaIndah</p>
-</div>
-
-<div class="item">
-    <a href="https://www.minds.com/kitagawafuta/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1726114383945277440/large/1736913945" alt="KitagawaFuta">
-    </a> 
-    <p>KitagawaFuta</p>
-</div>
-<div class="item">
-    <a href="https://www.minds.com/linana/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1707734236561149966/large/1732532763" alt="Linana">
-    </a> 
-    <p>Linana</p>
-</div>
-
-<div class="item">
-    <a href="https://www.minds.com/moekahana13/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1705121128281804820/large/1731987254" alt="Moekahana13">
-    </a> 
-    <p>Moekahana13</p>
-</div>
-<div class="item">
-    <a href="https://www.minds.com/nanaamelia/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1725154674313289728/large/1736685243" alt="NanaAmelia">
-    </a> 
-    <p>NanaAmelia</p>
-</div>
-<div class="item">
-    <a href="https://www.minds.com/pussyjuicy/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1705881731413839874/large/1732090037" alt="PussyJuicy">
-    </a> 
-    <p>PussyJuicy</p>
-</div>
-
-<div class="item">
-    <a href="https://www.minds.com/pussylicking/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1712795794903404559/large/1733738688" alt="PussyLicking">
-    </a>
-    <p>PussyLicking</p>
-</div>
-
-<div class="item">
-    <a href="https://www.minds.com/pussyofficegirl/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1726621820029526016/large/1737034974" alt="PussyOfficeGirl">
-    </a> 
-    <p>PussyOfficeGirl</p>
-</div>
-<div class="item">
-    <a href="https://www.minds.com/pyraslut/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1726899601690075136/large/1737101082" alt="PyraSlut">
-    </a>
-    <p>PyraSlut</p>
-</div>
-
-<div class="item">
-    <a href="https://www.minds.com/regina_claudia/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1726973124802519040/large/1737133352" alt="Regina_Claudia">
-    </a> 
-    <p>Regina_Claudia</p>
-</div>
-<div class="item">
-    <a href="https://www.minds.com/rikkapussy/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1705704720204566529/large/1732047823" alt="RikkaPussy">
-    </a> 
-    <p>RikkaPussy</p>
-</div>
-
-<div class="item">
-    <a href="https://www.minds.com/sakuraharuno2078/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1715640970994782208/large/1734482511" alt="SakuraHaruno2078">
-    </a> 
-    <p>SakuraHaruno2078</p>
-</div>
-
-<div class="item">
-    <a href="https://www.minds.com/santapussygirl/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1726106132713312256/large/1736913029" alt="SantaPussyGirl">
-    </a> 
-    <p>SantaPussyGirl</p>
-</div>
-
-<div class="item">
-    <a href="https://www.minds.com/theexoticpussy/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1726908894812315648/large/1737104130" alt="TheExoticPussy">
-    </a>
-    <p>TheExoticPussy</p>
-</div>
-<div class="item">
-    <a href="https://www.minds.com/viperfellatio/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1731279182366777344/large/1738145306" alt="ViperFellatio">
-    </a> 
-    <p>ViperFellatio</p>
-</div>
-<div class="item">
-    <a href="https://www.minds.com/wetonahole/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1727361247709503488/large/1737211298" alt="Wetonahole">
-    </a> 
-    <p>Wetonahole</p>
-</div>
-
-<div class="item">
-    <a href="https://www.minds.com/wetonahole2/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1727363709858226176/large/1737211916" alt="Wetonahole2">
-    </a> 
-    <p>Wetonahole2</p>
-</div>
-<div class="item">
-    <a href="https://www.minds.com/yuanita53/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1724408538313023488/large/1736532187" alt="Yuanita53">
-    </a> 
-    <p>Yuanita53</p>
-</div>
-
-<div class="item">
-    <a href="https://www.minds.com/yunaaurel/" target="_blank">
-        <img src="https://cdn.minds.com/icon/1726120356021800960/large/1736915799" alt="YunaAurel">
-    </a> 
-    <p>Yuna Aurel</p>
-</div>
-
-    </div>
-    <div class="footer">2024 <span>Eri Davira</span></div>
-
-    <script>
-        // Membuat tombol alfabet
-        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-        const alphabetButtons = document.getElementById('alphabetButtons');
-        const itemsContainer = document.getElementById('itemsContainer');
-        const items = document.querySelectorAll('.item');
-
-        // Membuat tombol untuk setiap huruf
-        alphabet.forEach(letter => {
-            const button = document.createElement('button');
-            button.className = 'alphabet-btn';
-            button.textContent = letter;
-            button.addEventListener('click', () => filterByLetter(letter));
-            alphabetButtons.appendChild(button);
-        });
-
-        // Tambahkan fungsi untuk menginisialisasi nomor urut
-        function initializeItemNumbers() {
-            const items = Array.from(document.querySelectorAll('.item'));
-            const totalItems = items.length;
-            
-            items.forEach((item, index) => {
-                // Tambahkan data-number (nomor urut dari bawah ke atas)
-                const itemNumber = totalItems - index;
-                item.setAttribute('data-number', itemNumber);
-                
-                // Tambahkan elemen nomor yang visible
-                const numberElement = document.createElement('span');
-                numberElement.className = 'item-number';
-                numberElement.textContent = `#${itemNumber}`;
-                item.insertBefore(numberElement, item.firstChild);
-            });
-        }
-
-        // Update fungsi sortItems
-        function sortItems(sortType) {
-            const container = document.getElementById('itemsContainer');
-            const items = Array.from(container.getElementsByClassName('item'));
-            
-            items.sort((a, b) => {
-                const nameA = a.querySelector('p').textContent.toLowerCase();
-                const nameB = b.querySelector('p').textContent.toLowerCase();
-                const numberA = parseInt(a.getAttribute('data-number'));
-                const numberB = parseInt(b.getAttribute('data-number'));
-                
-                switch(sortType) {
-                    case 'alphabetical':
-                        return nameA.localeCompare(nameB);
-                    case 'alphabetical-reverse':
-                        return nameB.localeCompare(nameA);
-                    case 'latest':
-                        // Urutkan berdasarkan nomor (terbesar ke terkecil)
-                        return numberB - numberA;
-                    default:
-                        return 0;
-                }
-            });
-            
-            // Hapus semua item dari container
-            while (container.firstChild) {
-                container.removeChild(container.firstChild);
-            }
-            
-            // Tambahkan kembali item yang sudah diurutkan
-            items.forEach(item => container.appendChild(item));
-            
-            // Reset filter dan tampilkan semua item
-            resetFilterAndShowAll();
-        }
-
-        // Fungsi helper untuk reset filter dan tampilkan semua item
-        function resetFilterAndShowAll() {
-            // Reset filter alfabet
-            document.querySelectorAll('.alphabet-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Aktifkan tombol "All"
-            let allButton = document.querySelector('.alphabet-btn[data-letter="all"]');
-            if (allButton) {
-                allButton.classList.add('active');
-            }
-            
-            // Tampilkan semua item
-            const items = document.querySelectorAll('.item');
-            items.forEach(item => item.classList.remove('hidden'));
-            
-            // Update total
-            updateVisibleCount();
-        }
-
-        // Event listener untuk tombol pengurutan
-        document.querySelectorAll('.sort-btn').forEach(button => {
-            button.addEventListener('click', (e) => {
-                // Hapus kelas active dari semua tombol
-                document.querySelectorAll('.sort-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                
-                // Tambah kelas active ke tombol yang diklik
-                e.target.classList.add('active');
-                
-                // Urutkan item
-                sortItems(e.target.dataset.sort);
-            });
-        });
-
-        // Fungsi untuk memfilter item berdasarkan huruf
-        function filterByLetter(letter) {
-            const activeSort = document.querySelector('.sort-btn.active').dataset.sort;
-            
-            document.querySelectorAll('.alphabet-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            const items = document.querySelectorAll('.item');
-            items.forEach(item => {
-                const name = item.querySelector('p').textContent.toLowerCase();
-                if (letter.toLowerCase() === 'all') {
-                    item.classList.remove('hidden');
-                } else if (name.startsWith(letter.toLowerCase())) {
-                    item.classList.remove('hidden');
-                } else {
-                    item.classList.add('hidden');
-                }
-            });
-            updateVisibleCount();
-        }
-
-        // Menghitung total akun
-        function updateTotalAccounts() {
-            const totalAccounts = document.querySelectorAll('.item').length;
-            const totalNumberElement = document.getElementById('totalAccounts');
-            
-            // Animasi counting
-            let current = 0;
-            const duration = 1000; // 1 detik
-            const steps = 60;
-            const increment = totalAccounts / steps;
-            const stepTime = duration / steps;
-
-            const counter = setInterval(() => {
-                current += increment;
-                if (current >= totalAccounts) {
-                    current = totalAccounts;
-                    clearInterval(counter);
-                }
-                totalNumberElement.textContent = Math.round(current);
-            }, stepTime);
-        }
-
-        // Panggil fungsi saat halaman dimuat
-        window.addEventListener('load', updateTotalAccounts);
-
-        // Update total saat filter diaktifkan
-        function updateVisibleCount() {
-            const visibleItems = document.querySelectorAll('.item:not(.hidden)').length;
-            const totalNumberElement = document.getElementById('totalAccounts');
-            totalNumberElement.textContent = visibleItems;
-        }
-
-        // Tambahkan tombol "All" di awal
-        window.addEventListener('DOMContentLoaded', () => {
-            const allButton = document.createElement('button');
-            allButton.className = 'alphabet-btn active';
-            allButton.textContent = 'All';
-            allButton.dataset.letter = 'all';
-            allButton.addEventListener('click', () => filterByLetter('all'));
-            alphabetButtons.insertBefore(allButton, alphabetButtons.firstChild);
-            initializeItemNumbers();
-        });
-    </script>
-</body>
+            </div> </div> </body>
 </html>
