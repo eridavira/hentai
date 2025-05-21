@@ -78,7 +78,7 @@ nav ul li a:hover {
 }
 
 .gallery-item {
-  border: 2px solid white;
+  border: 2px solid rgb(255, 0, 234);
   border-radius: 8px;
   overflow: hidden;
   display: flex;
@@ -113,7 +113,7 @@ nav ul li a:hover {
   left: 50%;
   transform: translateX(-50%); /* Center horizontally */
   color: rgb(255, 255, 255);
-  font-size: 18px;
+  font-size: 8px;
   font-weight: 600;
   text-transform: uppercase;
   margin: 0;
