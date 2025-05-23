@@ -1,13 +1,21 @@
 [
   {
+    "title": "Hutao",
+    "url": "https://img.kemono.su/thumbnail/data/23/00/23007cc8b752b9064def13bed90ff148f9a0efad32cdff21a1aaa2493675db43.png",
+    "link": "hutao-genshinimpact.html",
+    "tags": ["genshin impact", "hutao"]
+  },
+  {
     "title": "Hibana",
     "url": "https://img.kemono.su/thumbnail/data/ca/37/ca37bc85c9db5594202ea37d90e20482f7164bc57d7070b05a2ab8571624d95e.png",
-    "link": "hibana.html"
+    "link": "hibana.html",
+    "tags": ["hibana"]
   },
   {
     "title": "Hokage Tier: Sagiri",
     "url": "https://img.kemono.su/thumbnail/data/6d/0f/6d0f7047921c3fc5f321ba7fd75e315a78dc9b59b7d12a8ea2bd5388b06e3590.png",
-    "link": "htr-sagiri.html"
+    "link": "htr-sagiri.html",
+    "tags": ["sagiri"]
   },
   {
     "title": "Chevy Lost a Bet",
