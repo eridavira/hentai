@@ -1,6 +1,12 @@
 [
   {
     "title": "Princess Peach",
+    "url": "https://img.kemono.su/thumbnail/data/9c/80/9c80bde61eec9cb95c1935c1d1774090dcdb2ccb45b18a17786176a1fa9d888f.png",
+    "link": "princessdaisy.html",
+    "tags": ["Princess Daisy", "super mario"]
+  },
+  {
+    "title": "Princess Peach",
     "url": "https://img.kemono.su/thumbnail/data/5a/f1/5af1faa2b1106aaa5c7a565739e4da8f397a33280f1c400e102f65713eec1f3a.jpg",
     "link": "princesspeach.html",
     "tags": ["Princess Peach", "super mario"]
