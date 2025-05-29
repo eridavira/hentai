@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hentai Booru</title>
+    <link rel="stylesheet" href="booru.css">
+</head>
+<body>
+    <header class="site-header">
+        <h1 onclick="window.location.href='index.html'">
+            <span id="judul-galeri">HENTAI</span>
+            <span id="judul-foto">BOORU</span>
+            <span id="judul-saya"></span>
+        </h1>
+    </header>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Cari apa yang ada aja..">
+    </div>
+
+    <div class="gallery-container" id="galleryContainer">
+    </div>
+
+    <div id="loadingIndicator" class="loading-indicator" style="display: none;">Memuat lebih banyak...</div>
+    <div id="noResults" class="no-results" style="display: none;">Tidak ada foto yang cocok dengan pencarian Anda.</div>
+
+    <script src="booru.js"></script>
+</body>
+</html>

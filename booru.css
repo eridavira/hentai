@@ -1,0 +1,221 @@
+/* Import font Bebas Neue dari Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* URL background baru Anda */
+    background-image: url('https://n2.kemono.su/data/f5/2f/f52f4553b62d7216f74e059beee53af216d2596900bad8b5790396ce32ace40f.jpg?f=6.jpg');
+    background-size: contain; /* Memastikan seluruh gambar latar belakang terlihat */
+    background-attachment: fixed; /* Latar belakang tidak ikut ter-scroll */
+    background-position: center; /* Memposisikan gambar di kanan tengah */
+    background-repeat: no-repeat; /* Mencegah gambar mengulang */
+    color: #f0f0f0; /* Warna teks utama yang terang */
+    position: relative;
+}
+
+/* Overlay gelap untuk kontras dengan teks dan elemen lainnya */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.65); /* Sedikit lebih gelap untuk kontras judul */
+    z-index: -1; /* Pastikan overlay berada di belakang konten */
+}
+
+.site-header {
+    text-align: center;
+    padding: 30px 20px 10px 20px; /* Penyesuaian padding */
+}
+
+.site-header h1 {
+    margin: 0;
+    font-family: 'Bebas Neue', sans-serif; /* Menerapkan font Bebas Neue */
+    font-size: 2.8em; /* Ukuran font lebih besar */
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7); /* Efek bayangan teks */
+    cursor: pointer; /* Menunjukkan bahwa judul bisa diklik */
+}
+
+/* Gaya untuk setiap kata pada judul */
+#judul-galeri {
+    color: #FF69B4; /* Pink */
+    transition: color 0.3s ease; /* Transisi untuk efek hover */
+}
+
+#judul-foto {
+    color: #9370DB; /* Ungu sedang */
+    transition: color 0.3s ease; /* Transisi untuk efek hover */
+}
+
+#judul-saya {
+    color: #FF4500; /* Merah oranye terang */
+    transition: color 0.3s ease; /* Transisi untuk efek hover */
+}
+
+/* Efek hover untuk setiap kata pada judul */
+.site-header h1:hover #judul-galeri {
+    color: #FFC0CB; /* Pink lebih terang saat hover */
+}
+
+.site-header h1:hover #judul-foto {
+    color: #DDA0DD; /* Ungu lebih terang saat hover */
+}
+
+.site-header h1:hover #judul-saya {
+    color: #FFA07A; /* Merah lebih terang saat hover */
+}
+
+.search-container {
+    text-align: center;
+    padding: 15px 20px 25px 20px;
+    position: sticky;
+    top: 0;
+    /* Menghilangkan kotak hitam, blur, dan bayangan */
+    background-color: transparent;
+    backdrop-filter: none;
+    box-shadow: none;
+    z-index: 10;
+}
+
+.search-input {
+    width: 50%;
+    max-width: 400px;
+    padding: 12px 20px;
+    border: 2px solid rgba(255, 255, 255, 0.4); /* Border putih semi-transparan */
+    border-radius: 30px; /* Lebih membulat */
+    background-color: rgba(255, 255, 255, 0.1); /* Latar belakang input sangat transparan */
+    color: #ffffff; /* Warna teks putih */
+    font-size: 1.1em; /* Ukuran font sedikit lebih besar */
+    outline: none;
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; /* Transisi untuk efek fokus */
+    text-shadow: 0 0 5px rgba(0,0,0,0.5); /* Bayangan teks untuk kontras */
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.6); /* Warna placeholder lebih terang */
+}
+
+.search-input:focus {
+    background-color: rgba(255, 255, 255, 0.2); /* Lebih terang saat fokus */
+    border-color: rgba(255, 255, 255, 0.8); /* Border lebih jelas saat fokus */
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5), inset 0 0 5px rgba(0, 255, 255, 0.3); /* Efek glow kebiruan */
+}
+
+.gallery-container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 6 kolom untuk desktop besar */
+    gap: 10px; /* Jarak antar item galeri */
+    padding: 20px;
+    position: relative;
+    z-index: 1; /* Di bawah search bar */
+}
+
+.gallery-item {
+    width: 100%;
+    padding-bottom: 100%; /* Rasio aspek 1:1 */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 5px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transisi untuk efek hover */
+    cursor: pointer;
+    position: relative; /* Penting untuk penempatan nama foto */
+    overflow: hidden; /* Pastikan nama tidak keluar dari batas saat dihover */
+}
+
+.gallery-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.photo-name {
+    position: absolute;
+    bottom: 0; /* Letakkan di bagian bawah */
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Latar belakang semi-transparan untuk nama */
+    color: #f0f0f0; /* Warna teks nama */
+    font-size: 0.75em; /* Ukuran font kecil */
+    padding: 5px;
+    text-align: center;
+    box-sizing: border-box; /* Pastikan padding tidak menambah lebar */
+    opacity: 0; /* Sembunyikan secara default */
+    transform: translateY(100%); /* Geser ke bawah agar tersembunyi */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Transisi untuk animasi muncul */
+    white-space: nowrap; /* Mencegah teks putus baris */
+    overflow: hidden; /* Sembunyikan jika terlalu panjang */
+    text-overflow: ellipsis; /* Tampilkan elipsis jika terpotong */
+}
+
+/* Munculkan nama foto saat item galeri di-hover */
+.gallery-item:hover .photo-name {
+    opacity: 1;
+    transform: translateY(0); /* Geser ke atas untuk ditampilkan */
+}
+
+.loading-indicator, .no-results {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.2em;
+    color: #ccc; /* Warna teks indikator */
+}
+
+/* Penyesuaian untuk scrollbar di tema gelap */
+::-webkit-scrollbar {
+    width: 8px; /* Lebar scrollbar */
+}
+
+::-webkit-scrollbar-track {
+    background: #2c2c2c; /* Latar belakang track scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #555; /* Warna thumb scrollbar */
+    border-radius: 4px; /* Sudut membulat pada thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #777; /* Warna thumb saat hover */
+}
+
+/* --- Media Queries untuk Responsivitas --- */
+@media (max-width: 1200px) {
+    .gallery-container {
+        grid-template-columns: repeat(4, 1fr); /* 4 kolom untuk tablet landscape dan laptop kecil */
+    }
+    .search-input {
+        width: 65%; /* Sedikit diperlebar untuk layar menengah */
+    }
+}
+
+@media (max-width: 768px) {
+    .site-header h1 {
+        font-size: 2.2em;
+    }
+    .gallery-container {
+        grid-template-columns: repeat(3, 1fr); /* 3 kolom untuk tablet portrait */
+    }
+    .search-input {
+        width: 80%; /* Lebih lebar lagi untuk tablet */
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 480px) {
+    .site-header h1 {
+        font-size: 1.8em;
+    }
+    .gallery-container {
+        grid-template-columns: repeat(2, 1fr); /* 2 kolom untuk ponsel */
+    }
+    .search-input {
+        width: 90%; /* Paling lebar untuk ponsel */
+        padding: 8px 15px; /* Padding sedikit berkurang */
+    }
+    .search-container {
+        padding: 10px 15px 20px 15px;
+    }
+}
