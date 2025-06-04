@@ -1,0 +1,220 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1a1a1a; /* Warna latar belakang gelap */
+    color: #f0f0f0; /* Warna teks terang */
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Foto Dinding (Cover Photo) */
+.cover-photo-wrapper {
+    position: relative; /* Penting untuk posisi absolut judul */
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.cover-photo {
+    width: 100%;
+    height: 400px; /* Tinggi foto dinding */
+    /* background-image akan diletakkan di HTML secara inline */
+    background-size: cover;
+    background-position: center; /* Ini bisa di override oleh inline style */
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.cover-photo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%);
+}
+
+.gallery-title-link {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.7); /* Latar belakang semi-transparan */
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1.8em; /* Ukuran font lebih besar */
+    font-weight: bold;
+    letter-spacing: 2px; /* Jarak antar huruf */
+    transition: background-color 0.3s ease;
+}
+
+.gallery-title-link a {
+    text-decoration: none;
+    display: block; /* Agar seluruh area padding bisa diklik */
+}
+
+.gallery-title-link:hover {
+    background-color: rgba(0, 0, 0, 0.9); /* Sedikit lebih gelap saat hover */
+}
+
+.gallery-title-link .gal-white {
+    color: #f0f0f0; /* Putih */
+}
+
+.gallery-title-link .lery-red {
+    color: #ff0000; /* Merah */
+}
+
+/* Garis Pemisah */
+.separator {
+    width: 100%;
+    height: 3px;
+    background-color: #ff69b4; /* Warna pink tipis */
+    margin: 40px 0;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(255, 105, 180, 0.5); /* Efek glow pink */
+}
+
+/* Navigasi Part (Pagination) */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.pagination ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.pagination li {
+    padding: 10px 20px;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.pagination li:last-child {
+    border-right: none;
+}
+
+.pagination li a {
+    text-decoration: none;
+    color: #f0f0f0;
+    font-weight: bold;
+    display: block;
+}
+
+.pagination li.inactive {
+    background-color: #3a3a3a; /* Warna latar belakang untuk tombol non-aktif */
+    color: #888888; /* Warna teks untuk tombol non-aktif */
+    cursor: not-allowed; /* Kursor menunjukkan tidak bisa diklik */
+}
+
+.pagination li a:hover:not(.part-active) {
+    background-color: #333333; /* Efek hover untuk tombol aktif */
+}
+
+.pagination li .part-active {
+    color: #ffd700; /* Warna kuning untuk tombol aktif saat ini */
+}
+
+/* Galeri Foto */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* 6 kolom di layar lebar */
+    gap: 20px;
+    justify-content: center;
+    padding-bottom: 50px;
+}
+
+.gallery-item {
+    background-color: #2a2a2a; /* Warna latar belakang item galeri */
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    position: relative;
+}
+
+.gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 105, 180, 0.7); /* Efek hover lebih menonjol */
+}
+
+.gallery-item a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 180px; /* Tinggi thumbnail foto */
+    object-fit: cover;
+    display: block;
+    border-bottom: 1px solid rgba(255, 105, 180, 0.3);
+}
+
+.gallery-item h3 {
+    margin: 15px 0;
+    font-size: 1em;
+    color: #f0f0f0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    padding: 0 10px;
+}
+
+/* Responsiveness */
+@media (max-width: 1024px) {
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* 5 kolom */
+    }
+}
+
+@media (max-width: 768px) {
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* 4 kolom */
+    }
+    .cover-photo {
+        height: 300px;
+    }
+    .gallery-title-link {
+        top: 15px;
+        left: 20px;
+        padding: 8px 15px;
+        font-size: 1.5em;
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* 3 kolom */
+    }
+    .cover-photo {
+        height: 200px;
+    }
+    .gallery-title-link {
+        top: 10px;
+        left: 15px;
+        padding: 6px 12px;
+        font-size: 1.2em;
+    }
+    .pagination li {
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
+}
