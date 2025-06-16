@@ -1,0 +1,188 @@
+
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: rgba(20, 15, 10, 0.9); /* Cokelat gelap transparan, seperti kayu tua */
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.7); /* Bayangan dalam */
+    border-radius: 10px; /* Sudut lebih lembut */
+    overflow: hidden;
+    border: 1px solid rgba(50, 40, 30, 0.5); /* Border seperti ukiran kayu */
+}
+
+.cover-photo-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.cover-photo {
+    width: 100%;
+    height: 300px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 0% 100%;
+    border-bottom: 1px solid #3a3a3a; /* Border gelap */
+}
+
+.gallery-title-link {
+    position: absolute;
+    top: 25px;
+    left: 30px; /* Jarak dari kiri */
+    z-index: 10;
+}
+
+.gallery-title-link a {
+    text-decoration: none;
+    font-family: 'Uncial Antiqua', cursive; /* Font untuk judul/logo ARCANE SCROLLS */
+    font-size: 4em; /* Ukuran teks besar */
+    font-weight: 400; /* Tidak terlalu tebal, kesan tulisan kuno */
+    letter-spacing: 2px; /* Jarak antar huruf */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7), 0 0 10px rgba(255, 215, 0, 0.4); /* Bayangan dan kilau emas */
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.gallery-title-link a:hover {
+    transform: translateY(-2px) scale(1.02);
+    text-shadow: 2px 2px 7px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 215, 0, 0.6); /* Kilau emas lebih intens */
+}
+
+.gal-white {
+    color: #deb887; /* Warna perkamen / emas pudar */
+}
+
+.lery-red {
+    color: #8b0000; /* Warna merah marun/darah tua */
+}
+
+/* --- Gaya Navigasi Part (Tombol Perpustakaan) --- */
+.part-navigation {
+    text-align: center;
+    padding: 20px 0;
+    background-color: rgba(30, 20, 15, 0.95); /* Cokelat lebih gelap */
+    border-bottom: 1px solid #4a3b2e; /* Border seperti kulit buku */
+}
+
+.part-navigation ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 18px; /* Jarak antar tombol */
+}
+
+.part-navigation li {
+    display: inline-block;
+}
+
+.part-navigation a {
+    /* Gaya Dasar Tombol Perpustakaan */
+    padding: 12px 25px;
+    text-decoration: none;
+    font-family: 'EB Garamond', serif; /* Font untuk tombol Chapter */
+    font-size: 17px;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    border: 1px solid;
+    border-radius: 5px; /* Sudut sedikit membulat */
+    display: block;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(145deg, #4a3b2e, #3a2b1f); /* Gradien cokelat tua */
+    color: #f0e68c; /* Teks kuning keemasan */
+    border-color: #8b4513; /* Border cokelat lebih gelap */
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5); /* Bayangan agar terlihat tebal */
+    transition: all 0.3s ease-in-out;
+}
+
+/* Efek Kilau / Debu Sihir pada Hover */
+.part-navigation a:not(.part-active)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent); /* Kilau emas samar */
+    transform: skewX(-20deg);
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.part-navigation a:not(.part-active):hover::before {
+    left: 100%;
+}
+
+/* Gaya untuk tautan aktif (Chapter saat ini) */
+.part-navigation a.part-active {
+    background: #2b2018; /* Warna cokelat mati yang sangat gelap */
+    color: #8b7d6b; /* Teks abu-abu kecokelatan pudar */
+    cursor: default;
+    pointer-events: none;
+    border-color: #3b2f24;
+    box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.6); /* Kesan tertekan, seperti buku tertutup */
+}
+
+/* Gaya untuk tautan tidak aktif (Chapter lain) */
+.part-navigation a:not(.part-active) {
+    background: linear-gradient(145deg, #5c4b3a, #7a614e); /* Gradien cokelat lebih terang */
+    color: #fffacd; /* Teks krem terang */
+    border-color: #a0522d; /* Border cokelat kemerahan */
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.6); /* Bayangan lebih kuat */
+}
+
+.part-navigation a:not(.part-active):hover {
+    transform: translateY(-3px); /* Melayang sedikit */
+    box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 215, 0, 0.3); /* Bayangan lebih besar & kilau emas samar */
+    background: linear-gradient(145deg, #7a614e, #9a7d65); /* Gradien cokelat sedikit lebih terang */
+}
+
+/* --- Gaya Item Galeri (Perpustakaan) --- */
+.gallery-container {
+    padding: 25px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.gallery-item {
+    border: 1px solid #3a2b1f; /* Border cokelat gelap */
+    border-radius: 8px; /* Sudut lebih lembut */
+    overflow: hidden;
+    text-align: center;
+    background-color: rgba(40, 30, 20, 0.9); /* Background item galeri cokelat gelap */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), 0 0 5px rgba(255, 215, 0, 0.1); /* Bayangan dan kilau emas samar */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+.gallery-item:hover {
+    transform: translateY(-5px) scale(1.01); /* Melayang dan sedikit membesar */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.7), 0 0 10px rgba(255, 215, 0, 0.4); /* Bayangan lebih intens & kilau emas */
+    border-color: #daa520; /* Border menyala emas */
+}
+
+.gallery-item a {
+    text-decoration: none;
+    color: #e0e0e0;
+    display: block;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    display: block;
+    border-bottom: 1px solid #4a3b2e; /* Border bawah gambar cokelat */
+}
+
+.gallery-item h3 {
+    font-family: 'EB Garamond', serif; /* Font untuk judul gambar galeri */
+    font-size: 15px;
+    margin: 12px 0;
+    padding: 0 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #e0e0e0;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.2); /* Kilau emas samar pada judul */
+}
