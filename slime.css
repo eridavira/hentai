@@ -1,0 +1,195 @@
+
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: rgba(0, 0, 0, 0.9); /* Hitam pekat transparan */
+    box-shadow: 0 0 30px rgba(124, 252, 0, 0.6); /* Cahaya hijau limau */
+    border-radius: 20px; /* Sudut sangat membulat, seperti gumpalan */
+    overflow: hidden;
+    border: 3px solid rgba(173, 255, 47, 0.8); /* Border tebal hijau limau */
+}
+
+.cover-photo-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.cover-photo {
+    width: 100%;
+    height: 300px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 0% 100%;
+    border-bottom: 2px solid #333333; /* Border gelap */
+}
+
+.gallery-title-link {
+    position: absolute;
+    top: 30px; /* Jarak dari atas */
+    left: 40px; /* Jarak dari kiri */
+    z-index: 10;
+}
+
+.gallery-title-link a {
+    text-decoration: none;
+    font-family: 'Fredericka the Great', cursive; /* Font untuk judul/logo SLIME WORLD */
+    font-size: 5em; /* Ukuran teks sangat besar */
+    font-weight: 400; /* Tidak terlalu tebal */
+    letter-spacing: 5px; /* Jarak antar huruf */
+    text-shadow: 4px 4px 0px rgba(0, 0, 0, 0.8), /* Bayangan hitam tebal */
+                 0 0 15px rgba(124, 252, 0, 0.8), /* Cahaya hijau terang */
+                 0 0 30px rgba(173, 255, 47, 0.5); /* Kilau lebih luas */
+    white-space: nowrap;
+    transition: all 0.2s ease-in-out;
+    line-height: 0.9; /* Mengurangi jarak antar baris jika teks terlalu besar */
+}
+
+.gallery-title-link a:hover {
+    transform: translateY(-5px) scale(1.03); /* Sedikit melayang dan membesar */
+    text-shadow: 6px 6px 0px rgba(0, 0, 0, 1), /* Bayangan lebih tebal */
+                 0 0 20px rgba(124, 252, 0, 1), /* Cahaya hijau lebih intens */
+                 0 0 40px rgba(173, 255, 47, 0.7); /* Kilau lebih dominan */
+}
+
+.gal-white {
+    color: #7CFC00; /* Warna hijau limau */
+}
+
+.lery-red {
+    color: #ADFF2F; /* Warna hijau neon */
+}
+
+/* --- Gaya Navigasi Part (Tombol Lendir) --- */
+.part-navigation {
+    text-align: center;
+    padding: 25px 0; /* Padding lebih besar */
+    background-color: rgba(5, 5, 5, 0.98); /* Sangat gelap */
+    border-bottom: 2px solid #555555; /* Border gelap */
+}
+
+.part-navigation ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 25px; /* Jarak antar tombol lebih besar */
+}
+
+.part-navigation li {
+    display: inline-block;
+}
+
+.part-navigation a {
+    /* Gaya Dasar Tombol Lendir */
+    padding: 15px 30px; /* Tombol lebih besar */
+    text-decoration: none;
+    font-family: 'Press Start 2P', cursive; /* Font pixelated */
+    font-size: 14px; /* Ukuran font lebih kecil karena pixelated */
+    font-weight: 400;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.6); /* Bayangan pixelated */
+    border: 2px solid;
+    border-radius: 15px; /* Sudut membulat */
+    display: block;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #228B22, #006400); /* Gradien hijau tua */
+    color: #ccff00; /* Teks hijau limau */
+    border-color: #7CFC00; /* Border hijau limau */
+    box-shadow: 0 0 10px rgba(124, 252, 0, 0.5), 0 0 20px rgba(173, 255, 47, 0.2); /* Cahaya neon samar */
+    transition: all 0.3s ease-in-out;
+}
+
+/* Efek Gelembung / Lendir pada Hover */
+.part-navigation a:not(.part-active)::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(124, 252, 0, 0.5) 0%, transparent 70%); /* Efek gelembung */
+    transform: scale(0);
+    transition: transform 0.5s ease-in-out;
+    opacity: 0;
+}
+
+.part-navigation a:not(.part-active):hover::before {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* Gaya untuk tautan aktif (Part saat ini) */
+.part-navigation a.part-active {
+    background: #0a0a0a; /* Warna sangat gelap */
+    color: #555555; /* Teks pudar */
+    cursor: default;
+    pointer-events: none;
+    border-color: #222222;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.7); /* Kesan tertekan */
+}
+
+/* Gaya untuk tautan tidak aktif (Part lain) */
+.part-navigation a:not(.part-active) {
+    background: linear-gradient(135deg, #7CFC00, #ADFF2F); /* Gradien hijau cerah */
+    color: #000000; /* Teks hitam pekat */
+    border-color: #FFD700; /* Border kuning keemasan */
+    box-shadow: 0 0 15px rgba(124, 252, 0, 0.8), 0 0 30px rgba(173, 255, 47, 0.5); /* Cahaya hijau lebih kuat */
+}
+
+.part-navigation a:not(.part-active):hover {
+    transform: translateY(-5px); /* Melayang lebih tinggi */
+    box-shadow: 0 0 20px rgba(124, 252, 0, 1), 0 0 40px rgba(173, 255, 47, 0.8); /* Cahaya lebih dominan */
+    background: linear-gradient(135deg, #ADFF2F, #7CFC00); /* Gradien hijau bergeser */
+}
+
+/* --- Gaya Item Galeri (Lendir) --- */
+.gallery-container {
+    padding: 30px; /* Padding lebih besar */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Ukuran item lebih besar */
+    gap: 25px; /* Jarak antar item lebih besar */
+}
+
+.gallery-item {
+    border: 3px solid #7CFC00; /* Border tebal hijau limau */
+    border-radius: 15px; /* Sudut membulat */
+    overflow: hidden;
+    text-align: center;
+    background-color: rgba(10, 10, 10, 0.95); /* Background item galeri sangat gelap */
+    box-shadow: 0 0 15px rgba(124, 252, 0, 0.6), 0 0 25px rgba(173, 255, 47, 0.3); /* Bayangan dan kilau hijau */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+.gallery-item:hover {
+    transform: translateY(-7px) scale(1.02); /* Melayang lebih tinggi & membesar */
+    box-shadow: 0 0 20px rgba(124, 252, 0, 0.8), 0 0 35px rgba(173, 255, 47, 0.6); /* Bayangan lebih intens & kilau */
+    border-color: #ADFF2F; /* Border menyala hijau neon */
+}
+
+.gallery-item a {
+    text-decoration: none;
+    color: #ccff00; /* Teks hijau limau */
+    display: block;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 180px; /* Tinggi gambar lebih besar */
+    object-fit: cover;
+    display: block;
+    border-bottom: 2px solid #555555; /* Border bawah gambar gelap */
+}
+
+.gallery-item h3 {
+    font-family: 'Press Start 2P', cursive; /* Font pixelated */
+    font-size: 13px; /* Ukuran font lebih kecil */
+    margin: 15px 0; /* Margin lebih besar */
+    padding: 0 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #ccff00; /* Teks hijau limau */
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5), 0 0 10px rgba(173, 255, 47, 0.4); /* Bayangan pixelated dan kilau */
+}
