@@ -48,11 +48,8 @@ body {
 
 .grid-row {
     display: flex;
-    /* overflow-x: auto; /* No longer needed for single item */
     gap: 15px; /* Space between movie items */
     padding-bottom: 20px; /* Space for scrollbar */
-    /* scrollbar-width: thin; /* Firefox */
-    /* scrollbar-color: #e50914 #333; /* Firefox */
 }
 
 /* Custom scrollbar for Webkit browsers */
