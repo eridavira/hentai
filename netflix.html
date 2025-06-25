@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Clone - Video</title>
+    <link rel="stylesheet" href="netflix.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">NETFLIX</div>
+        <nav class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">TV Shows</a>
+            <a href="#">Movies</a>
+            <a href="#">New & Popular</a>
+            <a href="#">My List</a>
+        </nav>
+    </header>
+
+    <main class="content-grid">
+        <h2>Video Pilihan</h2>
+        <div class="grid-row">
+            <div class="movie-item" data-video-src="https://drive.google.com/file/d/1npoFsnL_xYKfqEwN7rWWL99HgD_Zh5bR/preview">
+                <img src="https://via.placeholder.com/300x169/0000FF/FFFFFF?text=Klik+untuk+Video" alt="Video Placeholder">
+                <div class="movie-title">Video Demo Google Drive</div>
+            </div>
+        </div>
+    </main>
+
+    <!--https://drive.google.com/file/d/1npoFsnL_xYKfqEwN7rWWL99HgD_Zh5bR/view-->
+
+    <div id="movieModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div class="modal-body">
+                Memuat video...
+            </div>
+        </div>
+    </div>
+
+    <script src="netflix.js"></script>
+</body>
+</html>

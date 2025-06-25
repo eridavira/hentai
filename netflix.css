@@ -1,0 +1,187 @@
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #141414;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar Styling */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    background-color: #141414;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar .logo {
+    color: #e50914;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.navbar .nav-links a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 1.1em;
+}
+
+.navbar .nav-links a:hover {
+    color: #b3b3b3;
+}
+
+/* Content Grid Styling */
+.content-grid {
+    padding: 20px 50px;
+}
+
+.content-grid h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    margin-top: 40px;
+}
+
+.grid-row {
+    display: flex;
+    /* overflow-x: auto; /* No longer needed for single item */
+    gap: 15px; /* Space between movie items */
+    padding-bottom: 20px; /* Space for scrollbar */
+    /* scrollbar-width: thin; /* Firefox */
+    /* scrollbar-color: #e50914 #333; /* Firefox */
+}
+
+/* Custom scrollbar for Webkit browsers */
+.grid-row::-webkit-scrollbar {
+    height: 8px;
+}
+
+.grid-row::-webkit-scrollbar-track {
+    background: #333;
+    border-radius: 10px;
+}
+
+.grid-row::-webkit-scrollbar-thumb {
+    background: #e50914;
+    border-radius: 10px;
+}
+
+.movie-item {
+    flex: 0 0 auto; /* Prevent items from shrinking */
+    width: 300px; /* Fixed width for each movie item */
+    background-color: #222;
+    border-radius: 5px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.movie-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.6);
+}
+
+.movie-item img {
+    width: 100%;
+    height: 169px; /* Aspect ratio for 16:9 */
+    display: block;
+}
+
+.movie-item .movie-title {
+    padding: 10px;
+    font-size: 1.1em;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Modal (Pop-up) Styling */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1001; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+.modal-content {
+    background-color: #1a1a1a;
+    margin: auto;
+    padding: 20px;
+    border-radius: 8px;
+    position: relative;
+    width: 80%; /* Adjust as needed */
+    max-width: 900px; /* Max width for larger screens */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #e50914;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding-top: 30px; /* Space for close button */
+    position: relative; /* For iframe wrapper */
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio (9 / 16 * 100%) */
+    height: 0;
+    overflow: hidden;
+}
+
+.modal-body iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* Styles for content loaded into modal-body (example) */
+.modal-body h3 {
+    color: #e50914;
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.modal-body p {
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+.modal-body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
