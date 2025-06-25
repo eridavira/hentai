@@ -19,9 +19,17 @@ body {
 }
 
 .navbar .logo {
-    color: #e50914;
-    font-size: 2em;
-    font-weight: bold;
+    /* Ini adalah div yang membungkus link logo */
+    /* Pastikan tidak ada gaya yang bentrok dengan 'a' di dalamnya */
+}
+
+.navbar .logo a {
+    color: #e50914; /* Warna merah khas Netflix */
+    font-size: 2em; /* Ukuran font yang besar */
+    font-weight: bold; /* Font tebal */
+    text-decoration: none; /* Menghilangkan garis bawah default pada link */
+    cursor: pointer; /* Menunjukkan bahwa ini bisa diklik */
+    display: block; /* Memastikan area klik mencakup seluruh teks */
 }
 
 .navbar .nav-links a {
@@ -48,11 +56,14 @@ body {
 
 .grid-row {
     display: flex;
-    gap: 15px; /* Space between movie items */
-    padding-bottom: 20px; /* Space for scrollbar */
+    gap: 15px; /* Spasi antar item video */
+    padding-bottom: 20px; /* Spasi untuk scrollbar */
+    overflow-x: auto; /* Memungkinkan scrolling horizontal jika banyak item */
+    scrollbar-width: thin; /* Untuk Firefox */
+    scrollbar-color: #e50914 #333; /* Untuk Firefox */
 }
 
-/* Custom scrollbar for Webkit browsers */
+/* Custom scrollbar untuk browser Webkit (Chrome, Safari, Edge) */
 .grid-row::-webkit-scrollbar {
     height: 8px;
 }
@@ -68,8 +79,8 @@ body {
 }
 
 .movie-item {
-    flex: 0 0 auto; /* Prevent items from shrinking */
-    width: 300px; /* Fixed width for each movie item */
+    flex: 0 0 auto; /* Mencegah item mengecil */
+    width: 300px; /* Lebar tetap untuk setiap item video */
     background-color: #222;
     border-radius: 5px;
     overflow: hidden;
@@ -82,10 +93,15 @@ body {
     box-shadow: 0 0 15px rgba(229, 9, 20, 0.6);
 }
 
+/* Update this section in your netflix.css file */
 .movie-item img {
     width: 100%;
-    height: 169px; /* Aspect ratio for 16:9 */
+    height: 169px; /* Tetapkan tinggi yang diinginkan */
     display: block;
+    object-fit: cover; /* Memastikan gambar menutupi area, memotong jika perlu */
+    /* Hapus baris ini: object-position: center; */
+    /* Opsional: tambahkan transisi jika Anda ingin animasi halus saat posisi berubah (misal via JS) */
+    /* transition: object-position 0.3s ease; */
 }
 
 .movie-item .movie-title {
@@ -99,17 +115,17 @@ body {
 
 /* Modal (Pop-up) Styling */
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1001; /* Sit on top */
+    display: none; /* Sembunyikan secara default */
+    position: fixed; /* Tetap di tempat */
+    z-index: 1001; /* Di atas elemen lain */
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
+    width: 100%; /* Lebar penuh */
+    height: 100%; /* Tinggi penuh */
+    overflow: auto; /* Aktifkan scroll jika konten melebihi layar */
+    background-color: rgba(0,0,0,0.8); /* Latar belakang hitam transparan */
+    justify-content: center; /* Pusatkan secara horizontal */
+    align-items: center; /* Pusatkan secara vertikal */
 }
 
 .modal-content {
@@ -118,10 +134,10 @@ body {
     padding: 20px;
     border-radius: 8px;
     position: relative;
-    width: 80%; /* Adjust as needed */
-    max-width: 900px; /* Max width for larger screens */
+    width: 80%; /* Sesuaikan sesuai kebutuhan */
+    max-width: 900px; /* Lebar maksimum untuk layar besar */
     box-shadow: 0 5px 15px rgba(0,0,0,0.6);
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeIn 0.3s ease-out; /* Animasi muncul */
 }
 
 @keyframes fadeIn {
@@ -148,9 +164,9 @@ body {
 }
 
 .modal-body {
-    padding-top: 30px; /* Space for close button */
-    position: relative; /* For iframe wrapper */
-    padding-bottom: 56.25%; /* 16:9 Aspect Ratio (9 / 16 * 100%) */
+    padding-top: 30px; /* Ruang untuk tombol tutup */
+    position: relative; /* Untuk wrapper iframe */
+    padding-bottom: 56.25%; /* Rasio aspek 16:9 (9 / 16 * 100%) */
     height: 0;
     overflow: hidden;
 }
@@ -164,16 +180,11 @@ body {
     border: 0;
 }
 
-/* Styles for content loaded into modal-body (example) */
-.modal-body h3 {
-    color: #e50914;
-    font-size: 2em;
-    margin-bottom: 10px;
-}
-
+/* Gaya untuk konten yang dimuat ke dalam modal-body (contoh, jika ada teks atau gambar selain video) */
 .modal-body p {
     font-size: 1.1em;
     line-height: 1.6;
+    margin-top: 20px; /* Sedikit spasi di atas teks jika video di atasnya */
 }
 
 .modal-body img {
