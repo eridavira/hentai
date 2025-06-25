@@ -20,7 +20,6 @@ body {
 
 .navbar .logo {
     /* Ini adalah div yang membungkus link logo */
-    /* Pastikan tidak ada gaya yang bentrok dengan 'a' di dalamnya */
 }
 
 .navbar .logo a {
@@ -93,15 +92,12 @@ body {
     box-shadow: 0 0 15px rgba(229, 9, 20, 0.6);
 }
 
-/* Update this section in your netflix.css file */
 .movie-item img {
     width: 100%;
-    height: 169px; /* Tetapkan tinggi yang diinginkan */
+    height: 169px; /* Tinggi thumbnail yang seragam */
     display: block;
-    object-fit: cover; /* Memastikan gambar menutupi area, memotong jika perlu */
-    /* Hapus baris ini: object-position: center; */
-    /* Opsional: tambahkan transisi jika Anda ingin animasi halus saat posisi berubah (misal via JS) */
-    /* transition: object-position 0.3s ease; */
+    object-fit: cover; /* Memastikan gambar menutupi area tanpa penyet, akan terpotong jika rasio tidak cocok */
+    /* object-position tidak lagi diatur di sini, karena akan diatur langsung di HTML */
 }
 
 .movie-item .movie-title {
@@ -187,7 +183,7 @@ body {
     margin-top: 20px; /* Sedikit spasi di atas teks jika video di atasnya */
 }
 
-.modal-body img {
+.modal-body img { /* <--- PASTIKAN BLOK INI DIMULAI SETELAH } BLOK SEBELUMNYA */
     max-width: 100%;
     height: auto;
     border-radius: 5px;

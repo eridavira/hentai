@@ -1,57 +1,60 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const movieItem = document.querySelector('.movie-item');
+    // Menggunakan querySelectorAll untuk menangani banyak movie-item
+    const movieItems = document.querySelectorAll('.movie-item');
     const movieModal = document.getElementById('movieModal');
     const closeButton = document.querySelector('.close-button');
     const modalBody = document.querySelector('.modal-body');
 
     // Function to open the modal by fetching content from a file
     function openModal(detailFilePath) {
+        // Tampilkan dulu pesan "Memuat..."
+        modalBody.innerHTML = 'Memuat detail video...';
+        movieModal.style.display = 'flex'; // Tampilkan modal
+        document.body.style.overflow = 'hidden'; // Nonaktifkan scrolling background
+
         fetch(detailFilePath)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    // Jika respons tidak OK (misal 404 Not Found), lempar error
+                    throw new Error(`HTTP error! status: ${response.status} for ${detailFilePath}`);
                 }
                 return response.text();
             })
             .then(htmlContent => {
-                modalBody.innerHTML = htmlContent; // Insert fetched content
-                movieModal.style.display = 'flex'; // Show the modal
-                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                modalBody.innerHTML = htmlContent; // Masukkan konten yang diambil
             })
             .catch(error => {
                 console.error('Error loading video details:', error);
-                modalBody.innerHTML = '<p>Gagal memuat detail video. Silakan coba lagi nanti.</p>';
-                movieModal.style.display = 'flex'; // Still show the modal with error message
-                document.body.style.overflow = 'hidden';
+                modalBody.innerHTML = `<p>Gagal memuat detail video dari ${detailFilePath}. Pastikan file ada dan namanya benar.</p>`;
             });
     }
 
     // Function to close the modal
     function closeModal() {
-        movieModal.style.display = 'none'; // Hide the modal
-        document.body.style.overflow = 'auto'; // Re-enable background scrolling
-        modalBody.innerHTML = 'Memuat detail video...'; // Reset content for next open
+        movieModal.style.display = 'none'; // Sembunyikan modal
+        document.body.style.overflow = 'auto'; // Aktifkan kembali scrolling background
+        modalBody.innerHTML = 'Memuat detail video...'; // Reset konten untuk pembukaan selanjutnya
     }
 
-    // Event listener for the single movie item
-    if (movieItem) {
-        movieItem.addEventListener('click', () => {
-            const detailFilePath = movieItem.dataset.detailFile; // Get the detail file path
+    // Event listeners untuk setiap movie item
+    movieItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const detailFilePath = item.dataset.detailFile; // Ambil path file detail dari data attribute
             openModal(detailFilePath);
         });
-    }
+    });
 
-    // Event listener for the close button
+    // Event listener untuk tombol tutup
     closeButton.addEventListener('click', closeModal);
 
-    // Close the modal if clicked outside of the modal content
+    // Tutup modal jika diklik di luar area konten modal
     window.addEventListener('click', (event) => {
         if (event.target === movieModal) {
             closeModal();
         }
     });
 
-    // Close the modal with the Escape key
+    // Tutup modal dengan tombol Escape
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' && movieModal.style.display === 'flex') {
             closeModal();
