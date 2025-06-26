@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Clone - Photo Gallery</title>
+    <link rel="stylesheet" href="netflix-g.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <a href="netflix.html">NETFLIX</a>
+        </div>
+        <nav class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">TV Shows</a>
+            <a href="#">Movies</a>
+            <a href="#">New & Popular</a>
+            <a href="#">My List</a>
+        </nav>
+    </header>
+
+    <main class="content-grid">
+        <h2>Koleksi Foto Pilihan</h2>
+
+        <div class="grid-row">
+
+            <div class="movie-item" data-detail-file="ngallery1.html">
+                <img src="https://via.placeholder.com/300x169/008000/FFFFFF?text=Galeri+Alam" alt="thumbnail galeri alam" style="object-position: 50% 50%;">
+                <div class="movie-title">Galeri Pemandangan Alam</div>
+            </div>
+
+            <div class="movie-item" data-detail-file="ngallery2.html">
+                <img src="https://via.placeholder.com/300x169/FF5733/FFFFFF?text=Galeri+Kota" alt="thumbnail galeri kota" style="object-position: 50% 50%;">
+                <div class="movie-title">Galeri Pemandangan Kota</div>
+            </div>
+
+            <div class="movie-item" data-detail-file="ngallery3.html">
+                <img src="https://via.placeholder.com/300x169/33FF57/000000?text=Galeri+Hewan" alt="thumbnail galeri hewan" style="object-position: 50% 50%;">
+                <div class="movie-title">Galeri Hewan Liar</div>
+            </div>
+
+            </div>
+    </main>
+
+    <div id="movieModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div class="modal-body">
+                Memuat galeri foto...
+            </div>
+        </div>
+    </div>
+
+    <script src="netflix-g.js"></script>
+</body>
+</html>

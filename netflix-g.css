@@ -1,0 +1,228 @@
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #141414;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar Styling */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    background-color: #141414;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar .logo {
+    /* Ini adalah div yang membungkus link logo */
+}
+
+.navbar .logo a {
+    color: #e50914; /* Warna merah khas Netflix */
+    font-size: 2em; /* Ukuran font yang besar */
+    font-weight: bold; /* Font tebal */
+    text-decoration: none; /* Menghilangkan garis bawah default pada link */
+    cursor: pointer; /* Menunjukkan bahwa ini bisa diklik */
+    display: block; /* Memastikan area klik mencakup seluruh teks */
+}
+
+.navbar .nav-links a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 1.1em;
+}
+
+.navbar .nav-links a:hover {
+    color: #b3b3b3;
+}
+
+/* Content Grid Styling */
+.content-grid {
+    padding: 20px 50px;
+}
+
+.content-grid h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    margin-top: 40px;
+}
+
+.grid-row {
+    display: flex;
+    gap: 15px; /* Spasi antar item video */
+    padding-bottom: 20px; /* Spasi untuk scrollbar */
+    overflow-x: auto; /* Memungkinkan scrolling horizontal jika banyak item */
+    scrollbar-width: thin; /* Untuk Firefox */
+    scrollbar-color: #e50914 #333; /* Untuk Firefox */
+}
+
+/* Custom scrollbar untuk browser Webkit (Chrome, Safari, Edge) */
+.grid-row::-webkit-scrollbar {
+    height: 8px;
+}
+
+.grid-row::-webkit-scrollbar-track {
+    background: #333;
+    border-radius: 10px;
+}
+
+.grid-row::-webkit-scrollbar-thumb {
+    background: #e50914;
+    border-radius: 10px;
+}
+
+.movie-item {
+    flex: 0 0 auto; /* Mencegah item mengecil */
+    width: 300px; /* Lebar tetap untuk setiap item video */
+    background-color: #222;
+    border-radius: 5px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.movie-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.6);
+}
+
+.movie-item img {
+    width: 100%;
+    height: 169px; /* Tinggi thumbnail yang seragam */
+    display: block;
+    object-fit: cover; /* Memastikan gambar menutupi area tanpa penyet, akan terpotong jika rasio tidak cocok */
+    /* object-position tidak lagi diatur di sini, karena akan diatur langsung di HTML */
+}
+
+.movie-item .movie-title {
+    padding: 10px;
+    font-size: 1.1em;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Modal (Pop-up) Styling */
+.modal {
+    display: none; /* Sembunyikan secara default */
+    position: fixed; /* Tetap di tempat */
+    z-index: 1001; /* Di atas elemen lain */
+    left: 0;
+    top: 0;
+    width: 100%; /* Lebar penuh */
+    height: 100%; /* Tinggi penuh */
+    overflow: auto; /* Aktifkan scroll jika konten melebihi layar */
+    background-color: rgba(0,0,0,0.8); /* Latar belakang hitam transparan */
+    justify-content: center; /* Pusatkan secara horizontal */
+    align-items: center; /* Pusatkan secara vertikal */
+}
+
+.modal-content {
+    background-color: #1a1a1a;
+    margin: auto;
+    padding: 20px;
+    border-radius: 8px;
+    position: relative;
+    width: 90%; /* Sedikit lebih lebar untuk galeri */
+    max-width: 1200px; /* Lebar maksimum untuk layar besar */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+    animation: fadeIn 0.3s ease-out; /* Animasi muncul */
+    max-height: 90vh; /* Batasi tinggi modal agar bisa discroll */
+    overflow-y: auto; /* Aktifkan scroll vertikal di dalam modal */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #e50914;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding-top: 30px; /* Ruang untuk tombol tutup */
+    /* Hapus padding-bottom 56.25% karena tidak lagi iframe video */
+    /* Hapus height: 0; overflow: hidden; karena tidak lagi iframe video */
+}
+
+/* --- Gaya Khusus Galeri Foto di dalam Modal --- */
+
+.modal-body h3 {
+    color: #fff; /* Judul galeri putih */
+    font-size: 2em;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.gallery-grid {
+    display: grid;
+    /* 5 kolom: gunakan repeat(auto-fit, minmax(lebar_item, 1fr)) untuk responsif */
+    /* Atau, untuk sederhana, 5 kolom tetap: */
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px; /* Jarak antar foto */
+    margin-bottom: 30px; /* Jarak antara galeri dan deskripsi */
+}
+
+.gallery-item {
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: #333;
+    display: flex; /* Untuk memusatkan gambar jika perlu */
+    justify-content: center;
+    align-items: center;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 120px; /* Tinggi seragam untuk setiap foto di galeri */
+    object-fit: cover; /* Pastikan foto mengisi area, potong jika perlu */
+    object-position: center; /* Pusat fokus default untuk foto galeri */
+    display: block;
+}
+
+/* Jika mau hover efek pada gambar galeri */
+.gallery-item img:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s ease;
+    cursor: zoom-in; /* Menunjukkan bisa diklik (jika ada fungsi zoom nantinya) */
+}
+
+
+.modal-body p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 10px; /* Spasi antar paragraf deskripsi */
+}
+
+/* --- End Gaya Khusus Galeri Foto --- */
+
+/* Gaya untuk elemen lain yang dimuat ke dalam modal-body (seperti gambar individual besar) */
+/* Ini adalah sisa dari gaya sebelumnya yang mungkin tidak lagi relevan atau perlu disesuaikan */
+/* .modal-body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 20px;
+} */
