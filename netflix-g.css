@@ -1,4 +1,10 @@
-body {
+/*
+ * File: netflix.css
+ * Deskripsi: Mengandung semua gaya CSS untuk tata letak halaman utama,
+ * pop-up modal, dan tampilan galeri foto di dalamnya.
+ */
+
+ body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     background-color: #141414;
     color: #fff;
@@ -6,7 +12,7 @@ body {
     padding: 0;
 }
 
-/* Navbar Styling */
+/* --- Navbar Styling --- */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -18,8 +24,9 @@ body {
     z-index: 1000;
 }
 
+/* Logo Netflix di Navbar */
 .navbar .logo {
-    /* Ini adalah div yang membungkus link logo */
+    /* Container untuk logo, tidak ada gaya spesifik di sini */
 }
 
 .navbar .logo a {
@@ -31,6 +38,7 @@ body {
     display: block; /* Memastikan area klik mencakup seluruh teks */
 }
 
+/* Link Navigasi di Navbar */
 .navbar .nav-links a {
     color: #fff;
     text-decoration: none;
@@ -42,7 +50,7 @@ body {
     color: #b3b3b3;
 }
 
-/* Content Grid Styling */
+/* --- Content Grid Styling (Halaman Utama) --- */
 .content-grid {
     padding: 20px 50px;
 }
@@ -55,7 +63,7 @@ body {
 
 .grid-row {
     display: flex;
-    gap: 15px; /* Spasi antar item video */
+    gap: 15px; /* Spasi antar item video/galeri */
     padding-bottom: 20px; /* Spasi untuk scrollbar */
     overflow-x: auto; /* Memungkinkan scrolling horizontal jika banyak item */
     scrollbar-width: thin; /* Untuk Firefox */
@@ -77,9 +85,10 @@ body {
     border-radius: 10px;
 }
 
+/* Gaya untuk setiap item film/galeri di halaman utama */
 .movie-item {
-    flex: 0 0 auto; /* Mencegah item mengecil */
-    width: 300px; /* Lebar tetap untuk setiap item video */
+    flex: 0 0 auto; /* Mencegah item mengecil dan memastikan lebar tetap */
+    width: 300px; /* Lebar tetap untuk setiap item */
     background-color: #222;
     border-radius: 5px;
     overflow: hidden;
@@ -88,16 +97,16 @@ body {
 }
 
 .movie-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(229, 9, 20, 0.6);
+    transform: scale(1.05); /* Sedikit membesar saat hover */
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.6); /* Efek bayangan merah */
 }
 
 .movie-item img {
     width: 100%;
-    height: 169px; /* Tinggi thumbnail yang seragam */
+    height: 169px; /* Tinggi seragam untuk thumbnail (rasio 16:9) */
     display: block;
-    object-fit: cover; /* Memastikan gambar menutupi area tanpa penyet, akan terpotong jika rasio tidak cocok */
-    /* object-position tidak lagi diatur di sini, karena akan diatur langsung di HTML */
+    object-fit: cover; /* Memastikan gambar menutupi area tanpa penyet, bisa terpotong */
+    /* object-position tidak diatur di sini agar bisa diatur per gambar di HTML */
 }
 
 .movie-item .movie-title {
@@ -106,35 +115,36 @@ body {
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: ellipsis; /* Menambahkan ... jika teks terlalu panjang */
 }
 
-/* Modal (Pop-up) Styling */
+/* --- Modal (Pop-up) Styling --- */
 .modal {
     display: none; /* Sembunyikan secara default */
-    position: fixed; /* Tetap di tempat */
-    z-index: 1001; /* Di atas elemen lain */
+    position: fixed; /* Tetap di tempat di viewport */
+    z-index: 1001; /* Pastikan di atas elemen lain */
     left: 0;
     top: 0;
     width: 100%; /* Lebar penuh */
     height: 100%; /* Tinggi penuh */
     overflow: auto; /* Aktifkan scroll jika konten melebihi layar */
     background-color: rgba(0,0,0,0.8); /* Latar belakang hitam transparan */
+    display: flex; /* Menggunakan flexbox untuk pemusatan */
     justify-content: center; /* Pusatkan secara horizontal */
     align-items: center; /* Pusatkan secara vertikal */
 }
 
 .modal-content {
     background-color: #1a1a1a;
-    margin: auto;
+    margin: auto; /* Membantu pemusatan bersama flexbox */
     padding: 20px;
     border-radius: 8px;
     position: relative;
-    width: 90%; /* Sedikit lebih lebar untuk galeri */
+    width: 90%; /* Lebar modal, bisa disesuaikan */
     max-width: 1200px; /* Lebar maksimum untuk layar besar */
     box-shadow: 0 5px 15px rgba(0,0,0,0.6);
     animation: fadeIn 0.3s ease-out; /* Animasi muncul */
-    max-height: 90vh; /* Batasi tinggi modal agar bisa discroll */
+    max-height: 90vh; /* Batasi tinggi modal agar bisa discroll jika konten banyak */
     overflow-y: auto; /* Aktifkan scroll vertikal di dalam modal */
 }
 
@@ -145,13 +155,13 @@ body {
 
 .close-button {
     color: #aaa;
-    float: right;
     font-size: 28px;
     font-weight: bold;
-    position: absolute;
+    position: absolute; /* Posisi absolut di dalam modal-content */
     top: 10px;
     right: 20px;
     cursor: pointer;
+    z-index: 10; /* Pastikan tombol di atas konten */
 }
 
 .close-button:hover,
@@ -162,67 +172,89 @@ body {
 }
 
 .modal-body {
-    padding-top: 30px; /* Ruang untuk tombol tutup */
-    /* Hapus padding-bottom 56.25% karena tidak lagi iframe video */
-    /* Hapus height: 0; overflow: hidden; karena tidak lagi iframe video */
+    padding-top: 30px; /* Ruang untuk tombol tutup agar tidak tertutup konten */
+    /* Properti lain (height, overflow) yang spesifik untuk iframe video telah dihapus */
 }
 
 /* --- Gaya Khusus Galeri Foto di dalam Modal --- */
 
+/* Judul Utama Galeri (di atas semua foto) */
 .modal-body h3 {
-    color: #fff; /* Judul galeri putih */
+    color: #fff;
     font-size: 2em;
     margin-bottom: 25px;
     text-align: center;
 }
 
+/* Grid untuk menampung semua item galeri foto */
 .gallery-grid {
     display: grid;
-    /* 5 kolom: gunakan repeat(auto-fit, minmax(lebar_item, 1fr)) untuk responsif */
-    /* Atau, untuk sederhana, 5 kolom tetap: */
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px; /* Jarak antar foto */
-    margin-bottom: 30px; /* Jarak antara galeri dan deskripsi */
+    /* Membuat grid responsif: 5 kolom jika cukup ruang, menyesuaikan jika tidak */
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px; /* Jarak antar item foto dalam grid */
+    margin-bottom: 30px; /* Jarak antara grid galeri dan deskripsi */
 }
 
+/* Setiap item foto dalam galeri */
 .gallery-item {
     border-radius: 5px;
     overflow: hidden;
     background-color: #333;
-    display: flex; /* Untuk memusatkan gambar jika perlu */
-    justify-content: center;
-    align-items: center;
+    display: flex; /* Menggunakan flexbox untuk tata letak internal */
+    flex-direction: column; /* Mengatur gambar di atas, judul di bawah */
+    justify-content: flex-start; /* Gambar menempel di atas */
+    align-items: center; /* Konten di tengah secara horizontal */
+    cursor: pointer; /* Menunjukkan item bisa diklik */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-align: center; /* Teks judul di tengah */
 }
 
+.gallery-item:hover {
+    transform: scale(1.03); /* Sedikit membesar saat hover */
+    box-shadow: 0 0 10px rgba(229, 9, 20, 0.6); /* Efek bayangan merah */
+}
+
+/* Tautan di dalam setiap item galeri (membungkus img dan h3) */
+.gallery-item a {
+    text-decoration: none; /* Hilangkan garis bawah default */
+    color: inherit; /* Warisi warna teks dari parent (putih) */
+    display: flex; /* Konten tautan juga flexbox */
+    flex-direction: column; /* Konten tautan tersusun vertikal */
+    width: 100%; /* Link mengisi seluruh lebar item */
+    height: 100%; /* Link mengisi seluruh tinggi item */
+}
+
+/* Gambar di dalam setiap item galeri */
 .gallery-item img {
     width: 100%;
     height: 120px; /* Tinggi seragam untuk setiap foto di galeri */
     object-fit: cover; /* Pastikan foto mengisi area, potong jika perlu */
     object-position: center; /* Pusat fokus default untuk foto galeri */
     display: block;
+    border-bottom: 1px solid #444; /* Garis pemisah opsional antara gambar dan judul */
 }
 
-/* Jika mau hover efek pada gambar galeri */
-.gallery-item img:hover {
-    transform: scale(1.05);
-    transition: transform 0.2s ease;
-    cursor: zoom-in; /* Menunjukkan bisa diklik (jika ada fungsi zoom nantinya) */
+/* Judul kecil di bawah setiap gambar di galeri */
+.gallery-item h3 {
+    font-size: 0.9em; /* Ukuran font lebih kecil dari judul galeri utama */
+    font-weight: normal; /* Tidak terlalu tebal */
+    color: #eee; /* Warna teks sedikit abu-abu muda */
+    margin: 10px 5px; /* Spasi di atas/bawah dan samping */
+    padding: 0; /* Pastikan tidak ada padding default */
+    line-height: 1.2;
+    overflow: hidden; /* Sembunyikan jika teks terlalu panjang */
+    text-overflow: ellipsis; /* Menambahkan ... jika teks terlalu panjang */
+    white-space: nowrap; /* Jangan memecah baris teks */
+    flex-grow: 1; /* Biarkan h3 mengambil sisa ruang vertikal jika item lain lebih tinggi */
+    display: flex; /* Untuk memusatkan teks secara vertikal */
+    align-items: center; /* Pusat teks secara vertikal */
+    justify-content: center; /* Pusat teks secara horizontal */
 }
 
-
+/* Deskripsi Galeri (di bawah koleksi foto) */
 .modal-body p {
     font-size: 1.1em;
     line-height: 1.6;
+    margin-top: 20px; /* Spasi antara grid galeri dan deskripsi */
     margin-bottom: 10px; /* Spasi antar paragraf deskripsi */
 }
-
-/* --- End Gaya Khusus Galeri Foto --- */
-
-/* Gaya untuk elemen lain yang dimuat ke dalam modal-body (seperti gambar individual besar) */
-/* Ini adalah sisa dari gaya sebelumnya yang mungkin tidak lagi relevan atau perlu disesuaikan */
-/* .modal-body img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-    margin-bottom: 20px;
-} */
