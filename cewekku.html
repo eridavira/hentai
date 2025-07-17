@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeri Foto Dropbox</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        #gallery-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .gallery-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 200px; /* Tinggi tetap untuk thumbnail */
+            object-fit: cover; /* Menjaga aspek rasio dan mengisi ruang */
+            display: block;
+        }
+        .gallery-item p {
+            text-align: center;
+            padding: 8px;
+            margin: 0;
+            background-color: #f9f9f9;
+            font-size: 0.9em;
+            color: #333;
+        }
+        #loading {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 1.2em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Galeri Foto dari Dropbox</h1>
+    <div id="loading">Memuat gambar...</div>
+    <div id="gallery-container">
+        </div>
+
+    <script>
+        // --- KONFIGURASI ANDA ---
+        const DROPBOX_ACCESS_TOKEN = 'sl.u.AF1yNdYLfs0q2etu48Jx4ulW5syvJpD5hSDLyklEvLA16PzdTKpNhURK9uptKKHa5OvNB0o9f2EqJ9FEhFchiyxYYVm_enIgy-lSnsi6LJeL3xID9fqZUl3Tj-NkwsOUmd6SBqoVSBtu90q-wLqmPFW3jS3TZhV3t2JMZy64cZ7LDAwl1bjPXZlXPD7fjPrgC8ZXGLB4wDJ3vcKlqelBNfokpAuW7N0D-KxW8ZyrTZPuVz0zTrzQ0eUp3ThrpCQ8Md33SuYGS0jzhrs8hBZuCXaVrptBewp0wHH_fYhUAxqO_Uteeil2R9iOZJlyNz4pFgXEZWfPK0yr5a0m9L23EUokrIm_BasQwB1tV1gSRKXEyS6oHLvAqpqo3XjU152oLmL_E1tpFNJWStKg1UWbXSxTvzxHP6ZevODd4cFJhguH-JkmwPGLZ0v4NTdVbJ_UbmRYX_gHLziz9now6u9mDwP33X7bc0AUyaFl_MzfuKRH0heJCc5faiWkZqpKdDtceROQvfvr1Ch-3MsyoKSIseAlYvgRYyEHUJjkJolhkPZjSQ4TkA54UjOKwKHaDAbx1ir30tisIb9wgob3vyszy4bdNbqoL8f4cxB9VIaXuiy402I9kfBaUy6cj05NGvtHBmPg2ULxrUM1Ljwi2BtHL0u_75MaqaL_w7s4eGgEFhgsT4iXnjbYqzqAZsjYDY6gAM_TSaoU8dsS0UwpWc6d-WW2M_EcmtEEb4loVMo3UPGqJl5eBEsGLG-ewUrez_t19QnbqQL9nE4GEWR22CGV1-PSge7vLhJvedO2CNVsJ7vXJcVVexbygSHHhlSVWo3Kwp7kvPOEdkupk4XnsfyTjAlCwFA2vTBNQLIPLI7T5rFnsdITAso8tvKwd12yz4ILGg7OA1gzfMWkQ6M8pcBThB6Vz71-0RRBbKEo3CRe2hmIhVByxjgsNV7FdiKal7utR225c_u3RUDH0hMPJTu_UrrAjessl4vxqCOMG0xvz_asREuuWHIINHc3zNbtLlZcVIxYdkRrHUH_hGBex2Apwi2OUe6nXaaLXH8dA1f4gmKDJ_QVgvI3Czh39bq7J7bgM5kRFe0-k10KMUdK3BK88lofH3GUV5sMKHhXlxwCZ1D-IObwzSBCMTL0ndxNdFZigqVrz4KgAqTnzI0InuwLHp3oj2UjQlpWnI3Tv1f9fTfoSC8Na9ZZEKN6NU4N-UG2-v8eU5ASmkdqwztr5piJtDa4DxCvaDR_Bp9FxZRTJt5R2Oo-3G90UHjck45woJyFLsDEwEl8tduBLQK07vfMWgsf'; // GANTI DENGAN TOKEN ASLI ANDA
+        const DROPBOX_FOLDER_PATH = '/cewek'; // Contoh: '/FolderFotoSaya' (Kosongkan jika ingin root app folder)
+        // --- AKHIR KONFIGURASI ---
+
+        const galleryContainer = document.getElementById('gallery-container');
+        const loadingIndicator = document.getElementById('loading');
+
+        async function fetchDropboxImages() {
+            try {
+                // 1. Dapatkan daftar file di folder
+                const listResponse = await fetch('https://api.dropboxapi.com/2/files/list_folder', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${DROPBOX_ACCESS_TOKEN}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        path: DROPBOX_FOLDER_PATH,
+                        recursive: false, // true jika ingin menyertakan subfolder
+                        // Tambahkan 'include_media_info: true' jika Anda ingin metadata gambar
+                    }),
+                });
+
+                if (!listResponse.ok) {
+                    const errorData = await listResponse.json();
+                    throw new Error(`Error listing folder: ${listResponse.status} - ${JSON.stringify(errorData)}`);
+                }
+
+                const listData = await listResponse.json();
+                loadingIndicator.style.display = 'none'; // Sembunyikan indikator loading
+
+                if (listData.entries.length === 0) {
+                    galleryContainer.innerHTML = '<p>Tidak ada foto ditemukan di folder ini.</p>';
+                    return;
+                }
+
+                // 2. Untuk setiap file, dapatkan URL pratinjau (thumbnail)
+                for (const entry of listData.entries) {
+                    // Pastikan ini adalah file dan bukan folder, dan itu adalah gambar
+                    if (entry['.tag'] === 'file' && (entry.name.endsWith('.jpg') || entry.name.endsWith('.jpeg') || entry.name.endsWith('.png') || entry.name.endsWith('.gif'))) {
+                        try {
+                            const thumbnailResponse = await fetch('https://api.dropboxapi.com/2/files/get_thumbnail', {
+                                method: 'POST',
+                                headers: {
+                                    'Authorization': `Bearer ${DROPBOX_ACCESS_TOKEN}`,
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    path: entry.path_lower,
+                                    format: 'jpeg',
+                                    size: 'w640h480' // Ukuran thumbnail: bisa 'w32h32', 'w640h480', dll.
+                                }),
+                            });
+
+                            if (!thumbnailResponse.ok) {
+                                const errorData = await thumbnailResponse.json();
+                                console.error(`Error getting thumbnail for ${entry.name}: ${thumbnailResponse.status} - ${JSON.stringify(errorData)}`);
+                                continue; // Lewati gambar ini jika gagal mendapatkan thumbnail
+                            }
+
+                            // Dropbox API untuk get_thumbnail mengembalikan data biner (gambar)
+                            // Kita perlu mengubahnya menjadi Blob dan kemudian URL untuk src
+                            const blob = await thumbnailResponse.blob();
+                            const imageUrl = URL.createObjectURL(blob);
+
+                            // 3. Buat elemen gambar dan tambahkan ke galeri
+                            const galleryItem = document.createElement('div');
+                            galleryItem.className = 'gallery-item';
+
+                            const imgElement = document.createElement('img');
+                            imgElement.src = imageUrl;
+                            imgElement.alt = entry.name;
+                            imgElement.loading = 'lazy'; // Optimasi loading
+
+                            const nameParagraph = document.createElement('p');
+                            nameParagraph.textContent = entry.name;
+
+                            galleryItem.appendChild(imgElement);
+                            galleryItem.appendChild(nameParagraph);
+                            galleryContainer.appendChild(galleryItem);
+
+                            // Opsional: Dapatkan tautan sementara untuk gambar asli jika ingin lightbox
+                            // const tempLinkResponse = await fetch('https://api.dropboxapi.com/2/files/get_temporary_link', {
+                            //     method: 'POST',
+                            //     headers: {
+                            //         'Authorization': `Bearer ${DROPBOX_ACCESS_TOKEN}`,
+                            //         'Content-Type': 'application/json',
+                            //     },
+                            //     body: JSON.stringify({
+                            //         path: entry.path_lower
+                            //     }),
+                            // });
+                            // if (tempLinkResponse.ok) {
+                            //     const tempLinkData = await tempLinkResponse.json();
+                            //     console.log(`Link asli untuk ${entry.name}: ${tempLinkData.link}`);
+                            //     // Bisa tambahkan ke imgElement atau ke sebuah link <a>
+                            // }
+
+                        } catch (thumbnailError) {
+                            console.error(`Failed to process ${entry.name}:`, thumbnailError);
+                        }
+                    }
+                }
+
+            } catch (error) {
+                console.error('Terjadi kesalahan saat mengambil data dari Dropbox:', error);
+                loadingIndicator.textContent = 'Gagal memuat galeri. Periksa konsol untuk detail.';
+                loadingIndicator.style.color = 'red';
+            }
+        }
+
+        fetchDropboxImages();
+    </script>
+</body>
+</html>
