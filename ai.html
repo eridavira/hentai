@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interface - Moonshot Kimi</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --container-bg: #1e293b;
+            --text-color: #f8fafc;
+            --accent-color: #38bdf8;
+            --input-bg: #334155;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .chat-container {
+            width: 90%;
+            max-width: 600px;
+            height: 80vh;
+            background-color: var(--container-bg);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 20px;
+            background-color: #1e293b;
+            border-bottom: 1px solid #334155;
+            text-align: center;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        #chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            line-height: 1.5;
+        }
+
+        .user-msg {
+            align-self: flex-end;
+            background-color: var(--accent-color);
+            color: #000;
+        }
+
+        .ai-msg {
+            align-self: flex-start;
+            background-color: var(--input-bg);
+        }
+
+        .input-area {
+            padding: 20px;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #334155;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background-color: var(--input-bg);
+            color: white;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: var(--accent-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">AI Moonshot Kimi (via Groq)</div>
+    <div id="chat-box"></div>
+    <div class="input-area">
+        <input type="text" id="user-input" placeholder="Ketik pesan di sini..." onkeypress="if(event.key === 'Enter') sendMessage()">
+        <button onclick="sendMessage()">Kirim</button>
+    </div>
+</div>
+
+<script>
+    const API_KEY = "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";
+    const MODEL = "moonshotai/kimi-k2-instruct"; // Pastikan model ini tersedia di endpoint Groq Anda
+    let systemPrompt = "";
+
+    // Load sifat_ai.txt saat halaman dimuat
+    async function loadSifat() {
+        try {
+            const response = await fetch('sifat_ai.txt');
+            if (response.ok) {
+                systemPrompt = await response.text();
+                console.log("Sifat AI berhasil dimuat.");
+            }
+        } catch (error) {
+            console.error("Gagal memuat sifat_ai.txt:", error);
+        }
+    }
+
+    async function sendMessage() {
+        const inputField = document.getElementById('user-input');
+        const chatBox = document.getElementById('chat-box');
+        const message = inputField.value.trim();
+
+        if (!message) return;
+
+        // Tampilkan pesan user
+        appendMessage('user', message);
+        inputField.value = '';
+
+        try {
+            const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${API_KEY}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    model: MODEL,
+                    messages: [
+                        { role: "system", content: systemPrompt },
+                        { role: "user", content: message }
+                    ]
+                })
+            });
+
+            const data = await response.json();
+            const aiResponse = data.choices[0].message.content;
+            appendMessage('ai', aiResponse);
+        } catch (error) {
+            console.error("Error:", error);
+            appendMessage('ai', "Maaf, terjadi kesalahan pada koneksi API.");
+        }
+    }
+
+    function appendMessage(role, text) {
+        const chatBox = document.getElementById('chat-box');
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${role}-msg`;
+        msgDiv.innerText = text;
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    loadSifat();
+</script>
+
+</body>
+</html>
