@@ -459,13 +459,14 @@ window.openPost = (postId, focusComment = false) => {
     get(ref(db, `global_posts/${postId}`)).then(async (snap) => {
         if (!snap.exists()) return;
         const post = snap.val() || {};
+        const isSakuraPost = String(post.author || '').trim().toLowerCase() === 'sakura';
 
         const uSnap = await get(ref(db, `users/${post.author}/profile`));
         const authorProfile = uSnap.val() || {};
         const avatar = authorProfile.avatar || `https://ui-avatars.com/api/?name=${post.author}`;
 
         modalBody.innerHTML = `
-            <div class="post-detail-container" onclick="event.stopPropagation()">
+            <div class="post-detail-container${isSakuraPost ? ' post-detail-sakura' : ''}" onclick="event.stopPropagation()">
                 <div class="detail-img-side">
                     <img id="detail-img" src="${escHtml(getThumbUrl(post))}" alt="Post Content">
                 </div>
@@ -473,7 +474,10 @@ window.openPost = (postId, focusComment = false) => {
                     <div class="detail-header">
                         <img src="${escHtml(avatar)}" class="detail-avatar" alt="Avatar">
                         <div class="detail-user-info">
-                            <b>@${escHtml(post.author || '')}</b>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <b>@${escHtml(post.author || '')}</b>
+                                ${isSakuraPost ? `<span class="sakura-badge">Sakura Post</span>` : ``}
+                            </div>
                             <small>ID: ${escHtml(postId)}</small>
                         </div>
                         <span id="detail-close-btn" class="close-detail" role="button" aria-label="Tutup popup" tabindex="0">✕</span>
@@ -625,7 +629,9 @@ function renderMorePosts(myUser) {
 
 function createCard(id, data, myUser, avatar) {
     const div = document.createElement('div');
-    div.className = 'card'; div.id = `post-${id}`;
+    const authorLower = String(data?.author || '').trim().toLowerCase();
+    const isSakuraPost = authorLower === 'sakura';
+    div.className = `card${isSakuraPost ? ' post-sakura' : ''}`; div.id = `post-${id}`;
     const likes = data.likes ? Object.keys(data.likes).length : 0;
     const isLiked = data.likes && data.likes[myUser];
     const commentsCount = computeCommentsCount(data);
@@ -634,7 +640,10 @@ function createCard(id, data, myUser, avatar) {
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
             <div style="display:flex; align-items:center; gap:10px; cursor:pointer;" onclick="location.href='index.html?u=${data.author}'">
                 <img src="${avatar}" style="width:32px; height:32px; border-radius:50%; object-fit:cover;">
-                <b>@${data.author}</b>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <b>@${data.author}</b>
+                    ${isSakuraPost ? `<span class="sakura-badge" title="Postingan khusus Sakura">Sakura Post</span>` : ``}
+                </div>
             </div>
             ${data.author === myUser ? `
                 <button onclick="window.deletePost('${id}')" class="btn-delete-modern" aria-label="Hapus postingan" title="Hapus postingan">
