@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Akun Baru - Utsukushii</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body style="display: flex; align-items: center; justify-content: center; height: 100vh;">
+
+    <div class="card" style="width: 100%; max-width: 350px;">
+        <h2 style="color: var(--p);">Daftar Akun</h2>
+        <p style="font-size: 0.8rem; color: var(--text-s); margin-bottom: 20px;">Silakan isi data untuk bergabung.</p>
+        
+        <input type="text" id="reg-user" placeholder="Username unik (tanpa spasi)" autocomplete="off">
+        <input type="password" id="reg-pass" placeholder="Password minimal 6 karakter">
+        
+        <button class="btn" id="btn-register">Buat Akun Sekarang</button>
+        
+        <p style="margin-top: 15px; font-size: 0.85rem; text-align: center;">
+            Sudah punya akun? <a href="index.html" style="color: var(--p); text-decoration: none;">Masuk di sini</a>
+        </p>
+    </div>
+
+    <script type="module" src="register.js"></script>
+</body>
+</html>

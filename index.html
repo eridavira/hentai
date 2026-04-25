@@ -1,114 +1,105 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="icon" href="https://files.fm/thumb_show.php?i=rve7c3t9x8" type="image/png">
-  <title>Hentai</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utsukushii - Social App</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Hentai Gallery</h1>
 
-  <input type="text" id="search" placeholder="Cari apa yang ada aja.." />
+    <div id="auth-overlay" class="hidden">
+        <div class="card" style="max-width:350px; margin:100px auto; text-align: center;">
+            <h2 id="auth-title">Login</h2>
+            <p style="font-size: 0.8rem; color: var(--text-s); margin-bottom: 20px;">Masuk untuk berbagi momen.</p>
+            <input type="text" id="auth-user" placeholder="Username" autocomplete="off">
+            <input type="password" id="auth-pass" placeholder="Password">
+            <button class="btn" id="btn-auth-submit">Masuk</button>
+            <p id="toggle-auth" style="cursor:pointer; color:var(--p); font-size:0.85rem; margin-top:20px;">Belum punya akun? <b>Daftar</b></p>
+        </div>
+    </div>
 
-  <div class="controls">
-    <button id="prevBtn" title="Halaman sebelumnya">⬅️</button>
-    <span id="pageLabel">Page ?</span>
-    <button id="nextBtn" title="Halaman berikutnya">➡️</button>
-  </div>
+    <div id="app-content" class="hidden">
+        <nav>
+            <div class="nav-left-group">
+                <button id="btn-mobile-menu" class="mobile-menu-btn" type="button" aria-label="Buka menu">☰</button>
+                <b style="color:var(--p); font-size:1.5rem; cursor:pointer;" onclick="location.href='index.html'">Utsukushii</b>
+            </div>
+            <div style="display:flex; gap:15px; align-items:center;">
+                <span id="nav-name" style="cursor:pointer; font-weight:bold; font-size: 0.9rem;"></span>
+                <button onclick="logout()" style="background:none; border:1px solid #ff4d4d; color:#ff4d4d; padding:5px 10px; border-radius:5px; cursor:pointer; font-size:0.8rem;">Keluar</button>
+            </div>
+        </nav>
 
-  <div class="gallery" id="gallery"></div>
-  <div id="loading">Tunggu</div>
+        <div class="container">
+            <div class="main-layout">
+                
+                <div class="content-area">
+                    <div id="home-wall-card" class="card hidden" style="padding:0; overflow:hidden; margin-bottom:20px;">
+                        <div class="cover">
+                            <img id="home-cover" src="" alt="Foto Dinding Halaman Utama" style="cursor: default;">
+                        </div>
+                    </div>
 
-  <script>
-    const gallery = document.getElementById('gallery');
-    const loading = document.getElementById('loading');
-    const searchInput = document.getElementById('search');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const pageLabel = document.getElementById('pageLabel');
+                    <div id="profile-view" class="card hidden" style="padding:0; overflow:hidden; margin-bottom:20px;">
+                        <div class="cover">
+                            <img id="view-cover" src="" alt="Cover">
+                        </div>
+                        <div class="prof-info">
+                            <img id="view-avatar" class="avatar" src="" alt="Avatar">
+                            <div style="margin-top:35px; flex-grow: 1;">
+                                <h2 id="view-name" style="margin:0; font-size:1.2rem;"></h2>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <p id="view-bio" contenteditable="false" style="margin:5px 0; font-size:0.85rem; color:var(--text-s); padding: 5px; border-radius: 4px; outline: none;"></p>
+                                    <button id="btn-edit-bio" class="hidden btn-small">Edit Bio</button>
+                                    <button id="btn-save-bio" class="hidden btn-small btn-p">Simpan</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-    const maxPages = 1; // Jumlah total file JSON
-    const availablePages = Array.from({ length: maxPages }, (_, i) => maxPages - i); // Misal: [5,4,3,2,1]
-    let currentIndex = 0;
+                    <div id="editor-box" class="card hidden" style="margin-bottom:20px;">
+                        <textarea id="post-caption" placeholder="Apa yang sedang Anda pikirkan?" rows="3"></textarea>
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <input type="text" id="post-url" placeholder="URL Gambar..." readonly style="flex-grow:1; background:#0d1117;">
+                            <button class="btn" id="btn-upload-trigger" style="width: 120px; background: #30363d; font-size:0.8rem;">📁 Pilih Foto</button>
+                        </div>
+                        <p id="upload-status" style="font-size: 0.7rem; color: var(--p); margin-bottom: 10px;" class="hidden"></p>
+                        <button class="btn" id="btn-post-submit">Bagikan Postingan</button>
+                    </div>
 
-    async function fetchJsonFile(page) {
-      try {
-        const response = await fetch(`images${page}.json`);
-        if (!response.ok) throw new Error('Gagal ambil data');
-        return await response.json();
-      } catch (err) {
-        return [];
-      }
-    }
+                    <div id="feed-toolbar" style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                        <select id="sort-posts" class="sort-select">
+                            <option value="newest">Terbaru</option>
+                            <option value="most_liked">Terbanyak Like</option>
+                        </select>
+                        <button id="btn-view-list" class="btn-view active">List</button>
+                        <button id="btn-view-grid" class="btn-view">Grid</button>
+                    </div>
 
-    function renderImages(images) {
-      gallery.innerHTML = '';
-      if (images.length === 0) {
-        gallery.innerHTML = '<p style="text-align:center;color:#888;">Tidak ada hasil ditemukan.</p>';
-        return;
-      }
+                    <div id="main-list"></div>
+                </div>
 
-      images.forEach(image => {
-        const item = document.createElement('div');
-        item.classList.add('gallery-item');
-        const link = document.createElement('a');
-        link.href = image.link || '#';
-        link.innerHTML = `
-          <img src="${image.url}" alt="${image.title}">
-          <h3>${image.title}</h3>
-        `;
-        item.appendChild(link);
-        gallery.appendChild(item);
-        setTimeout(() => item.classList.add('loaded'), 50);
-      });
-    }
+                <div id="mobile-drawer-backdrop" class="mobile-drawer-backdrop hidden"></div>
+                <div id="mobile-drawer" class="sidebar-area">
+                    <div class="card sticky-sidebar">
+                        <h3 style="margin-top:0; color:var(--p); font-size: 1rem;">Cari Pengguna</h3>
+                        <input type="text" id="side-search-input" placeholder="Ketik nama..." autocomplete="off" style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:15px; border-radius:8px;">
+                        <div id="user-directory-list"></div>
+                        <div id="side-load-more" style="text-align:center; font-size:0.75rem; color:var(--p); cursor:pointer; padding:10px 0; border-top:1px solid var(--brd); margin-top:10px;">Muat lebih banyak...</div>
+                    </div>
+                </div>
 
-    async function loadCurrentPage() {
-      const page = availablePages[currentIndex];
-      pageLabel.textContent = `Page ${page}`;
-      loading.style.display = 'block';
-      const data = await fetchJsonFile(page);
-      renderImages(data);
-      loading.style.display = 'none';
-    }
+            </div>
+        </div>
+    </div>
 
-    prevBtn.addEventListener('click', () => {
-      if (currentIndex > 0) {
-        currentIndex--;
-        loadCurrentPage();
-      }
-    });
+    <div id="img-modal" class="modal-overlay hidden" onclick="this.classList.add('hidden')">
+        <div class="modal-content">
+            <img id="modal-img" src="" alt="Full View">
+        </div>
+    </div>
 
-    nextBtn.addEventListener('click', () => {
-      if (currentIndex < availablePages.length - 1) {
-        currentIndex++;
-        loadCurrentPage();
-      }
-    });
-
-    searchInput.addEventListener('keydown', async (event) => {
-      if (event.key === 'Enter') {
-        const query = event.target.value.trim().toLowerCase();
-        gallery.innerHTML = '';
-        loading.style.display = 'block';
-
-        let results = [];
-        for (const page of availablePages) {
-          const data = await fetchJsonFile(page);
-          results = results.concat(data.filter(item =>
-            item.title.toLowerCase().includes(query) ||
-            (item.tags && item.tags.some(tag => tag.toLowerCase().includes(query)))
-          ));
-        }
-
-        renderImages(results);
-        loading.style.display = 'none';
-      }
-    });
-
-    loadCurrentPage(); // Load pertama kali
-  </script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
