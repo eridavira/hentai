@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Utsukushii - Social App</title>
+    <title>Utsukushii</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -27,7 +27,7 @@
             </div>
             <div style="display:flex; gap:15px; align-items:center;">
                 <span id="nav-name" style="cursor:pointer; font-weight:bold; font-size: 0.9rem;"></span>
-                <button onclick="logout()" style="background:none; border:1px solid #ff4d4d; color:#ff4d4d; padding:5px 10px; border-radius:5px; cursor:pointer; font-size:0.8rem;">Keluar</button>
+                <button id="btn-logout" style="background:none; border:1px solid #ff4d4d; color:#ff4d4d; padding:5px 10px; border-radius:5px; cursor:pointer; font-size:0.8rem;">Keluar</button>
             </div>
         </nav>
 
@@ -94,7 +94,7 @@
         </div>
     </div>
 
-    <div id="img-modal" class="modal-overlay hidden" onclick="this.classList.add('hidden')">
+    <div id="img-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <img id="modal-img" src="" alt="Full View">
         </div>

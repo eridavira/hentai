@@ -159,8 +159,9 @@ input, textarea { width: 100%; background: #0d1117; border: 1px solid var(--brd)
 }
 
 /* Modal */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; overflow: auto; overscroll-behavior: contain; }
 .modal-content img { max-width: 100%; max-height: 90vh; border-radius: 8px; }
+body.modal-open { position: fixed; width: 100%; overflow: hidden; }
 
 /* Gaya untuk item user di sidebar */
 .user-item {
@@ -228,6 +229,7 @@ input, textarea { width: 100%; background: #0d1117; border: 1px solid var(--brd)
     flex-direction: column;
     background: var(--card);
     border-left: 1px solid var(--brd);
+    min-height: 0;
 }
 
 /* Header detail */
@@ -288,6 +290,7 @@ input, textarea { width: 100%; background: #0d1117; border: 1px solid var(--brd)
     flex-direction: column;
     gap: 10px;
     max-height: 44%;
+    min-height: 0;
 }
 
 .detail-comments-header{
@@ -306,6 +309,9 @@ input, textarea { width: 100%; background: #0d1117; border: 1px solid var(--brd)
     flex: 1;
     overflow-y: auto;
     padding-right: 6px;
+    min-height: 0;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
 }
 
 .comment-empty{
@@ -394,8 +400,98 @@ input, textarea { width: 100%; background: #0d1117; border: 1px solid var(--brd)
 
 /* Responsive: Jika HP, jadikan satu kolom vertikal */
 @media (max-width: 700px) {
-    .post-detail-container { flex-direction: column; height: 95vh; }
-    .detail-img-side { flex: 1; }
-    .detail-info-side { flex: 1; }
-    .detail-comments { max-height: unset; }
+    .modal-overlay {
+        padding: 10px;
+        align-items: center;
+    }
+    .post-detail-container {
+        flex-direction: column;
+        width: min(94vw, 440px);
+        height: min(84vh, 700px);
+        border-radius: 14px;
+    }
+    .detail-img-side {
+        flex: 0 0 34%;
+        min-height: 170px;
+        max-height: 240px;
+    }
+    .detail-info-side {
+        flex: 1;
+        min-height: 0;
+    }
+    .detail-header {
+        padding: 10px 12px;
+        gap: 8px;
+    }
+    .detail-avatar {
+        width: 32px;
+        height: 32px;
+    }
+    .detail-user-info b {
+        font-size: 0.86rem;
+    }
+    .detail-user-info small {
+        font-size: 0.64rem;
+    }
+    .close-detail {
+        font-size: 1.25rem;
+        line-height: 1;
+        padding: 2px 6px;
+        border: 1px solid var(--brd);
+        border-radius: 8px;
+    }
+    .detail-body {
+        padding: 10px 12px;
+        flex: 0 0 auto;
+        overflow: visible;
+    }
+    .detail-caption {
+        font-size: 0.86rem;
+        margin-bottom: 6px;
+    }
+    .detail-time {
+        font-size: 0.68rem;
+    }
+    .detail-comments {
+        flex: 1;
+        max-height: none;
+        min-height: 0;
+        padding: 8px 12px;
+        gap: 8px;
+    }
+    .detail-comments-list {
+        min-height: 86px;
+    }
+    .comment-item {
+        padding: 8px;
+        margin-bottom: 6px;
+    }
+    .comment-avatar {
+        width: 28px;
+        height: 28px;
+    }
+    .comment-text {
+        font-size: 0.82rem;
+    }
+    .detail-comment-form {
+        gap: 6px;
+        align-items: center;
+    }
+    .detail-comment-form textarea {
+        min-height: 34px;
+        max-height: 70px;
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+    .detail-comment-send {
+        width: 86px;
+        font-size: 0.76rem;
+        padding: 8px;
+    }
+    .detail-footer {
+        padding: 10px 12px;
+    }
+    .like-action {
+        font-size: 1.25rem;
+    }
 }

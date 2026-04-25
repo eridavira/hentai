@@ -17,6 +17,7 @@ let allUsersDirectory = [];
 let currentSortType = 'newest';
 let currentFeedData = {};
 let pendingUploadImage = null;
+let modalScrollY = 0;
 const POSTS_PER_BATCH = 5;
 let hasTriggeredNearBottom = false;
 const DEFAULT_COVER_URL = "https://images2.imgbox.com/73/0d/9Z6A6C9Z_o.jpg";
@@ -26,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const targetUser = urlParams.get('u');
     initMobileDrawer();
+    initModalBehavior();
     
     if (!myUser) {
         showAuth();
@@ -36,6 +38,40 @@ document.addEventListener('DOMContentLoaded', () => {
         initSortingControl(myUser);
     }
 });
+
+function lockBodyScrollForModal() {
+    modalScrollY = window.scrollY || window.pageYOffset || 0;
+    document.body.classList.add('modal-open');
+    document.body.style.top = `-${modalScrollY}px`;
+}
+
+function unlockBodyScrollForModal() {
+    document.body.classList.remove('modal-open');
+    document.body.style.top = '';
+    window.scrollTo(0, modalScrollY);
+}
+
+function closePostModal() {
+    const modal = $('img-modal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    unlockBodyScrollForModal();
+}
+
+function initModalBehavior() {
+    const modal = $('img-modal');
+    if (!modal) return;
+
+    modal.onclick = (e) => {
+        if (e.target === modal) closePostModal();
+    };
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        if (modal.classList.contains('hidden')) return;
+        closePostModal();
+    });
+}
 
 function initMobileDrawer() {
     const menuBtn = $('btn-mobile-menu');
@@ -106,6 +142,8 @@ function showApp(myUser, targetUser) {
     $('app-content').classList.remove('hidden');
     $('nav-name').innerText = `@${myUser}`;
     $('nav-name').onclick = () => location.href = `index.html?u=${myUser}`;
+    const logoutBtn = $('btn-logout');
+    if (logoutBtn) logoutBtn.onclick = window.logout;
     initUserDirectory();
 
     if (targetUser) {
@@ -120,6 +158,11 @@ function showApp(myUser, targetUser) {
         loadFeed('global_posts', myUser);
     }
 }
+
+window.logout = () => {
+    localStorage.removeItem("active_user");
+    location.href = "index.html";
+};
 
 function initHomeWall() {
     const card = $('home-wall-card');
@@ -464,7 +507,7 @@ window.openPost = (postId, focusComment = false) => {
         const input = $('detail-comment-input');
         const sendBtn = $('detail-comment-send');
         const closeBtn = $('detail-close-btn');
-        const closeModal = () => modal.classList.add('hidden');
+        const closeModal = closePostModal;
 
         if (closeBtn) {
             closeBtn.onclick = closeModal;
@@ -526,6 +569,7 @@ window.openPost = (postId, focusComment = false) => {
         });
 
         modal.classList.remove('hidden');
+        lockBodyScrollForModal();
         if (focusComment && input) setTimeout(() => input.focus(), 0);
     });
 };
