@@ -16,6 +16,7 @@ let isEditingBio = false;
 let allUsersDirectory = [];
 let currentSortType = 'newest';
 let currentFeedData = {};
+let pendingUploadImage = null;
 const POSTS_PER_BATCH = 5;
 let hasTriggeredNearBottom = false;
 const DEFAULT_COVER_URL = "https://images2.imgbox.com/73/0d/9Z6A6C9Z_o.jpg";
@@ -313,6 +314,21 @@ function computeCommentsCount(post = {}) {
     return post.comments ? Object.keys(post.comments).length : 0;
 }
 
+function getThumbUrl(post = {}) {
+    return String(
+        post.mediumUrl ||
+        post.displayUrl ||
+        post.thumbUrl ||
+        post.thumbnailUrl ||
+        post.url ||
+        ''
+    ).trim();
+}
+
+function getOriginalUrl(post = {}) {
+    return String(post.originalUrl || post.fullUrl || post.url || '').trim();
+}
+
 const avatarCache = new Map();
 async function getAvatarUrl(username) {
     const u = String(username || '').trim().toLowerCase();
@@ -408,7 +424,7 @@ window.openPost = (postId, focusComment = false) => {
         modalBody.innerHTML = `
             <div class="post-detail-container" onclick="event.stopPropagation()">
                 <div class="detail-img-side">
-                    <img id="detail-img" src="${escHtml(post.url || '')}" alt="Post Content">
+                    <img id="detail-img" src="${escHtml(getThumbUrl(post))}" alt="Post Content">
                 </div>
                 <div class="detail-info-side">
                     <div class="detail-header">
@@ -417,7 +433,7 @@ window.openPost = (postId, focusComment = false) => {
                             <b>@${escHtml(post.author || '')}</b>
                             <small>ID: ${escHtml(postId)}</small>
                         </div>
-                        <span class="close-detail" onclick="$('img-modal').classList.add('hidden')">✕</span>
+                        <span id="detail-close-btn" class="close-detail" role="button" aria-label="Tutup popup" tabindex="0">✕</span>
                     </div>
 
                     <div class="detail-body">
@@ -447,6 +463,19 @@ window.openPost = (postId, focusComment = false) => {
 
         const input = $('detail-comment-input');
         const sendBtn = $('detail-comment-send');
+        const closeBtn = $('detail-close-btn');
+        const closeModal = () => modal.classList.add('hidden');
+
+        if (closeBtn) {
+            closeBtn.onclick = closeModal;
+            closeBtn.onkeydown = (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    closeModal();
+                }
+            };
+        }
+
         sendBtn.onclick = async () => {
             sendBtn.disabled = true;
             try {
@@ -484,7 +513,8 @@ window.openPost = (postId, focusComment = false) => {
             if (likeCountEl) likeCountEl.innerHTML = `<b>${likesCount}</b> Suka`;
             if (capEl) capEl.innerText = live.caption || '';
             if (timeEl) timeEl.innerText = formatTime(live.time || 0);
-            if (imgEl && live.url) imgEl.src = live.url;
+            const thumb = getThumbUrl(live);
+            if (imgEl && thumb) imgEl.src = thumb;
             if (commentCountEl) commentCountEl.innerText = `(${computeCommentsCount(live)})`;
         });
 
@@ -577,7 +607,7 @@ function createCard(id, data, myUser, avatar) {
                 </button>
             ` : ''}
         </div>
-        <img src="${data.url}" class="post-img" onclick="window.openImg('${id}')" style="cursor:pointer; width:100%; border-radius:4px;">
+        <img src="${getThumbUrl(data)}" class="post-img" onclick="window.openImg('${id}')" style="cursor:pointer; width:100%; border-radius:4px;">
         <div style="margin-top:10px;">
             <p>${data.caption || ''}</p>
             <div class="post-actions" style="display:flex; align-items:center; gap:12px;">
@@ -589,11 +619,23 @@ function createCard(id, data, myUser, avatar) {
                     💬
                 </button>
                 <span id="comment-count-${id}" style="font-size:0.8rem; font-weight:bold;">${commentsCount} Komentar</span>
+                <button onclick="window.openOriginal('${id}')" style="background:none; border:1px solid var(--brd); color:var(--p); border-radius:999px; padding:4px 10px; cursor:pointer; font-size:0.72rem; font-weight:700;">
+                    Original
+                </button>
             </div>
         </div>
     `;
     return div;
 }
+
+window.openOriginal = async (postId) => {
+    const snap = await get(ref(db, `global_posts/${postId}`));
+    if (!snap.exists()) return;
+    const post = snap.val() || {};
+    const url = getOriginalUrl(post);
+    if (!url) return;
+    window.open(url, '_blank', 'noopener,noreferrer');
+};
 
 window.toggleLike = async (id, author) => {
     const myUser = localStorage.getItem("active_user");
@@ -728,9 +770,18 @@ $('btn-upload-trigger').onclick = () => {
             $('upload-status').innerText = `Uploading... ${percent}%`;
         });
         if (r) {
-            $('post-url').value = r.url;
+            const mediumUrl = String(r?.medium?.url || r?.url || '').trim();
+            const thumbUrl = String(r?.thumb?.url || mediumUrl || r?.url || '').trim();
+            const originalUrl = String(r?.image?.url || r?.url || '').trim();
+            pendingUploadImage = {
+                mediumUrl,
+                thumbUrl,
+                originalUrl
+            };
+            $('post-url').value = pendingUploadImage.mediumUrl || pendingUploadImage.thumbUrl || pendingUploadImage.originalUrl;
             $('upload-status').innerText = "Ready! 100%";
         } else {
+            pendingUploadImage = null;
             $('upload-status').innerText = "Upload gagal.";
         }
     };
@@ -738,10 +789,22 @@ $('btn-upload-trigger').onclick = () => {
 };
 
 $('btn-post-submit').onclick = async () => {
-    const u = localStorage.getItem("active_user"), url = $('post-url').value;
-    if (!url) return alert("Pilih foto!");
+    const u = localStorage.getItem("active_user");
+    const fallbackUrl = String($('post-url').value || '').trim();
+    const mediumUrl = String(pendingUploadImage?.mediumUrl || fallbackUrl).trim();
+    const thumbUrl = String(pendingUploadImage?.thumbUrl || mediumUrl || fallbackUrl).trim();
+    const originalUrl = String(pendingUploadImage?.originalUrl || mediumUrl || fallbackUrl).trim();
+    if (!mediumUrl && !thumbUrl) return alert("Pilih foto!");
     const key = push(ref(db, 'global_posts')).key;
-    const data = { author: u, url, caption: $('post-caption').value, time: Date.now() };
+    const data = {
+        author: u,
+        url: mediumUrl || thumbUrl,
+        mediumUrl,
+        thumbUrl,
+        originalUrl,
+        caption: $('post-caption').value,
+        time: Date.now()
+    };
     await update(ref(db), { [`global_posts/${key}`]: data, [`users/${u}/posts/${key}`]: data });
     location.reload();
 };
