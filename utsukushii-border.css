@@ -1,0 +1,158 @@
+/* =========================================================
+   Sinkron pulse untuk:
+   1) Avatar bulat
+   2) Foto kotak kanan (.top-liked-item)
+   3) Foto dinding / cover (#view-cover)
+   ========================================================= */
+
+   :root {
+    --utsu-pulse-duration: 1.5s;
+    --utsu-gold-1: #ffd86a;
+    --utsu-gold-2: #fff2b6;
+    --utsu-gold-3: #ffbf38;
+  }
+  
+  /* -------------------------
+     1) Avatar bulat
+  -------------------------- */
+  .special-profile-theme #view-avatar.avatar {
+    border: 4px solid var(--utsu-gold-1);
+    border-radius: 50%;
+    box-sizing: border-box;
+    animation: utsuPulseAvatar var(--utsu-pulse-duration) ease-in-out infinite;
+  }
+  
+  /* -------------------------
+     2) Foto kotak kanan
+  -------------------------- */
+  .special-profile-theme .top-liked-item {
+    position: relative;
+    border: 2px solid var(--utsu-gold-1);
+    border-radius: 12px;
+    overflow: hidden;
+    animation: utsuPulseBox var(--utsu-pulse-duration) ease-in-out infinite;
+  }
+  
+  /* -------------------------
+     3) Foto dinding / cover
+  -------------------------- */
+  .special-profile-theme .cover {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .special-profile-theme .cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255, 242, 182, 0.12) 0%,
+        rgba(255, 216, 106, 0.08) 40%,
+        rgba(255, 191, 56, 0.14) 100%
+      );
+    animation: utsuPulseCoverOverlay var(--utsu-pulse-duration) ease-in-out infinite;
+  }
+  
+  /* glow luar untuk frame cover */
+  .special-profile-theme #view-cover {
+    position: relative;
+    z-index: 1;
+    animation: utsuPulseCoverImage var(--utsu-pulse-duration) ease-in-out infinite;
+  }
+  
+  /* =========================
+     KEYFRAMES
+  ========================= */
+  @keyframes utsuPulseAvatar {
+    0%, 100% {
+      border-color: var(--utsu-gold-1);
+      box-shadow:
+        0 0 0 2px rgba(255, 242, 182, 0.30),
+        0 0 10px rgba(255, 215, 106, 0.48),
+        0 0 20px rgba(255, 194, 56, 0.34);
+    }
+    50% {
+      border-color: var(--utsu-gold-2);
+      box-shadow:
+        0 0 0 2px rgba(255, 247, 209, 0.56),
+        0 0 18px rgba(255, 215, 106, 0.82),
+        0 0 34px rgba(255, 194, 56, 0.56);
+    }
+  }
+  
+  @keyframes utsuPulseBox {
+    0%, 100% {
+      border-color: var(--utsu-gold-1);
+      box-shadow:
+        0 0 0 1px rgba(255, 242, 182, 0.28),
+        0 0 10px rgba(255, 215, 106, 0.44),
+        0 0 18px rgba(255, 194, 56, 0.30);
+    }
+    50% {
+      border-color: var(--utsu-gold-2);
+      box-shadow:
+        0 0 0 1px rgba(255, 247, 209, 0.52),
+        0 0 16px rgba(255, 215, 106, 0.74),
+        0 0 28px rgba(255, 194, 56, 0.48);
+    }
+  }
+  
+  @keyframes utsuPulseCoverOverlay {
+    0%, 100% {
+      opacity: 0.55;
+    }
+    50% {
+      opacity: 0.95;
+    }
+  }
+  
+  @keyframes utsuPulseCoverImage {
+    0%, 100% {
+      filter: brightness(1.00) saturate(1.02);
+      box-shadow:
+        inset 0 0 0 2px rgba(255, 242, 182, 0.12),
+        0 0 18px rgba(255, 194, 56, 0.18);
+    }
+    50% {
+      filter: brightness(1.04) saturate(1.08);
+      box-shadow:
+        inset 0 0 0 2px rgba(255, 247, 209, 0.20),
+        0 0 28px rgba(255, 194, 56, 0.30);
+    }
+  }
+  
+  /* Mobile biar tetap ringan */
+  @media (max-width: 700px) {
+    :root {
+      --utsu-pulse-duration: 1.7s;
+    }
+  
+    .special-profile-theme #view-avatar.avatar {
+      border-width: 3px;
+    }
+  
+    .special-profile-theme .top-liked-item {
+      border-width: 1.6px;
+    }
+  }
+
+  /* Nama utsukushii di sidebar pencarian user */
+.search-special-nickname {
+    animation: goldShimmer 1.9s linear infinite, namePulse 1.4s ease-in-out infinite;
+    text-shadow: 0 0 10px rgba(255, 215, 106, 0.55), 0 0 22px rgba(255, 194, 56, 0.35);
+    font-weight: 900;
+    letter-spacing: 0.45px;
+    font-size: 0.95rem;
+    animation: goldShimmer 1.9s linear infinite, namePulse 1.4s ease-in-out infinite;
+    text-shadow:
+      0 0 10px rgba(255, 215, 106, 0.55),
+      0 0 22px rgba(255, 194, 56, 0.35);
+  }
+  
+  /* opsional: saat hover item user */
+  #user-directory-list > div:hover .search-special-nickname {
+    filter: brightness(1.06) saturate(1.08);
+  }

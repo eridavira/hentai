@@ -8,6 +8,7 @@ const db = getDatabase(app);
 
 const $ = (id) => document.getElementById(id);
 const IMGBB_API_KEY = "c0e6f15eb26082b61ce8c39cf8b3ccdd";
+const SPECIAL_GLOW_USER = "utsukushii";
 
 // --- STATE MANAGEMENT ---
 let isDragging = false, startY = 0, currentPos = 50;
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const targetUser = urlParams.get('u');
     initMobileDrawer();
     initModalBehavior();
+    initPasteImageUpload();
     
     if (!myUser) {
         showAuth();
@@ -38,6 +40,50 @@ document.addEventListener('DOMContentLoaded', () => {
         initSortingControl(myUser);
     }
 });
+
+function initPasteImageUpload() {
+    document.addEventListener('paste', async (e) => {
+        try {
+            const myUser = localStorage.getItem("active_user");
+            if (!myUser) return;
+
+            const editorBox = $('editor-box');
+            if (!editorBox || editorBox.classList.contains('hidden')) return;
+
+            const cd = e.clipboardData;
+            const items = cd?.items ? Array.from(cd.items) : [];
+            const imageItem = items.find((it) => it && it.kind === 'file' && String(it.type || '').startsWith('image/'));
+            if (!imageItem) return;
+
+            // Jika clipboard berisi gambar, kita prioritaskan upload gambar (bukan paste text).
+            e.preventDefault();
+
+            const file = imageItem.getAsFile();
+            if (!file) return;
+
+            $('upload-status').innerText = "Uploading... 0%";
+            $('upload-status').classList.remove('hidden');
+
+            const r = await uploadToImgBB(file, (percent) => {
+                $('upload-status').innerText = `Uploading... ${percent}%`;
+            });
+
+            if (r) {
+                const mediumUrl = String(r?.medium?.url || r?.url || '').trim();
+                const thumbUrl = String(r?.thumb?.url || mediumUrl || r?.url || '').trim();
+                const originalUrl = String(r?.image?.url || r?.url || '').trim();
+                pendingUploadImage = { mediumUrl, thumbUrl, originalUrl };
+                $('post-url').value = pendingUploadImage.mediumUrl || pendingUploadImage.thumbUrl || pendingUploadImage.originalUrl;
+                $('upload-status').innerText = "Ready! 100%";
+            } else {
+                pendingUploadImage = null;
+                $('upload-status').innerText = "Upload gagal.";
+            }
+        } catch {
+            // silent fail: jangan ganggu paste normal jika ada error tak terduga
+        }
+    });
+}
 
 function lockBodyScrollForModal() {
     modalScrollY = window.scrollY || window.pageYOffset || 0;
@@ -275,7 +321,16 @@ async function handleProfile(user, myUser) {
 
     onValue(ref(db, `users/${user}/profile`), (s) => {
         const d = s.val() || {};
-        $('view-name').innerText = d.name || user;
+        const displayName = d.name || user;
+        $('view-name').innerText = displayName;
+        if (window.UtsukushiiProfile?.applyProfileDecorations) {
+            window.UtsukushiiProfile.applyProfileDecorations({
+                viewedUser: user,
+                displayName,
+                isOwnerProfile: isOwner
+            });
+        }
+
         if (!isEditingBio) {
             bioEl.innerText = d.bio || "Halo! Saya menggunakan Utsukushii.";
         }
@@ -372,6 +427,10 @@ function getOriginalUrl(post = {}) {
     return String(post.originalUrl || post.fullUrl || post.url || '').trim();
 }
 
+function isSpecialGlowUser(username) {
+    return String(username || '').trim().toLowerCase() === SPECIAL_GLOW_USER;
+}
+
 const avatarCache = new Map();
 async function getAvatarUrl(username) {
     const u = String(username || '').trim().toLowerCase();
@@ -420,6 +479,7 @@ function renderCommentsList(containerEl, commentsObj = {}) {
         const text = escHtml(c?.text || '');
         const time = escHtml(formatTime(c?.time || 0));
         const profileHref = `index.html?u=${encodeURIComponent(authorRaw || 'unknown')}`;
+        const authorClass = isSpecialGlowUser(authorRaw) ? 'special-nickname' : '';
         return `
             <div class="comment-item" data-cid="${escHtml(cid)}">
                 <div class="comment-row">
@@ -428,7 +488,7 @@ function renderCommentsList(containerEl, commentsObj = {}) {
                     </a>
                     <div class="comment-main">
                         <div class="comment-meta">
-                            <a class="comment-user-link" href="${profileHref}" onclick="event.stopPropagation()"><b>@${author}</b></a>
+                            <a class="comment-user-link" href="${profileHref}" onclick="event.stopPropagation()"><b class="${authorClass}">@${author}</b></a>
                             <small>${time}</small>
                         </div>
                         <div class="comment-text">${text}</div>
@@ -459,7 +519,9 @@ window.openPost = (postId, focusComment = false) => {
     get(ref(db, `global_posts/${postId}`)).then(async (snap) => {
         if (!snap.exists()) return;
         const post = snap.val() || {};
-        const isSakuraPost = String(post.author || '').trim().toLowerCase() === 'sakura';
+        const authorRaw = String(post.author || '').trim().toLowerCase();
+        const isSakuraPost = authorRaw === 'sakura';
+        const isSpecialAuthor = isSpecialGlowUser(authorRaw);
 
         const uSnap = await get(ref(db, `users/${post.author}/profile`));
         const authorProfile = uSnap.val() || {};
@@ -472,10 +534,14 @@ window.openPost = (postId, focusComment = false) => {
                 </div>
                 <div class="detail-info-side">
                     <div class="detail-header">
-                        <img src="${escHtml(avatar)}" class="detail-avatar" alt="Avatar">
+                        <a class="detail-profile-link" href="index.html?u=${encodeURIComponent(String(post.author || '').trim().toLowerCase())}" title="Lihat profil" onclick="event.stopPropagation()">
+                            <img src="${escHtml(avatar)}" class="detail-avatar" alt="Avatar">
+                        </a>
                         <div class="detail-user-info">
                             <div style="display:flex; align-items:center; gap:8px;">
-                                <b>@${escHtml(post.author || '')}</b>
+                                <a class="detail-profile-link" href="index.html?u=${encodeURIComponent(String(post.author || '').trim().toLowerCase())}" title="Lihat profil" onclick="event.stopPropagation()">
+                                    <b class="${isSpecialAuthor ? 'special-nickname' : ''}">@${escHtml(post.author || '')}</b>
+                                </a>
                                 ${isSakuraPost ? `<span class="sakura-badge">Sakura Post</span>` : ``}
                             </div>
                             <small>ID: ${escHtml(postId)}</small>
@@ -631,7 +697,11 @@ function createCard(id, data, myUser, avatar) {
     const div = document.createElement('div');
     const authorLower = String(data?.author || '').trim().toLowerCase();
     const isSakuraPost = authorLower === 'sakura';
-    div.className = `card${isSakuraPost ? ' post-sakura' : ''}`; div.id = `post-${id}`;
+    const isSpecialGlowUserPost = isSpecialGlowUser(authorLower);
+
+    div.className = `card${isSakuraPost ? ' post-sakura' : ''}`;
+    div.id = `post-${id}`;
+
     const likes = data.likes ? Object.keys(data.likes).length : 0;
     const isLiked = data.likes && data.likes[myUser];
     const commentsCount = computeCommentsCount(data);
@@ -641,7 +711,7 @@ function createCard(id, data, myUser, avatar) {
             <div style="display:flex; align-items:center; gap:10px; cursor:pointer;" onclick="location.href='index.html?u=${data.author}'">
                 <img src="${avatar}" style="width:32px; height:32px; border-radius:50%; object-fit:cover;">
                 <div style="display:flex; align-items:center; gap:8px;">
-                    <b>@${data.author}</b>
+                    <b class="${isSpecialGlowUserPost ? 'special-nickname' : ''}">@${data.author}</b>
                     ${isSakuraPost ? `<span class="sakura-badge" title="Postingan khusus Sakura">Sakura Post</span>` : ``}
                 </div>
             </div>

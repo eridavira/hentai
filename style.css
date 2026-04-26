@@ -101,8 +101,8 @@ nav { background: var(--card); padding: 12px 20px; display: flex; justify-conten
 /* GRID MODE CSS */
 #main-list.grid-mode { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
 #main-list.grid-mode .card { padding: 0; overflow: hidden; margin-bottom: 0; border: none; }
-#main-list.grid-mode .card > div:first-child, 
-#main-list.grid-mode .card > p, 
+#main-list.grid-mode .card > div:first-child,
+#main-list.grid-mode .card > p,
 #main-list.grid-mode .card .post-actions { display: none; }
 #main-list.grid-mode .post-img { margin-top: 0; border-radius: 4px; aspect-ratio: 1/1; object-fit: cover; }
 
@@ -112,12 +112,143 @@ nav { background: var(--card); padding: 12px 20px; display: flex; justify-conten
 .prof-info { display: flex; align-items: center; gap: 15px; margin-top: -30px; padding: 0 15px; position: relative; z-index: 2; }
 .avatar { width: 75px; height: 75px; border-radius: 50%; border: 4px solid var(--bg); background: #333; object-fit: cover; cursor: pointer; }
 
+/* penting: bikin absolute child nempel ke kartu profil */
+#profile-view { position: relative; }
+
+.special-profile-theme {
+    border-color: rgba(166, 110, 255, 0.78) !important;
+    box-shadow: 0 14px 32px rgba(133, 67, 255, 0.2);
+}
+
+.special-profile-theme .cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(160, 86, 255, 0.22), rgba(90, 38, 170, 0.12));
+    pointer-events: none;
+}
+
+.special-profile-theme .avatar {
+    border-color: #9d6bff;
+    box-shadow: 0 0 0 2px rgba(220, 198, 255, 0.3), 0 0 22px rgba(157, 107, 255, 0.55);
+}
+
+.special-nickname {
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    color: #ffd86a;
+    background: linear-gradient(100deg, #fff2b6 8%, #ffd86a 26%, #fff7d1 44%, #ffbf38 58%, #fff2b6 74%, #ffd86a 92%);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 10px rgba(255, 215, 106, 0.55), 0 0 22px rgba(255, 194, 56, 0.35);
+    animation: goldShimmer 1.9s linear infinite, namePulse 1.4s ease-in-out infinite;
+}
+
+#profile-view {
+    overflow: visible !important;
+}
+
+/* Featured photos strip (3 foto tambahan) */
+.top-liked-strip {
+    position: absolute;
+    right: 14px;
+    top: 45px;
+    transform: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    z-index: 9;
+}
+
+.top-liked-row {
+    display: flex;
+    align-items: center;
+    gap: 0px;
+}
+
+.top-liked-item {
+    display: inline-flex;
+    position: relative;
+    width: 190px;
+    height: 190px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid rgba(188, 145, 255, 0.82);
+    background: #111827;
+    box-shadow: 0 10px 22px rgba(90, 38, 170, 0.45);
+    cursor: default;
+}
+
+.top-liked-item.is-editable {
+    cursor: pointer;
+}
+
+.top-liked-item.is-editable::after {
+    content: "Ubah";
+    position: absolute;
+    inset: auto 0 0 0;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-align: center;
+    color: #f5e7ff;
+    background: linear-gradient(180deg, rgba(0,0,0,0), rgba(55, 22, 108, 0.88));
+    padding: 4px 2px 3px;
+}
+
+.top-liked-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.top-liked-placeholder {
+    width: 100%;
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    color: #d8c6ff;
+    background: linear-gradient(135deg, rgba(104, 40, 173, 0.65), rgba(41, 21, 73, 0.85));
+}
+
+/* satu media query saja untuk top-liked agar tidak saling timpa */
+@media (max-width: 700px) {
+    .top-liked-strip {
+        right: 8px;
+        top: 176px;
+    }
+    .top-liked-item {
+        width: 64px;
+        height: 64px;
+        border-radius: 10px;
+    }
+    .top-liked-item.is-editable::after {
+        font-size: 0.56rem;
+        padding: 3px 2px 2px;
+    }
+}
+
+@keyframes goldShimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+
+@keyframes namePulse {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.2); }
+}
+
 /* Post Content */
 .post-img { width: 100%; border-radius: 8px; margin-top: 10px; border: 1px solid var(--brd); cursor: pointer; }
 input, textarea { width: 100%; background: #0d1117; border: 1px solid var(--brd); color: white; padding: 10px; border-radius: 6px; margin-bottom: 10px; box-sizing: border-box; outline: none; }
 .btn { background: var(--p); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; }
 .btn-small { background: none; border: 1px solid var(--brd); color: var(--text-s); font-size: 0.7rem; border-radius: 4px; cursor: pointer; padding: 2px 8px; }
 .btn-p { background: var(--p); color: white; border-color: var(--p); }
+
 .btn-delete-modern {
     display: inline-flex;
     align-items: center;
@@ -213,23 +344,19 @@ body.modal-open { position: fixed; width: 100%; overflow: hidden; }
 }
 
 /* Penyesuaian Postingan Mode Grid */
-#main-list.grid-mode .post-actions, 
-#main-list.grid-mode .card p, 
-#main-list.grid-mode .card div:first-child { 
-    display: none !important; 
+#main-list.grid-mode .post-actions,
+#main-list.grid-mode .card p,
+#main-list.grid-mode .card div:first-child {
+    display: none !important;
 }
-#main-list.grid-mode .card { 
-    border: none; 
+#main-list.grid-mode .card {
+    border: none;
     padding: 0;
 }
-#main-list.grid-mode .post-img { 
-    margin: 0; 
+#main-list.grid-mode .post-img {
+    margin: 0;
     border-radius: 4px;
 }
-
-/* Tombol Edit Bio */
-.btn-small { background: none; border: 1px solid var(--brd); color: var(--text-s); font-size: 0.7rem; border-radius: 4px; cursor: pointer; padding: 2px 8px; }
-.btn-p { background: var(--p); color: white; border-color: var(--p); }
 
 /* Container Utama Pop-up */
 .post-detail-container {
@@ -284,6 +411,17 @@ body.modal-open { position: fixed; width: 100%; overflow: hidden; }
 
 .detail-user-info b { font-size: 0.95rem; display: block; }
 .detail-user-info small { color: var(--text-s); font-family: monospace; font-size: 0.7rem; }
+
+.detail-profile-link{
+    color: inherit;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.detail-profile-link:hover b{
+    text-decoration: underline;
+}
 
 .close-detail {
     margin-left: auto;
@@ -529,3 +667,4 @@ body.modal-open { position: fixed; width: 100%; overflow: hidden; }
         font-size: 1.25rem;
     }
 }
+
