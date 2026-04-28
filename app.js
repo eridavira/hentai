@@ -9,6 +9,7 @@ const db = getDatabase(app);
 const $ = (id) => document.getElementById(id);
 const IMGBB_API_KEY = "c0e6f15eb26082b61ce8c39cf8b3ccdd";
 const SPECIAL_GLOW_USER = "utsukushii";
+const PRIORITY_SEARCH_USER = "utsukushii";
 
 // --- STATE MANAGEMENT ---
 let isDragging = false, startY = 0, currentPos = 50;
@@ -21,7 +22,7 @@ let pendingUploadImage = null;
 let modalScrollY = 0;
 const POSTS_PER_BATCH = 5;
 let hasTriggeredNearBottom = false;
-const DEFAULT_COVER_URL = "https://images2.imgbox.com/73/0d/9Z6A6C9Z_o.jpg";
+const DEFAULT_COVER_URL = "https://thumbs2.imgbox.com/84/5d/12r9Oc2Z_t.png";
 
 document.addEventListener('DOMContentLoaded', () => {
     const myUser = localStorage.getItem("active_user");
@@ -786,7 +787,14 @@ function initUserDirectory() {
         const q = keyword.trim().toLowerCase();
         list.innerHTML = '';
 
-        const filteredUsers = allUsersDirectory.filter((item) => item.username.includes(q));
+        const filteredUsers = allUsersDirectory
+            .filter((item) => item.username.includes(q))
+            .sort((a, b) => {
+                const aPriority = a.username === PRIORITY_SEARCH_USER ? 0 : 1;
+                const bPriority = b.username === PRIORITY_SEARCH_USER ? 0 : 1;
+                if (aPriority !== bPriority) return aPriority - bPriority;
+                return a.username.localeCompare(b.username);
+            });
 
         filteredUsers.forEach((item) => {
             const d = document.createElement('div');
