@@ -244,6 +244,28 @@ nav { background: var(--card); padding: 12px 20px; display: flex; justify-conten
 
 /* Post Content */
 .post-img { width: 100%; border-radius: 8px; margin-top: 10px; border: 1px solid var(--brd); cursor: pointer; }
+.post-media-wrap { position: relative; }
+.gif-play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    background: rgba(0, 0, 0, 0.56);
+    color: #fff;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+    backdrop-filter: blur(2px);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+.gif-play-btn:hover {
+    background: rgba(0, 0, 0, 0.72);
+    transform: translate(-50%, -50%) scale(1.03);
+}
 input, textarea { width: 100%; background: #0d1117; border: 1px solid var(--brd); color: white; padding: 10px; border-radius: 6px; margin-bottom: 10px; box-sizing: border-box; outline: none; }
 .btn { background: var(--p); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; }
 .btn-small { background: none; border: 1px solid var(--brd); color: var(--text-s); font-size: 0.7rem; border-radius: 4px; cursor: pointer; padding: 2px 8px; }

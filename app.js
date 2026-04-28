@@ -9,7 +9,6 @@ const db = getDatabase(app);
 const $ = (id) => document.getElementById(id);
 const IMGBB_API_KEY = "c0e6f15eb26082b61ce8c39cf8b3ccdd";
 const SPECIAL_GLOW_USER = "utsukushii";
-const PRIORITY_SEARCH_USER = "utsukushii";
 
 // --- STATE MANAGEMENT ---
 let isDragging = false, startY = 0, currentPos = 50;
@@ -22,7 +21,9 @@ let pendingUploadImage = null;
 let modalScrollY = 0;
 const POSTS_PER_BATCH = 5;
 let hasTriggeredNearBottom = false;
-const DEFAULT_COVER_URL = "https://thumbs2.imgbox.com/84/5d/12r9Oc2Z_t.png";
+const DEFAULT_COVER_URL = "https://images2.imgbox.com/73/0d/9Z6A6C9Z_o.jpg";
+let homeCoverActiveGifUrl = '';
+let homeCoverBlobUrl = '';
 
 document.addEventListener('DOMContentLoaded', () => {
     const myUser = localStorage.getItem("active_user");
@@ -222,11 +223,41 @@ function initHomeWall() {
 
     onValue(ref(db, 'site_config'), (snap) => {
         const cfg = snap.val() || {};
-        const url = String(cfg.home_cover || '').trim();
+        const previewUrl = String(cfg.home_cover_preview || cfg.home_cover || '').trim();
+        const autoplayGifUrl = String(cfg.home_cover_original || cfg.home_cover || '').trim();
         const pos = Number(cfg.home_cover_pos);
         const normalizedPos = Number.isFinite(pos) ? Math.max(0, Math.min(100, pos)) : 50;
-        coverEl.src = url || DEFAULT_COVER_URL;
+        coverEl.src = previewUrl || DEFAULT_COVER_URL;
         coverEl.style.objectPosition = `50% ${normalizedPos}%`;
+
+        if (!isGifUrl(autoplayGifUrl)) {
+            homeCoverActiveGifUrl = '';
+            if (homeCoverBlobUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(homeCoverBlobUrl);
+            }
+            homeCoverBlobUrl = '';
+            return;
+        }
+
+        if (homeCoverActiveGifUrl === autoplayGifUrl && homeCoverBlobUrl.startsWith('blob:')) {
+            coverEl.src = homeCoverBlobUrl;
+            return;
+        }
+
+        homeCoverActiveGifUrl = autoplayGifUrl;
+        loadImageBlobWithProgress(autoplayGifUrl)
+            .then((blob) => {
+                if (homeCoverActiveGifUrl !== autoplayGifUrl) return;
+                if (homeCoverBlobUrl.startsWith('blob:')) {
+                    URL.revokeObjectURL(homeCoverBlobUrl);
+                }
+                homeCoverBlobUrl = URL.createObjectURL(blob);
+                coverEl.src = homeCoverBlobUrl;
+            })
+            .catch(() => {
+                if (homeCoverActiveGifUrl !== autoplayGifUrl) return;
+                coverEl.src = autoplayGifUrl || previewUrl || DEFAULT_COVER_URL;
+            });
     });
 }
 
@@ -413,19 +444,52 @@ function computeCommentsCount(post = {}) {
     return post.comments ? Object.keys(post.comments).length : 0;
 }
 
+function isGifUrl(url = '') {
+    const clean = String(url || '').trim().toLowerCase().split('?')[0].split('#')[0];
+    return clean.endsWith('.gif');
+}
+
 function getThumbUrl(post = {}) {
-    return String(
-        post.mediumUrl ||
-        post.displayUrl ||
-        post.thumbUrl ||
-        post.thumbnailUrl ||
-        post.url ||
-        ''
-    ).trim();
+    const mediumUrl = String(post.mediumUrl || '').trim();
+    const displayUrl = String(post.displayUrl || '').trim();
+    const thumbUrl = String(post.thumbUrl || post.thumbnailUrl || '').trim();
+    const originalUrl = String(post.originalUrl || post.fullUrl || post.url || '').trim();
+
+    const hasGifSource =
+        isGifUrl(originalUrl) ||
+        isGifUrl(String(post.url || '')) ||
+        isGifUrl(mediumUrl) ||
+        isGifUrl(displayUrl) ||
+        isGifUrl(thumbUrl);
+
+    if (hasGifSource) {
+        if (isGifUrl(mediumUrl)) return mediumUrl;
+        if (isGifUrl(displayUrl)) return displayUrl;
+        if (isGifUrl(originalUrl)) return originalUrl;
+    }
+
+    return mediumUrl || displayUrl || thumbUrl || originalUrl || '';
 }
 
 function getOriginalUrl(post = {}) {
     return String(post.originalUrl || post.fullUrl || post.url || '').trim();
+}
+
+function getModalImageUrl(post = {}) {
+    if (isGifPost(post)) {
+        return getOriginalUrl(post) || getThumbUrl(post);
+    }
+    return getThumbUrl(post);
+}
+
+function isGifPost(post = {}) {
+    return isGifUrl(post.originalUrl) ||
+        isGifUrl(post.fullUrl) ||
+        isGifUrl(post.url) ||
+        isGifUrl(post.mediumUrl) ||
+        isGifUrl(post.displayUrl) ||
+        isGifUrl(post.thumbUrl) ||
+        isGifUrl(post.thumbnailUrl);
 }
 
 function isSpecialGlowUser(username) {
@@ -531,7 +595,7 @@ window.openPost = (postId, focusComment = false) => {
         modalBody.innerHTML = `
             <div class="post-detail-container${isSakuraPost ? ' post-detail-sakura' : ''}" onclick="event.stopPropagation()">
                 <div class="detail-img-side">
-                    <img id="detail-img" src="${escHtml(getThumbUrl(post))}" alt="Post Content">
+                    <img id="detail-img" src="${escHtml(getModalImageUrl(post))}" alt="Post Content">
                 </div>
                 <div class="detail-info-side">
                     <div class="detail-header">
@@ -627,8 +691,8 @@ window.openPost = (postId, focusComment = false) => {
             if (likeCountEl) likeCountEl.innerHTML = `<b>${likesCount}</b> Suka`;
             if (capEl) capEl.innerText = live.caption || '';
             if (timeEl) timeEl.innerText = formatTime(live.time || 0);
-            const thumb = getThumbUrl(live);
-            if (imgEl && thumb) imgEl.src = thumb;
+            const modalImageUrl = getModalImageUrl(live);
+            if (imgEl && modalImageUrl) imgEl.src = modalImageUrl;
             if (commentCountEl) commentCountEl.innerText = `(${computeCommentsCount(live)})`;
         });
 
@@ -706,6 +770,9 @@ function createCard(id, data, myUser, avatar) {
     const likes = data.likes ? Object.keys(data.likes).length : 0;
     const isLiked = data.likes && data.likes[myUser];
     const commentsCount = computeCommentsCount(data);
+    const previewUrl = getThumbUrl(data);
+    const originalUrl = getOriginalUrl(data);
+    const gifPost = isGifPost(data) && !!originalUrl;
 
     div.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -731,7 +798,10 @@ function createCard(id, data, myUser, avatar) {
                 </button>
             ` : ''}
         </div>
-        <img src="${getThumbUrl(data)}" class="post-img" onclick="window.openImg('${id}')" style="cursor:pointer; width:100%; border-radius:4px;">
+        <div class="post-media-wrap">
+            <img id="post-img-${id}" src="${escHtml(previewUrl)}" data-original="${escHtml(originalUrl)}" class="post-img" onclick="window.openImg('${id}')" style="cursor:pointer; width:100%; border-radius:4px;">
+            ${gifPost ? `<button type="button" class="gif-play-btn" onclick="window.playGifPreview(event, '${id}')">▶ Play GIF</button>` : ``}
+        </div>
         <div style="margin-top:10px;">
             <p>${data.caption || ''}</p>
             <div class="post-actions" style="display:flex; align-items:center; gap:12px;">
@@ -761,6 +831,81 @@ window.openOriginal = async (postId) => {
     window.open(url, '_blank', 'noopener,noreferrer');
 };
 
+function loadImageBlobWithProgress(url, onProgress) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.responseType = 'blob';
+
+        xhr.onprogress = (event) => {
+            if (typeof onProgress !== 'function') return;
+            if (event.lengthComputable && event.total > 0) {
+                const percent = Math.max(0, Math.min(100, Math.round((event.loaded / event.total) * 100)));
+                onProgress(percent);
+            } else {
+                onProgress(null);
+            }
+        };
+
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300 && xhr.response) {
+                resolve(xhr.response);
+            } else {
+                reject(new Error(`HTTP ${xhr.status}`));
+            }
+        };
+        xhr.onerror = () => reject(new Error('Network error'));
+        xhr.onabort = () => reject(new Error('Aborted'));
+        xhr.send();
+    });
+}
+
+window.playGifPreview = (event, postId) => {
+    event.stopPropagation();
+    const img = $(`post-img-${postId}`);
+    if (!img) return;
+    const original = String(img.dataset.original || '').trim();
+    if (!original) return;
+    const btn = event.currentTarget;
+
+    if (!btn || btn.dataset.loading === '1') return;
+    btn.dataset.loading = '1';
+    btn.disabled = true;
+    btn.textContent = 'Memuat 0%';
+
+    loadImageBlobWithProgress(original, (percent) => {
+        if (!btn) return;
+        if (percent === null) {
+            btn.textContent = 'Memuat...';
+            return;
+        }
+        btn.textContent = `Memuat ${percent}%`;
+    })
+        .then((blob) => {
+            const previousBlobUrl = String(img.dataset.blobUrl || '').trim();
+            if (previousBlobUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(previousBlobUrl);
+            }
+
+            const blobUrl = URL.createObjectURL(blob);
+            img.dataset.blobUrl = blobUrl;
+            img.src = blobUrl;
+            btn.textContent = 'Memuat 100%';
+            setTimeout(() => {
+                btn.style.display = 'none';
+            }, 180);
+        })
+        .catch(() => {
+            // Fallback tetap menampilkan gif asli jika progress fetch gagal
+            img.src = original;
+            btn.style.display = 'none';
+        })
+        .finally(() => {
+            btn.dataset.loading = '0';
+            btn.disabled = false;
+        });
+};
+
 window.toggleLike = async (id, author) => {
     const myUser = localStorage.getItem("active_user");
     const gRef = ref(db, `global_posts/${id}/likes/${myUser}`);
@@ -787,14 +932,7 @@ function initUserDirectory() {
         const q = keyword.trim().toLowerCase();
         list.innerHTML = '';
 
-        const filteredUsers = allUsersDirectory
-            .filter((item) => item.username.includes(q))
-            .sort((a, b) => {
-                const aPriority = a.username === PRIORITY_SEARCH_USER ? 0 : 1;
-                const bPriority = b.username === PRIORITY_SEARCH_USER ? 0 : 1;
-                if (aPriority !== bPriority) return aPriority - bPriority;
-                return a.username.localeCompare(b.username);
-            });
+        const filteredUsers = allUsersDirectory.filter((item) => item.username.includes(q));
 
         filteredUsers.forEach((item) => {
             const d = document.createElement('div');
