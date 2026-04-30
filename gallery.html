@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gallery</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav>
+    <div class="nav-left-group">
+      <b id="nav-brand" style="color:var(--p); font-size:1.5rem; cursor:pointer;" onclick="location.href='index.html'">Utsukushii</b>
+      <span id="gallery-title" style="color:var(--text-s); font-size:0.9rem; margin-left:10px;"></span>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <button id="btn-back-home" style="background:none; border:1px solid var(--brd); color:var(--text); padding:6px 10px; border-radius:999px; cursor:pointer; font-size:0.8rem;">Kembali</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="card" style="margin-bottom:14px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+        <div>
+          <b id="gallery-name" style="font-size:1.05rem;"></b>
+          <div id="gallery-sub" style="margin-top:6px; color:var(--text-s); font-size:0.82rem;"></div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <span id="gallery-count" style="color:var(--text-s); font-size:0.82rem;"></span>
+        </div>
+      </div>
+    </div>
+
+    <div id="gallery-grid" class="gallery-grid"></div>
+    <div id="gallery-empty" class="card hidden" style="text-align:center; color:var(--text-s);">Belum ada foto di gallery ini.</div>
+  </div>
+
+  <div id="img-modal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width: 1100px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px;">
+        <a id="modal-download-original" class="btn" href="#" download style="width:auto; padding:8px 12px; border-radius:999px; text-decoration:none;">Download Original</a>
+        <button id="modal-close" type="button" style="background:none; border:1px solid var(--brd); color:var(--text-s); padding:6px 10px; border-radius:999px; cursor:pointer; font-size:0.8rem;">Tutup</button>
+      </div>
+      <img id="modal-img" src="" alt="Preview">
+    </div>
+  </div>
+
+  <script type="module" src="gallery.js"></script>
+</body>
+</html>
+
