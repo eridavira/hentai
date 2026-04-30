@@ -1,6 +1,4 @@
-import { getDatabase, ref, get, remove, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-const db = getDatabase();
+import { db, ref, get, remove, set } from "./firebase.js";
 
 export async function openPostDetail(postId, postData, myUser) {
     const modal = document.getElementById('img-modal');

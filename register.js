@@ -1,9 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-const firebaseConfig = { databaseURL: "https://hentai-86b5f-default-rtdb.asia-southeast1.firebasedatabase.app/" };
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+import { db, ref, set, get } from "./firebase.js";
+const DEFAULT_COVER_URL = "https://thumbs2.imgbox.com/84/5d/12r9Oc2Z_t.png";
 
 const $ = (id) => document.getElementById(id);
 
@@ -29,7 +25,7 @@ $('btn-register').onclick = async () => {
             name: u, 
             bio: "Halo, saya pengguna baru!", 
             avatar: "", 
-            cover: "",
+            cover: DEFAULT_COVER_URL,
             coverPos: "50% 50%"
         });
 

@@ -1,9 +1,4 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-const firebaseConfig = { databaseURL: "https://hentai-86b5f-default-rtdb.asia-southeast1.firebasedatabase.app/" };
-const app = initializeApp(firebaseConfig, "utsukushii-special-app");
-const db = getDatabase(app);
+import { db, ref, get, update } from "./firebase.js";
 
 const SPECIAL_USER = "utsukushii";
 const SLOT_COUNT = 1;

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Utsukushii</title>
+    <link rel="icon" type="image/png" href="https://i.ibb.co.com/SXSsZnfC/QNSJTWDDZXYSCZM1-CNBQNEA0-Z0.jpg">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="utsukushii-border.css">
 </head>
@@ -86,10 +87,27 @@
                 <div id="mobile-drawer-backdrop" class="mobile-drawer-backdrop hidden"></div>
                 <div id="mobile-drawer" class="sidebar-area">
                     <div class="card sticky-sidebar">
-                        <h3 style="margin-top:0; color:var(--p); font-size: 1rem;">Cari Pengguna</h3>
-                        <input type="text" id="side-search-input" placeholder="Ketik nama..." autocomplete="off" style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:15px; border-radius:8px;">
-                        <div id="user-directory-list"></div>
-                        <div id="side-load-more" style="text-align:center; font-size:0.75rem; color:var(--p); cursor:pointer; padding:10px 0; border-top:1px solid var(--brd); margin-top:10px;">Muat lebih banyak...</div>
+                        <div class="drawer-tabs">
+                            <button id="btn-open-globalchat" class="drawer-tab-btn active" type="button">Chat Global</button>
+                            <button id="btn-open-directory" class="drawer-tab-btn" type="button">Cari User</button>
+                        </div>
+
+                        <div id="drawer-directory-panel">
+                            <h3 style="margin-top:0; color:var(--p); font-size: 1rem;">Cari Pengguna</h3>
+                            <input type="text" id="side-search-input" placeholder="Ketik nama..." autocomplete="off" style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:15px; border-radius:8px;">
+                            <div id="user-directory-list"></div>
+                            <div id="side-load-more" class="drawer-sentinel">Scroll untuk muat lagi...</div>
+                        </div>
+
+                        <div id="drawer-globalchat-panel" class="hidden">
+                            <h3 style="margin-top:0; color:var(--p); font-size: 1rem;">Chat Global</h3>
+                            <div id="global-chat-list" class="global-chat-list"></div>
+                            <div class="global-chat-form">
+                                <textarea id="global-chat-input" rows="2" placeholder="Tulis pesan..."></textarea>
+                                <button id="global-chat-send" class="btn global-chat-send" type="button">Kirim</button>
+                            </div>
+                            <div class="chat-hint">Enter untuk kirim, Shift+Enter untuk baris baru.</div>
+                        </div>
                     </div>
                 </div>
 
@@ -106,6 +124,7 @@
     <script src="sakura.js"></script>
     <script type="module" src="utsukushii.js"></script>
     <script type="module" src="app.js"></script>
+    <script type="module" src="drawer-social.js"></script>
     <script src="sidebar-utsukushii.js"></script>
 </body>
 </html>

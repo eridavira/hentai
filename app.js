@@ -1,20 +1,14 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, set, get, onValue, push, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-// --- CONFIGURATION ---
-const firebaseConfig = { databaseURL: "https://hentai-86b5f-default-rtdb.asia-southeast1.firebasedatabase.app/" };
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+import { db, ref, set, get, onValue, push, update, remove } from "./firebase.js";
 
 const $ = (id) => document.getElementById(id);
 const IMGBB_API_KEY = "c0e6f15eb26082b61ce8c39cf8b3ccdd";
 const SPECIAL_GLOW_USER = "utsukushii";
+const PINNED_DIRECTORY_USER = "utsukushii";
 
 // --- STATE MANAGEMENT ---
 let isDragging = false, startY = 0, currentPos = 50;
 let currentFeedPath = '', isLoading = false, displayedCount = 0, allPostKeys = [];
 let isEditingBio = false;
-let allUsersDirectory = [];
 let currentSortType = 'newest';
 let currentFeedData = {};
 let pendingUploadImage = null;
@@ -24,11 +18,13 @@ let hasTriggeredNearBottom = false;
 const DEFAULT_COVER_URL = "https://images2.imgbox.com/73/0d/9Z6A6C9Z_o.jpg";
 let homeCoverActiveGifUrl = '';
 let homeCoverBlobUrl = '';
+let pendingDeepLinkPostId = '';
 
 document.addEventListener('DOMContentLoaded', () => {
     const myUser = localStorage.getItem("active_user");
     const urlParams = new URLSearchParams(window.location.search);
     const targetUser = urlParams.get('u');
+    pendingDeepLinkPostId = String(urlParams.get('p') || '').trim();
     initMobileDrawer();
     initModalBehavior();
     initPasteImageUpload();
@@ -192,7 +188,6 @@ function showApp(myUser, targetUser) {
     $('nav-name').onclick = () => location.href = `index.html?u=${myUser}`;
     const logoutBtn = $('btn-logout');
     if (logoutBtn) logoutBtn.onclick = window.logout;
-    initUserDirectory();
 
     if (targetUser) {
         $('home-wall-card').classList.add('hidden');
@@ -204,6 +199,13 @@ function showApp(myUser, targetUser) {
         $('profile-view').classList.add('hidden');
         $('editor-box').classList.remove('hidden');
         loadFeed('global_posts', myUser);
+    }
+
+    if (pendingDeepLinkPostId) {
+        const postIdToOpen = pendingDeepLinkPostId;
+        pendingDeepLinkPostId = '';
+        // Tunggu paint pertama agar modal dibuka saat layout sudah stabil
+        setTimeout(() => window.openPost(postIdToOpen, false), 0);
     }
 }
 
@@ -482,6 +484,12 @@ function getModalImageUrl(post = {}) {
     return getThumbUrl(post);
 }
 
+function buildPostDeepLink(postId) {
+    const cleanId = String(postId || '').trim();
+    if (!cleanId) return window.location.href;
+    return `${window.location.origin}${window.location.pathname}?p=${encodeURIComponent(cleanId)}`;
+}
+
 function isGifPost(post = {}) {
     return isGifUrl(post.originalUrl) ||
         isGifUrl(post.fullUrl) ||
@@ -642,6 +650,10 @@ window.openPost = (postId, focusComment = false) => {
         const input = $('detail-comment-input');
         const sendBtn = $('detail-comment-send');
         const closeBtn = $('detail-close-btn');
+        const idMeta = modalBody.querySelector('.detail-user-info small');
+        if (idMeta) {
+            idMeta.innerHTML = `ID: ${escHtml(postId)} <button id="copy-post-link-btn" type="button" style="margin-left:8px; border:1px solid var(--brd); background:transparent; color:var(--text-s); border-radius:999px; padding:2px 8px; font-size:0.7rem; cursor:pointer;">Copy Link</button>`;
+        }
         const closeModal = closePostModal;
 
         if (closeBtn) {
@@ -672,6 +684,22 @@ window.openPost = (postId, focusComment = false) => {
         });
 
         $('modal-like-btn').onclick = () => window.toggleLike(postId, post.author);
+        const copyPostLinkBtn = $('copy-post-link-btn');
+        if (copyPostLinkBtn) {
+            copyPostLinkBtn.onclick = async (e) => {
+                e.stopPropagation();
+                const deepLink = buildPostDeepLink(postId);
+                try {
+                    await navigator.clipboard.writeText(deepLink);
+                    copyPostLinkBtn.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyPostLinkBtn.textContent = 'Copy Link';
+                    }, 1200);
+                } catch {
+                    prompt('Copy link postingan:', deepLink);
+                }
+            };
+        }
 
         // Listener post (like/count + caption/time ringan)
         onValue(ref(db, `global_posts/${postId}`), (liveSnap) => {
@@ -922,52 +950,6 @@ window.deletePost = async (id) => {
     await remove(ref(db, `global_posts/${id}`));
     await remove(ref(db, `users/${myUser}/posts/${id}`));
 };
-
-// --- SIDEBAR ---
-function initUserDirectory() {
-    const searchInput = $('side-search-input');
-
-    const renderDirectory = (keyword = '') => {
-        const list = $('user-directory-list');
-        const q = keyword.trim().toLowerCase();
-        list.innerHTML = '';
-
-        const filteredUsers = allUsersDirectory.filter((item) => item.username.includes(q));
-
-        filteredUsers.forEach((item) => {
-            const d = document.createElement('div');
-            d.style = "display:flex; align-items:center; gap:10px; padding:10px; cursor:pointer;";
-            d.innerHTML = `<img src="${item.avatar}" style="width:30px; height:30px; border-radius:50%; object-fit:cover;"><span>@${item.username}</span>`;
-            d.onclick = () => location.href = `index.html?u=${item.username}`;
-            list.appendChild(d);
-        });
-    };
-
-    searchInput.oninput = (e) => renderDirectory(e.target.value);
-
-    onValue(ref(db, 'users'), async (s) => {
-        allUsersDirectory = [];
-        if (!s.exists()) {
-            renderDirectory(searchInput.value);
-            return;
-        }
-
-        const usernames = Object.keys(s.val());
-        const usersWithProfile = await Promise.all(
-            usernames.map(async (username) => {
-                const pSnap = await get(ref(db, `users/${username}/profile`));
-                const profile = pSnap.val() || {};
-                return {
-                    username,
-                    avatar: profile.avatar || `https://ui-avatars.com/api/?name=${username}`
-                };
-            })
-        );
-
-        allUsersDirectory = usersWithProfile.sort((a, b) => a.username.localeCompare(b.username));
-        renderDirectory(searchInput.value);
-    });
-}
 
 // --- UTILS ---
 async function uploadToImgBB(file, onProgress) {
