@@ -43,9 +43,11 @@ nav { background: var(--card); padding: 12px 20px; display: flex; justify-conten
         overflow-y: auto;
     }
     .sidebar-area.open { transform: translateX(0); }
-    .sticky-sidebar {
+.sticky-sidebar {
         position: static;
         top: auto;
+        max-height: none;
+        overflow: visible;
     }
     .mobile-drawer-backdrop {
         position: fixed;
@@ -82,7 +84,38 @@ nav { background: var(--card); padding: 12px 20px; display: flex; justify-conten
 }
 
 .card { background: var(--card); border: 1px solid var(--brd); border-radius: 8px; padding: 15px; margin-bottom: 20px; }
-.sticky-sidebar { position: sticky; top: 80px; }
+.sticky-sidebar {
+    position: sticky;
+    top: 80px;
+    max-height: calc(100vh - 95px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+/* Desktop: sidebar selalu tetap terlihat saat scroll halaman */
+@media (min-width: 851px) {
+    .sidebar-area {
+        flex: 0 0 320px;
+        min-width: 320px;
+        position: sticky;
+        top: 80px;
+        max-height: calc(100vh - 95px);
+    }
+
+    .sticky-sidebar {
+        position: static;
+        top: auto;
+        max-height: none;
+        overflow: visible;
+    }
+
+    /* Scroll internal tetap di card sidebar */
+    .sidebar-area .sticky-sidebar {
+        max-height: calc(100vh - 95px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+}
 
 /* Drawer tabs (Cari User / Chat Global) */
 .drawer-tabs {
