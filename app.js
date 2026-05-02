@@ -226,10 +226,12 @@ function initHomeWall() {
     onValue(ref(db, 'site_config'), (snap) => {
         const cfg = snap.val() || {};
         const previewUrl = String(cfg.home_cover_preview || cfg.home_cover || '').trim();
-        const autoplayGifUrl = String(cfg.home_cover_original || cfg.home_cover || '').trim();
+        const originalUrl = String(cfg.home_cover_original || cfg.home_cover || '').trim();
+        const wallDisplayUrl = originalUrl || previewUrl;
+        const autoplayGifUrl = originalUrl || previewUrl;
         const pos = Number(cfg.home_cover_pos);
         const normalizedPos = Number.isFinite(pos) ? Math.max(0, Math.min(100, pos)) : 50;
-        coverEl.src = previewUrl || DEFAULT_COVER_URL;
+        coverEl.src = wallDisplayUrl || DEFAULT_COVER_URL;
         coverEl.style.objectPosition = `50% ${normalizedPos}%`;
 
         if (!isGifUrl(autoplayGifUrl)) {

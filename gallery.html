@@ -5,6 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gallery</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .gallery-modal-view {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+    .gallery-modal-view-inner {
+      flex: 1;
+      min-width: 0;
+      text-align: center;
+      position: relative;
+    }
+    .modal-img-loading {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      padding: 10px 18px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.78);
+      color: #fff;
+      font-size: 0.88rem;
+      font-variant-numeric: tabular-nums;
+      pointer-events: none;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+    }
+    .gallery-modal-nav {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid var(--brd);
+      background: rgba(22, 27, 34, 0.92);
+      color: var(--text);
+      font-size: 1.5rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: opacity 0.15s, background 0.15s;
+    }
+    .gallery-modal-nav:hover:not(:disabled) {
+      background: rgba(40, 48, 58, 0.95);
+      border-color: var(--p);
+    }
+    .gallery-modal-nav:disabled {
+      cursor: not-allowed;
+    }
+    @media (max-width: 520px) {
+      .gallery-modal-nav { width: 38px; height: 38px; font-size: 1.25rem; }
+    }
+  </style>
 </head>
 <body>
   <nav>
@@ -18,6 +74,12 @@
   </nav>
 
   <div class="container">
+    <div id="gallery-wall-card" class="card hidden" style="padding:0; overflow:hidden; margin-bottom:14px;">
+      <div class="cover gallery-wall-cover-wrap">
+        <img id="gallery-wall-cover" src="" alt="Foto dinding gallery" style="cursor: default;">
+      </div>
+    </div>
+
     <div class="card" style="margin-bottom:14px;">
       <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
         <div>
@@ -30,6 +92,12 @@
       </div>
     </div>
 
+    <div id="gallery-pagination" class="gallery-pagination hidden" style="display:flex; justify-content:center; align-items:center; gap:12px; flex-wrap:wrap; margin: 0 0 14px;">
+      <button type="button" id="gallery-page-prev" class="btn" style="max-width:140px; padding:8px 14px;">Sebelumnya</button>
+      <span id="gallery-page-info" style="color:var(--text-s); font-size:0.85rem; min-width:10ch; text-align:center;"></span>
+      <button type="button" id="gallery-page-next" class="btn" style="max-width:140px; padding:8px 14px;">Selanjutnya</button>
+    </div>
+
     <div id="gallery-grid" class="gallery-grid"></div>
     <div id="gallery-empty" class="card hidden" style="text-align:center; color:var(--text-s);">Belum ada foto di gallery ini.</div>
   </div>
@@ -38,9 +106,17 @@
     <div class="modal-content" style="max-width: 1100px;">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px;">
         <a id="modal-download-original" class="btn" href="#" style="width:auto; padding:8px 12px; border-radius:999px; text-decoration:none;">Buka Original</a>
+        <span id="modal-photo-counter" style="color:var(--text-s); font-size:0.8rem;"></span>
         <button id="modal-close" type="button" style="background:none; border:1px solid var(--brd); color:var(--text-s); padding:6px 10px; border-radius:999px; cursor:pointer; font-size:0.8rem;">Tutup</button>
       </div>
-      <img id="modal-img" src="" alt="Preview">
+      <div class="gallery-modal-view">
+        <button type="button" id="modal-nav-prev" class="gallery-modal-nav" aria-label="Foto sebelumnya">‹</button>
+        <div class="gallery-modal-view-inner">
+          <div id="modal-img-loading" class="modal-img-loading hidden" aria-live="polite"></div>
+          <img id="modal-img" src="" alt="Preview">
+        </div>
+        <button type="button" id="modal-nav-next" class="gallery-modal-nav" aria-label="Foto berikutnya">›</button>
+      </div>
     </div>
   </div>
 
