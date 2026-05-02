@@ -24,6 +24,65 @@ function formatTime(ts) {
   }
 }
 
+function imgBoxThumbToOriginalUrl(url) {
+  const u = String(url || "").trim();
+  if (!u) return "";
+  const swappedDomain = u.replace(/\/\/thumbs(\d+)\.imgbox\.com\//i, (_m, n) => `//images${n}.imgbox.com/`);
+  return swappedDomain.replace(/_t(\.[a-z0-9]+)(\?.*)?$/i, (_m, ext, qs = "") => `_o${ext}${qs}`);
+}
+
+function imgBoxAnyToThumbUrl(url) {
+  const u = String(url || "").trim();
+  if (!u) return "";
+  // imagesN -> thumbsN
+  const swappedDomain = u.replace(/\/\/images(\d+)\.imgbox\.com\//i, (_m, n) => `//thumbs${n}.imgbox.com/`);
+  // _o/_b/_m -> _t
+  return swappedDomain.replace(/_(o|b|m)(\.[a-z0-9]+)(\?.*)?$/i, (_m, _k, ext, qs = "") => `_t${ext}${qs}`);
+}
+
+function normalizeOriginalUrl({ originalUrl, thumbUrl, fallbackUrl }) {
+  const original = String(originalUrl || "").trim();
+  const thumb = String(thumbUrl || "").trim();
+  const fallback = String(fallbackUrl || "").trim();
+
+  // Prioritas: originalUrl kalau sudah benar.
+  const candidate = original || fallback;
+  if (!candidate) return "";
+
+  // Fix khusus Imgbox: jika yang tersimpan masih thumbnail (_t / thumbsN), ubah ke original (_o / imagesN).
+  const looksLikeImgBoxThumb =
+    /\/\/thumbs\d+\.imgbox\.com\//i.test(candidate) || /_t(\.[a-z0-9]+)(\?.*)?$/i.test(candidate);
+  const looksLikeImgBoxThumb2 =
+    /\/\/thumbs\d+\.imgbox\.com\//i.test(thumb) || /_t(\.[a-z0-9]+)(\?.*)?$/i.test(thumb);
+
+  if (looksLikeImgBoxThumb) return imgBoxThumbToOriginalUrl(candidate);
+  if (!original && looksLikeImgBoxThumb2) return imgBoxThumbToOriginalUrl(thumb);
+
+  return candidate;
+}
+
+function normalizeDisplayUrl({ displayUrl, thumbUrl, fallbackUrl }) {
+  const display = String(displayUrl || "").trim();
+  const thumb = String(thumbUrl || "").trim();
+  const fallback = String(fallbackUrl || "").trim();
+
+  const candidate = display || thumb || fallback;
+  if (!candidate) return "";
+
+  // Untuk Imgbox, pakai thumbnail di modal agar hemat data.
+  const looksLikeImgBox =
+    /\/\/(thumbs|images)\d+\.imgbox\.com\//i.test(candidate) ||
+    /imgbox\.com/i.test(candidate);
+
+  if (!looksLikeImgBox) return candidate;
+
+  // Prioritas: thumbUrl kalau jelas thumbs/_t
+  if (/\/\/thumbs\d+\.imgbox\.com\//i.test(thumb) || /_t(\.[a-z0-9]+)(\?.*)?$/i.test(thumb)) return thumb;
+
+  // Jika yang ada images/_b atau _o, konversi ke thumbs/_t
+  return imgBoxAnyToThumbUrl(candidate);
+}
+
 function openModal(displayUrl, originalUrl, downloadName = "") {
   const modal = $("img-modal");
   const img = $("modal-img");
@@ -35,13 +94,17 @@ function openModal(displayUrl, originalUrl, downloadName = "") {
   const original = String(originalUrl || "").trim();
   if (original) {
     dl.href = original;
-    dl.setAttribute("download", downloadName || "original");
+    dl.target = "_blank";
+    dl.rel = "noopener noreferrer";
+    dl.removeAttribute("download");
     dl.style.pointerEvents = "";
     dl.style.opacity = "";
-    dl.title = "Unduh foto original";
+    dl.title = "Buka foto original di tab baru";
   } else {
     dl.href = "#";
     dl.removeAttribute("download");
+    dl.removeAttribute("target");
+    dl.removeAttribute("rel");
     dl.style.pointerEvents = "none";
     dl.style.opacity = "0.55";
     dl.title = "Foto original tidak tersedia";
@@ -78,9 +141,21 @@ function renderGrid(photosObj) {
 
   grid.innerHTML = entries
     .map(([pid, p]) => {
-      const thumb = escHtml(String(p?.thumbUrl || p?.mediumUrl || p?.url || "").trim());
-      const display = escHtml(String(p?.mediumUrl || p?.thumbUrl || p?.url || "").trim());
-      const original = escHtml(String(p?.originalUrl || p?.url || "").trim());
+      const rawThumb = String(p?.thumbUrl || p?.mediumUrl || p?.url || "").trim();
+      const rawDisplay = normalizeDisplayUrl({
+        displayUrl: p?.mediumUrl || p?.url,
+        thumbUrl: rawThumb,
+        fallbackUrl: p?.url,
+      });
+      const rawOriginal = normalizeOriginalUrl({
+        originalUrl: p?.originalUrl,
+        thumbUrl: rawThumb,
+        fallbackUrl: p?.url,
+      });
+
+      const thumb = escHtml(rawThumb);
+      const display = escHtml(rawDisplay);
+      const original = escHtml(rawOriginal);
       const time = escHtml(formatTime(p?.time || 0));
       return `
         <button class="gallery-item" type="button" data-display="${display}" data-original="${original}" data-name="${escHtml(pid)}" title="${time}">
