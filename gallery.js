@@ -27,6 +27,32 @@ function getPageIdFromUrl() {
   return String(params.get("page") || "").trim();
 }
 
+function getFromFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return String(params.get("from") || "").trim().toLowerCase();
+}
+
+function goBackFromGallery() {
+  const from = getFromFromUrl();
+  if (from === "galleries") {
+    location.href = "galleries.html";
+    return;
+  }
+
+  const ref = String(document.referrer || "");
+  if (ref.includes("galleries.html")) {
+    history.back();
+    return;
+  }
+
+  if (window.history.length > 1) {
+    history.back();
+    return;
+  }
+
+  location.href = "index.html";
+}
+
 function formatTime(ts) {
   try {
     return new Date(ts).toLocaleString();
@@ -495,7 +521,7 @@ function setGalleryNotFound() {
 }
 
 async function init() {
-  $("btn-back-home").onclick = () => (location.href = "index.html");
+  $("btn-back-home").onclick = goBackFromGallery;
 
   const pageId = getPageIdFromUrl();
   if (!pageId) {

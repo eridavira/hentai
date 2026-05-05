@@ -2,6 +2,8 @@ import { db, ref, onValue } from "./firebase.js";
 
 const $ = (id) => document.getElementById(id);
 
+const HOME_GALLERY_BUTTON_LIMIT = 2;
+
 function escHtml(s = "") {
   return String(s)
     .replaceAll("&", "&amp;")
@@ -16,7 +18,11 @@ function renderLinks(pagesObj) {
   if (!bar) return;
 
   const entries = Object.entries(pagesObj || {});
-  entries.sort((a, b) => (a[1]?.createdAt || 0) - (b[1]?.createdAt || 0));
+  entries.sort((a, b) => {
+    const aUpdated = a[1]?.updatedAt || a[1]?.lastPhotoTime || a[1]?.createdAt || 0;
+    const bUpdated = b[1]?.updatedAt || b[1]?.lastPhotoTime || b[1]?.createdAt || 0;
+    return bUpdated - aUpdated;
+  });
 
   if (entries.length === 0) {
     bar.classList.add("hidden");
@@ -25,8 +31,13 @@ function renderLinks(pagesObj) {
   }
 
   bar.classList.remove("hidden");
-  bar.innerHTML = entries
-    .map(([pageId, page]) => {
+
+  const visible = entries.slice(0, HOME_GALLERY_BUTTON_LIMIT);
+  const hasMore = entries.length > HOME_GALLERY_BUTTON_LIMIT;
+
+  bar.innerHTML =
+    visible
+      .map(([pageId, page]) => {
       const name = escHtml(String(page?.name || "").trim() || "Gallery");
       const href = `gallery.html?page=${encodeURIComponent(pageId)}`;
       return `
@@ -35,8 +46,16 @@ function renderLinks(pagesObj) {
           <span>${name}</span>
         </button>
       `;
-    })
-    .join("");
+      })
+      .join("") +
+    (hasMore
+      ? `
+        <button class="gallery-link-btn gallery-link-more" type="button" data-href="galleries.html" title="Lihat semua tombol">
+          <span class="gallery-link-dot" aria-hidden="true"></span>
+          <span>Lainnya</span>
+        </button>
+      `
+      : "");
 
   bar.querySelectorAll(".gallery-link-btn[data-href]").forEach((btn) => {
     btn.addEventListener("click", () => {

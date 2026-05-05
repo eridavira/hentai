@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gallery Collection</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav>
+    <div class="nav-left-group">
+      <b id="nav-brand" style="color:var(--p); font-size:1.5rem; cursor:pointer;" onclick="location.href='index.html'">Utsukushii</b>
+      <span style="color:var(--text-s); font-size:0.9rem; margin-left:10px;">/ Gallery Collection</span>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <button id="btn-back-home" style="background:none; border:1px solid var(--brd); color:var(--text); padding:6px 10px; border-radius:999px; cursor:pointer; font-size:0.8rem;">Kembali</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="card" style="margin-bottom:14px;">
+      <b style="font-size:1.05rem;">Gallery</b>
+      <div style="margin-top:6px; color:var(--text-s); font-size:0.85rem;">
+        Gallery Premium.
+      </div>
+    </div>
+
+    <div id="galleries-grid" class="galleries-grid"></div>
+    <div id="galleries-empty" class="card hidden" style="text-align:center; color:var(--text-s);">Belum ada tombol.</div>
+  </div>
+
+  <script type="module" src="galleries.js"></script>
+</body>
+</html>
+
