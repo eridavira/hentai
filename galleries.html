@@ -25,6 +25,26 @@
       </div>
     </div>
 
+    <div class="card" style="margin-bottom:14px;">
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <input type="text" id="galleries-search" placeholder="Cari gallery (nama / ID)..." style="flex:1; min-width:240px;">
+        <button type="button" id="galleries-search-clear" class="btn" style="max-width:140px; padding:8px 14px; background:#30363d;">Reset</button>
+      </div>
+      <div style="margin-top:8px; color:var(--text-s); font-size:0.8rem;">
+        Menampilkan hasil secara bertahap (pagination) supaya tidak memuat semuanya sekaligus.
+      </div>
+    </div>
+
+    <div id="galleries-pagination" class="gallery-pagination hidden" style="display:flex; justify-content:center; align-items:center; gap:12px; flex-wrap:wrap; margin: 0 0 14px;">
+      <button type="button" id="galleries-page-prev" class="btn" style="max-width:140px; padding:8px 14px;">Sebelumnya</button>
+      <span id="galleries-page-info" style="color:var(--text-s); font-size:0.85rem; min-width:10ch; text-align:center;"></span>
+      <button type="button" id="galleries-page-next" class="btn" style="max-width:140px; padding:8px 14px;">Selanjutnya</button>
+      <span style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <input type="number" id="galleries-page-jump" min="1" step="1" placeholder="Halaman..." style="width:130px;">
+        <button type="button" id="galleries-page-jump-btn" class="btn" style="max-width:140px; padding:8px 14px; background:#2ea043;">Loncat</button>
+      </span>
+    </div>
+
     <div id="galleries-grid" class="galleries-grid"></div>
     <div id="galleries-empty" class="card hidden" style="text-align:center; color:var(--text-s);">Belum ada tombol.</div>
   </div>

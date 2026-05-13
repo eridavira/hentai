@@ -25,8 +25,20 @@ function renderLinks(pagesObj) {
   });
 
   if (entries.length === 0) {
-    bar.classList.add("hidden");
-    bar.innerHTML = "";
+    // Tetap tampilkan tombol Update walau belum ada gallery tombol.
+    bar.classList.remove("hidden");
+    bar.innerHTML = `
+      <button class="gallery-link-btn" type="button" data-href="updates.html" title="Update khusus">
+        <span class="gallery-link-dot" aria-hidden="true"></span>
+        <span>Update</span>
+      </button>
+    `;
+    bar.querySelectorAll(".gallery-link-btn[data-href]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const href = String(btn.getAttribute("data-href") || "").trim();
+        if (href) location.href = href;
+      });
+    });
     return;
   }
 
@@ -36,6 +48,12 @@ function renderLinks(pagesObj) {
   const hasMore = entries.length > HOME_GALLERY_BUTTON_LIMIT;
 
   bar.innerHTML =
+    `
+      <button class="gallery-link-btn" type="button" data-href="updates.html" title="Update khusus">
+        <span class="gallery-link-dot" aria-hidden="true"></span>
+        <span>Update</span>
+      </button>
+    ` +
     visible
       .map(([pageId, page]) => {
       const name = escHtml(String(page?.name || "").trim() || "Gallery");
