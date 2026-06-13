@@ -219,12 +219,31 @@ function bindSearch() {
   }
 }
 
+function applyGalleriesWall(cfg = {}) {
+  const card = $("galleries-wall-card");
+  const coverEl = $("galleries-wall-cover");
+  if (!card || !coverEl) return;
+
+  const previewUrl = String(cfg.galleries_cover_preview || cfg.galleries_cover || "").trim();
+  const originalUrl = String(cfg.galleries_cover_original || cfg.galleries_cover || "").trim();
+  const wallDisplayUrl = originalUrl || previewUrl;
+  const pos = Number(cfg.galleries_cover_pos);
+  const normalizedPos = Number.isFinite(pos) ? Math.max(0, Math.min(100, pos)) : 50;
+
+  coverEl.style.objectPosition = `50% ${normalizedPos}%`;
+  coverEl.src = wallDisplayUrl || DEFAULT_THUMB;
+}
+
 function init() {
   const back = $("btn-back-home");
   if (back) back.onclick = () => (location.href = "index.html");
 
   bindPagination();
   bindSearch();
+
+  onValue(ref(db, "site_config"), (snap) => {
+    applyGalleriesWall(snap.exists() ? snap.val() : {});
+  });
 
   onValue(ref(db, "site_galleries/pages"), (snap) => {
     renderPages(snap.exists() ? snap.val() : {});

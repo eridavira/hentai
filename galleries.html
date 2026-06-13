@@ -18,10 +18,9 @@
   </nav>
 
   <div class="container">
-    <div class="card" style="margin-bottom:14px;">
-      <b style="font-size:1.05rem;">Gallery</b>
-      <div style="margin-top:6px; color:var(--text-s); font-size:0.85rem;">
-        Gallery Premium.
+    <div id="galleries-wall-card" class="card" style="padding:0; overflow:hidden; margin-bottom:14px;">
+      <div class="cover">
+        <img id="galleries-wall-cover" src="" alt="Foto dinding gallery collection" style="cursor: default;">
       </div>
     </div>
 
@@ -29,9 +28,6 @@
       <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
         <input type="text" id="galleries-search" placeholder="Cari gallery (nama / ID)..." style="flex:1; min-width:240px;">
         <button type="button" id="galleries-search-clear" class="btn" style="max-width:140px; padding:8px 14px; background:#30363d;">Reset</button>
-      </div>
-      <div style="margin-top:8px; color:var(--text-s); font-size:0.8rem;">
-        Menampilkan hasil secara bertahap (pagination) supaya tidak memuat semuanya sekaligus.
       </div>
     </div>
 
