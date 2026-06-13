@@ -12,6 +12,7 @@ let galleryWallBlobUrl = "";
 let modalPhotoIndex = -1;
 let modalImageLoadId = 0;
 let modalDisplayBlobUrl = "";
+let galleryPageAccessible = false;
 
 function escHtml(s = "") {
   return String(s)
@@ -30,6 +31,15 @@ function getPageIdFromUrl() {
 function getFromFromUrl() {
   const params = new URLSearchParams(window.location.search);
   return String(params.get("from") || "").trim().toLowerCase();
+}
+
+function isAdminPreview() {
+  const params = new URLSearchParams(window.location.search);
+  return String(params.get("preview") || "").trim().toLowerCase() === "admin";
+}
+
+function isGalleryReleased(page = {}) {
+  return page.released !== false;
 }
 
 function goBackFromGallery() {
@@ -511,6 +521,7 @@ function bindPagination() {
 }
 
 function setGalleryNotFound() {
+  galleryPageAccessible = false;
   document.title = "Gallery";
   $("gallery-name").innerText = "Gallery tidak ditemukan";
   $("gallery-sub").innerText = "Halaman tidak ada.";
@@ -541,6 +552,12 @@ async function init() {
     }
 
     const page = pageSnap.val() || {};
+    if (!isGalleryReleased(page) && !isAdminPreview()) {
+      setGalleryNotFound();
+      return;
+    }
+
+    galleryPageAccessible = true;
     const pageName = String(page?.name || "").trim() || "Gallery";
 
     document.title = `Gallery - ${pageName}`;
@@ -552,6 +569,13 @@ async function init() {
   });
 
   onValue(ref(db, `site_galleries/photos/${pageId}`), (snap) => {
+    if (!galleryPageAccessible && !isAdminPreview()) {
+      sortedPhotoEntries = [];
+      currentPageIndex = 0;
+      renderGridPage();
+      return;
+    }
+
     const photosObj = snap.exists() ? snap.val() : {};
     sortedPhotoEntries = Object.entries(photosObj || {}).sort((a, b) => (b[1]?.time || 0) - (a[1]?.time || 0));
 

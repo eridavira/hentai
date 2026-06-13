@@ -13,11 +13,15 @@ function escHtml(s = "") {
     .replaceAll("'", "&#039;");
 }
 
+function isGalleryReleased(page = {}) {
+  return page.released !== false;
+}
+
 function renderLinks(pagesObj) {
   const bar = $("gallery-links-bar");
   if (!bar) return;
 
-  const entries = Object.entries(pagesObj || {});
+  const entries = Object.entries(pagesObj || {}).filter(([, page]) => isGalleryReleased(page));
   entries.sort((a, b) => {
     const aUpdated = a[1]?.updatedAt || a[1]?.lastPhotoTime || a[1]?.createdAt || 0;
     const bUpdated = b[1]?.updatedAt || b[1]?.lastPhotoTime || b[1]?.createdAt || 0;

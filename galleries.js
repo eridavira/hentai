@@ -35,6 +35,10 @@ function pickUpdatedAt(page = {}) {
   return Number(page?.updatedAt || page?.lastPhotoTime || page?.createdAt || 0);
 }
 
+function isGalleryReleased(page = {}) {
+  return page.released !== false;
+}
+
 function getTotalPages() {
   const n = filteredPageEntries.length;
   return n === 0 ? 1 : Math.ceil(n / PAGE_SIZE);
@@ -145,7 +149,7 @@ function applySearchFilter() {
 }
 
 function renderPages(pagesObj) {
-  allPageEntries = Object.entries(pagesObj || {});
+  allPageEntries = Object.entries(pagesObj || {}).filter(([, page]) => isGalleryReleased(page));
   allPageEntries.sort((a, b) => pickUpdatedAt(b[1]) - pickUpdatedAt(a[1]));
   applySearchFilter();
   renderGridPage();
