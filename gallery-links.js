@@ -1,4 +1,5 @@
 import { db, ref, onValue } from "./firebase.js";
+import { initGalleryServerTime, getServerNow, isGalleryLive } from "./gallery-release.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -14,7 +15,7 @@ function escHtml(s = "") {
 }
 
 function isGalleryReleased(page = {}) {
-  return page.released !== false;
+  return isGalleryLive(page, getServerNow());
 }
 
 function renderLinks(pagesObj) {
@@ -98,6 +99,8 @@ function init() {
     bar.innerHTML = "";
     return;
   }
+
+  initGalleryServerTime(db);
 
   onValue(ref(db, "site_galleries/pages"), (snap) => {
     renderLinks(snap.exists() ? snap.val() : {});
