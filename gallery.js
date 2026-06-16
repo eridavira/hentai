@@ -1,9 +1,20 @@
-import { db, ref, onValue } from "./firebase.js";
+import { db, ref, onValue, push, set } from "./firebase.js";
+import {
+  initGalleryServerTime,
+  getServerNow,
+  isGalleryLive,
+  isGalleryScheduled,
+  getReleaseAt,
+  getRemainingMs,
+  formatCountdown,
+  formatReleaseDateTime,
+} from "./gallery-release.js";
 
 const $ = (id) => document.getElementById(id);
 
 const PAGE_SIZE = 30;
 const DEFAULT_COVER_URL = "https://images2.imgbox.com/73/0d/9Z6A6C9Z_o.jpg";
+const GUEST_USERNAME_KEY = "gallery_guest_username";
 
 let sortedPhotoEntries = [];
 let currentPageIndex = 0;
@@ -13,6 +24,9 @@ let modalPhotoIndex = -1;
 let modalImageLoadId = 0;
 let modalDisplayBlobUrl = "";
 let galleryPageAccessible = false;
+let currentGalleryPageId = "";
+let currentGalleryPageName = "Gallery";
+let commentsUnsubscribe = null;
 
 function escHtml(s = "") {
   return String(s)
@@ -39,7 +53,23 @@ function isAdminPreview() {
 }
 
 function isGalleryReleased(page = {}) {
-  return page.released !== false;
+  return isGalleryLive(page, getServerNow());
+}
+
+function setGalleryScheduled(page = {}) {
+  galleryPageAccessible = false;
+  const pageName = String(page?.name || "").trim() || "Gallery";
+  const releaseAt = getReleaseAt(page);
+  const remaining = getRemainingMs(page, getServerNow());
+
+  document.title = `Gallery - ${pageName}`;
+  $("gallery-title").innerText = `/ ${pageName}`;
+  $("gallery-name").innerText = pageName;
+  $("gallery-sub").innerHTML = `Gallery ini akan muncul pada : <b>${escHtml(formatReleaseDateTime(releaseAt))}</b><br><span style="font-variant-numeric:tabular-nums;">${escHtml(formatCountdown(remaining))}</span>`;
+  $("gallery-wall-card")?.classList.add("hidden");
+  sortedPhotoEntries = [];
+  currentPageIndex = 0;
+  renderGridPage();
 }
 
 function goBackFromGallery() {
@@ -69,6 +99,106 @@ function formatTime(ts) {
   } catch {
     return "";
   }
+}
+
+function formatRelativeTime(ts) {
+  const n = Number(ts) || 0;
+  if (!n) return "";
+  const diff = Date.now() - n;
+  const sec = Math.floor(diff / 1000);
+  if (sec < 60) return "Baru saja";
+  const min = Math.floor(sec / 60);
+  if (min < 60) return `${min} menit`;
+  const hr = Math.floor(min / 60);
+  if (hr < 24) return `${hr} jam`;
+  const day = Math.floor(hr / 24);
+  if (day < 7) return `${day} hari`;
+  return formatTime(n);
+}
+
+function getGuestUsername() {
+  let name = String(localStorage.getItem(GUEST_USERNAME_KEY) || "").trim();
+  if (!name) {
+    const num = Math.floor(1000 + Math.random() * 9000);
+    name = `Tamu_${num}`;
+    localStorage.setItem(GUEST_USERNAME_KEY, name);
+  }
+  return name;
+}
+
+function guestAvatarUrl(name = "") {
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name || "Tamu")}&background=random&color=fff`;
+}
+
+function unsubscribePhotoComments() {
+  if (typeof commentsUnsubscribe === "function") {
+    commentsUnsubscribe();
+    commentsUnsubscribe = null;
+  }
+}
+
+function renderGalleryCommentsList(containerEl, commentsObj = {}) {
+  if (!containerEl) return;
+
+  const entries = Object.entries(commentsObj || {});
+  entries.sort((a, b) => (a[1]?.time || 0) - (b[1]?.time || 0));
+
+  if (entries.length === 0) {
+    containerEl.innerHTML = `<div class="comment-empty">Belum ada komentar. Jadi yang pertama.</div>`;
+    return;
+  }
+
+  containerEl.innerHTML = entries
+    .map(([cid, c]) => {
+      const author = escHtml(String(c?.author || "Tamu").trim() || "Tamu");
+      const text = escHtml(c?.text || "");
+      const time = escHtml(formatRelativeTime(c?.time || 0));
+      const avatar = guestAvatarUrl(author);
+      return `
+        <div class="comment-item" data-cid="${escHtml(cid)}">
+          <div class="comment-row">
+            <img class="comment-avatar" src="${escHtml(avatar)}" alt="Avatar">
+            <div class="comment-main">
+              <div class="comment-meta">
+                <b>${author}</b>
+                <small>${time}</small>
+              </div>
+              <div class="comment-text">${text}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+
+  containerEl.scrollTop = containerEl.scrollHeight;
+}
+
+function subscribePhotoComments(pageId, photoId) {
+  unsubscribePhotoComments();
+  if (!pageId || !photoId) return;
+
+  commentsUnsubscribe = onValue(ref(db, `site_galleries/photo_comments/${pageId}/${photoId}`), (snap) => {
+    const data = snap.exists() ? snap.val() : {};
+    const countEl = $("modal-comment-count");
+    const count = Object.keys(data || {}).length;
+    if (countEl) countEl.textContent = count ? `(${count})` : "";
+    renderGalleryCommentsList($("modal-comments-list"), data);
+  });
+}
+
+async function addGalleryComment(pageId, photoId, text) {
+  const body = String(text || "").trim().slice(0, 500);
+  if (!body || !pageId || !photoId) return;
+
+  const author = getGuestUsername();
+  const commentRef = push(ref(db, `site_galleries/photo_comments/${pageId}/${photoId}`));
+  await set(commentRef, {
+    author,
+    text: body,
+    time: Date.now(),
+    guest: true,
+  });
 }
 
 function isGifUrl(url = "") {
@@ -238,19 +368,26 @@ function setModalDownloadLink(originalUrl) {
     dl.href = original;
     dl.target = "_blank";
     dl.rel = "noopener noreferrer";
-    dl.removeAttribute("download");
-    dl.style.pointerEvents = "";
-    dl.style.opacity = "";
+    dl.classList.remove("is-disabled");
     dl.title = "Buka foto original di tab baru";
   } else {
     dl.href = "#";
-    dl.removeAttribute("download");
     dl.removeAttribute("target");
     dl.removeAttribute("rel");
-    dl.style.pointerEvents = "none";
-    dl.style.opacity = "0.55";
+    dl.classList.add("is-disabled");
     dl.title = "Foto original tidak tersedia";
   }
+}
+
+function updateModalSidebarMeta(entry) {
+  const [, p] = entry || [];
+  const nameEl = $("modal-gallery-name");
+  const timeEl = $("modal-photo-time");
+  const guestEl = $("modal-guest-label");
+
+  if (nameEl) nameEl.textContent = currentGalleryPageName;
+  if (timeEl) timeEl.textContent = formatRelativeTime(p?.time || 0) || formatTime(p?.time || 0);
+  if (guestEl) guestEl.textContent = `Komentar sebagai ${getGuestUsername()}`;
 }
 
 function setModalLoadingUi(visible, message = "") {
@@ -372,10 +509,13 @@ function openModalAtIndex(index) {
   if (!modal || index < 0 || index >= sortedPhotoEntries.length) return;
 
   modalPhotoIndex = index;
-  const { display, original, pid } = entryToModalUrls(sortedPhotoEntries[index]);
+  const entry = sortedPhotoEntries[index];
+  const { display, original, pid } = entryToModalUrls(entry);
   if (!display) return;
 
   refreshModalNav();
+  updateModalSidebarMeta(entry);
+  subscribePhotoComments(currentGalleryPageId, pid);
   modal.classList.remove("hidden");
   document.body.classList.add("modal-open");
   loadModalDisplayImage(display, original, pid);
@@ -393,12 +533,15 @@ function closeModal() {
   const modal = $("img-modal");
   if (!modal) return;
   modalImageLoadId++;
+  unsubscribePhotoComments();
   revokeModalDisplayBlob();
   const img = $("modal-img");
   if (img) {
     img.removeAttribute("src");
     img.style.opacity = "1";
   }
+  const input = $("modal-comment-input");
+  if (input) input.value = "";
   setModalLoadingUi(false);
   modalPhotoIndex = -1;
   refreshModalNav();
@@ -535,6 +678,7 @@ async function init() {
   $("btn-back-home").onclick = goBackFromGallery;
 
   const pageId = getPageIdFromUrl();
+  currentGalleryPageId = pageId;
   if (!pageId) {
     $("gallery-name").innerText = "Gallery tidak ditemukan";
     $("gallery-sub").innerText = "Parameter halaman tidak ada.";
@@ -544,6 +688,7 @@ async function init() {
   }
 
   bindPagination();
+  initGalleryServerTime(db);
 
   onValue(ref(db, `site_galleries/pages/${pageId}`), (pageSnap) => {
     if (!pageSnap.exists()) {
@@ -552,13 +697,21 @@ async function init() {
     }
 
     const page = pageSnap.val() || {};
-    if (!isGalleryReleased(page) && !isAdminPreview()) {
+    const now = getServerNow();
+
+    if (isGalleryScheduled(page, now) && !isAdminPreview()) {
+      setGalleryScheduled(page);
+      return;
+    }
+
+    if (!isGalleryLive(page, now) && !isAdminPreview()) {
       setGalleryNotFound();
       return;
     }
 
     galleryPageAccessible = true;
     const pageName = String(page?.name || "").trim() || "Gallery";
+    currentGalleryPageName = pageName;
 
     document.title = `Gallery - ${pageName}`;
     $("gallery-title").innerText = `/ ${pageName}`;
@@ -615,6 +768,35 @@ async function init() {
       e.stopPropagation();
       stepModal(1);
     };
+  }
+
+  const commentInput = $("modal-comment-input");
+  const commentSend = $("modal-comment-send");
+  if (commentSend && commentInput) {
+    const submitComment = async () => {
+      if (modalPhotoIndex < 0) return;
+      const entry = sortedPhotoEntries[modalPhotoIndex];
+      if (!entry) return;
+      const { pid } = entryToModalUrls(entry);
+      if (!pid || !currentGalleryPageId) return;
+
+      commentSend.disabled = true;
+      try {
+        await addGalleryComment(currentGalleryPageId, pid, commentInput.value);
+        commentInput.value = "";
+        commentInput.focus();
+      } finally {
+        commentSend.disabled = false;
+      }
+    };
+
+    commentSend.onclick = submitComment;
+    commentInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        submitComment();
+      }
+    });
   }
 
   document.addEventListener("keydown", (e) => {

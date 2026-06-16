@@ -5,62 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gallery</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .gallery-modal-view {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      width: 100%;
-    }
-    .gallery-modal-view-inner {
-      flex: 1;
-      min-width: 0;
-      text-align: center;
-      position: relative;
-    }
-    .modal-img-loading {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 2;
-      padding: 10px 18px;
-      border-radius: 12px;
-      background: rgba(0, 0, 0, 0.78);
-      color: #fff;
-      font-size: 0.88rem;
-      font-variant-numeric: tabular-nums;
-      pointer-events: none;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
-    }
-    .gallery-modal-nav {
-      flex-shrink: 0;
-      width: 44px;
-      height: 44px;
-      border-radius: 999px;
-      border: 1px solid var(--brd);
-      background: rgba(22, 27, 34, 0.92);
-      color: var(--text);
-      font-size: 1.5rem;
-      line-height: 1;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      transition: opacity 0.15s, background 0.15s;
-    }
-    .gallery-modal-nav:hover:not(:disabled) {
-      background: rgba(40, 48, 58, 0.95);
-      border-color: var(--p);
-    }
-    .gallery-modal-nav:disabled {
-      cursor: not-allowed;
-    }
-    @media (max-width: 520px) {
-      .gallery-modal-nav { width: 38px; height: 38px; font-size: 1.25rem; }
-    }
-  </style>
 </head>
 <body>
   <nav>
@@ -102,20 +46,42 @@
     <div id="gallery-empty" class="card hidden" style="text-align:center; color:var(--text-s);">Belum ada foto di gallery ini.</div>
   </div>
 
-  <div id="img-modal" class="modal-overlay hidden">
-    <div class="modal-content" style="max-width: 1100px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px;">
-        <a id="modal-download-original" class="btn" href="#" style="width:auto; padding:8px 12px; border-radius:999px; text-decoration:none;">Buka Original</a>
-        <span id="modal-photo-counter" style="color:var(--text-s); font-size:0.8rem;"></span>
-        <button id="modal-close" type="button" style="background:none; border:1px solid var(--brd); color:var(--text-s); padding:6px 10px; border-radius:999px; cursor:pointer; font-size:0.8rem;">Tutup</button>
-      </div>
-      <div class="gallery-modal-view">
-        <button type="button" id="modal-nav-prev" class="gallery-modal-nav" aria-label="Foto sebelumnya">‹</button>
+  <div id="img-modal" class="modal-overlay gallery-modal-overlay hidden">
+    <div class="gallery-modal-container" onclick="event.stopPropagation()">
+      <div class="gallery-modal-media">
+        <button type="button" id="modal-close" class="gallery-modal-close" aria-label="Tutup">✕</button>
+        <button type="button" id="modal-nav-prev" class="gallery-modal-nav gallery-modal-nav-prev" aria-label="Foto sebelumnya">‹</button>
         <div class="gallery-modal-view-inner">
-          <div id="modal-img-loading" class="modal-img-loading hidden" aria-live="polite"></div>
+          <div id="modal-img-loading" class="gallery-modal-img-loading hidden" aria-live="polite"></div>
           <img id="modal-img" src="" alt="Preview">
         </div>
-        <button type="button" id="modal-nav-next" class="gallery-modal-nav" aria-label="Foto berikutnya">›</button>
+        <button type="button" id="modal-nav-next" class="gallery-modal-nav gallery-modal-nav-next" aria-label="Foto berikutnya">›</button>
+      </div>
+      <div class="gallery-modal-sidebar">
+        <div class="gallery-modal-sidebar-header">
+          <div class="gallery-modal-sidebar-title">
+            <b id="modal-gallery-name">Gallery</b>
+            <small id="modal-photo-time"></small>
+          </div>
+          <span id="modal-photo-counter" class="gallery-modal-counter"></span>
+        </div>
+        <div class="gallery-modal-sidebar-body">
+          <div class="detail-comments gallery-modal-comments">
+            <div class="detail-comments-header">
+              <b>Komentar</b>
+              <span id="modal-comment-count" class="detail-comments-count"></span>
+            </div>
+            <div id="modal-comments-list" class="detail-comments-list"></div>
+            <div class="detail-comment-form">
+              <textarea id="modal-comment-input" rows="2" placeholder="Tulis komentar sebagai tamu..."></textarea>
+              <button id="modal-comment-send" type="button" class="btn detail-comment-send">Kirim</button>
+            </div>
+          </div>
+        </div>
+        <div class="gallery-modal-sidebar-footer">
+          <span id="modal-guest-label" class="gallery-modal-guest-label"></span>
+          <a id="modal-download-original" class="gallery-modal-original-link" href="#" target="_blank" rel="noopener noreferrer">Buka Original</a>
+        </div>
       </div>
     </div>
   </div>
